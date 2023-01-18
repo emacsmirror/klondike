@@ -1,0 +1,19 @@
+* Emacs Klondike
+  :PROPERTIES:
+    :CUSTOM_ID: emacs-klondike
+  :END:
+Klondike solitaire for Emacs
+
+** How to Download/Install
+   :PROPERTIES:
+     :CUSTOM_ID: how-to-download_install
+   :END:
+This package is on [[https://melpa.org/#/klondike][Melpa]]; you can
+install it by running =M-x list-packages= in Emacs and searching for
+=klondike=, if you have the Melpa repository loaded by =Package=. If you
+don't have the repository added – yet –, you can find instructions for
+how to add it at the [[https://github.com/melpa/melpa#usage][Melpa
+Github page]].
+
+If you don't want to use either Melpa or Emacs's package manager… [add
+this info., later…]

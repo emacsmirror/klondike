@@ -883,3 +883,8 @@
 
   (klondike-mode))
 
+
+
+(provide 'klondike)
+
+;;; klondike.el ends here

@@ -40,3 +40,12 @@
 (defconst klondike----top-&-bottom-row-spacing 4
   "")
 
+(defconst klondike----suits-icon-spade   "♠"
+  "")
+(defconst klondike----suits-icon-heart   "♥"
+  "")
+(defconst klondike----suits-icon-diamond "♦"
+  "")
+(defconst klondike----suits-icon-club    "♣"
+  "")
+

@@ -280,3 +280,25 @@
   (read-only-mode t)
   (goto-line      0)
   (move-to-column 1))
+(defun klondike--stack-pile-number (stack)
+  ""
+
+  (read-only-mode 0)
+
+  (let ((totalNum (length (klondike--stack-get-cards stack))))
+    (dotimes (stackIndex (klondike--stack-get-visible stack))
+      (goto-line      (+ 1 (klondike--stack-get-y stack) (- totalNum stackIndex)))
+      (move-to-column (+ (klondike--stack-get-x stack) (- klondike----card-width 3)))
+
+      (delete-region (point) (+ (point) 2))
+
+      (let ((result (number-to-string (1+ stackIndex))))
+        (insert (concat (if (= (length result) 1)
+                            (if (= (1+ stackIndex) totalNum) " " "‾")
+                          "")
+                        (propertize result 'face '(:slant      italic
+                                                   :foreground "yellow")))))))
+
+  (read-only-mode t)
+  (goto-line      0)
+  (move-to-column 1))

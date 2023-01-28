@@ -76,3 +76,28 @@
   ""
 
   (alist-get :value card))
+(defun klondike--card-next-p (card1 card2 to-empty-p)
+  ""
+
+  (let ((next (lambda (c ascending-p)
+                (let ((mem (member (klondike--card-get-value c)
+                                   klondike----card-values)))
+                  (if ascending-p
+                      (if-let ((c (cadr mem))) c (car klondike----card-values))
+                    (let* ((len (length klondike----card-values))
+                           (n   (- len (length mem))))
+                      (nth (1- (if (zerop n) len n)) klondike----card-values)))))))
+    (or (and to-empty-p       (not card2) (string= (klondike--card-get-value card1) "A"))
+        (and (not to-empty-p) (not card2) (string= (klondike--card-get-value card1) "K"))
+        (and (string= (klondike--card-get-value card2) (funcall next card1 (not to-empty-p)))
+             (if to-empty-p
+                 (string= (klondike--card-get-suit  card1) (klondike--card-get-suit card2))
+               (or (and (or (string= (klondike--card-get-suit card1) klondike----suits-icon-club)
+                            (string= (klondike--card-get-suit card1) klondike----suits-icon-spade))
+                        (or (string= (klondike--card-get-suit card2) klondike----suits-icon-heart)
+                            (string= (klondike--card-get-suit card2) klondike----suits-icon-diamond)))
+                   (and (or (string= (klondike--card-get-suit card2) klondike----suits-icon-club)
+                            (string= (klondike--card-get-suit card2) klondike----suits-icon-spade))
+                        (or (string= (klondike--card-get-suit card1) klondike----suits-icon-heart)
+                            (string= (klondike--card-get-suit card1) klondike----suits-icon-diamond)))))))))
+

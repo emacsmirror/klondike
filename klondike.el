@@ -747,3 +747,129 @@
 
                             mode-map)
   "Keymap for `klondike-mode-mode'.")
+(define-derived-mode klondike-mode fundamental-mode "Klondike"
+  "Major mode for the Klondike solitaire game for Emacs."
+
+  (toggle-truncate-lines t)
+  (read-only-mode        0)
+  (erase-buffer)
+
+  (klondike--initialize-cards)
+
+  (let ((1card+padding (+ klondike----card-width
+                          klondike----window-padding))
+        (topBotPadding (1- klondike----window-padding)))
+    (dotimes (lineNum (+ topBotPadding
+                         klondike----card-height
+                         klondike----top-&-bottom-row-spacing
+                         klondike----card-height
+                         6
+                         topBotPadding
+                         20))
+      (goto-line (1+ lineNum))
+
+      (insert (make-string (+ klondike----window-padding
+                              (* 7 1card+padding))        ? ) "\n"))
+
+    (klondike--card-insert (klondike--stack-get-x klondike----facedown-stack)
+                           (klondike--stack-get-y klondike----facedown-stack)
+                           nil
+                           t)
+    (klondike--card-insert (klondike--stack-get-x klondike----faceup-stack)
+                           (klondike--stack-get-y klondike----faceup-stack)
+                           t)
+
+
+    (klondike--card-insert (klondike--stack-get-x klondike----empty-0-stack)
+                           (klondike--stack-get-y klondike----empty-0-stack)
+                           t)
+    (klondike--card-insert (klondike--stack-get-x klondike----empty-1-stack)
+                           (klondike--stack-get-y klondike----empty-1-stack)
+                           t)
+    (klondike--card-insert (klondike--stack-get-x klondike----empty-2-stack)
+                           (klondike--stack-get-y klondike----empty-2-stack)
+                           t)
+    (klondike--card-insert (klondike--stack-get-x klondike----empty-3-stack)
+                           (klondike--stack-get-y klondike----empty-3-stack)
+                           t)
+
+    (let* ((cards (klondike--stack-get-cards klondike----pile-0-stack))
+           (len   (length cards)))
+      (klondike--card-insert (klondike--stack-get-x klondike----pile-0-stack)
+                             (klondike--stack-get-y klondike----pile-0-stack)
+                             nil
+                             nil
+                             len
+                             (butlast cards
+                                      (- len
+                                         (klondike--stack-get-visible klondike----pile-0-stack)))
+                             t))
+    (let* ((cards (klondike--stack-get-cards klondike----pile-1-stack))
+           (len   (length cards)))
+      (klondike--card-insert (klondike--stack-get-x klondike----pile-1-stack)
+                             (klondike--stack-get-y klondike----pile-1-stack)
+                             nil
+                             nil
+                             len
+                             (butlast cards
+                                      (- len
+                                         (klondike--stack-get-visible klondike----pile-1-stack)))
+                             t))
+    (let* ((cards (klondike--stack-get-cards klondike----pile-2-stack))
+           (len   (length cards)))
+      (klondike--card-insert (klondike--stack-get-x klondike----pile-2-stack)
+                             (klondike--stack-get-y klondike----pile-2-stack)
+                             nil
+                             nil
+                             len
+                             (butlast cards
+                                      (- len
+                                         (klondike--stack-get-visible klondike----pile-2-stack)))
+                             t))
+    (let* ((cards (klondike--stack-get-cards klondike----pile-3-stack))
+           (len   (length cards)))
+      (klondike--card-insert (klondike--stack-get-x klondike----pile-3-stack)
+                             (klondike--stack-get-y klondike----pile-3-stack)
+                             nil
+                             nil
+                             len
+                             (butlast cards
+                                      (- len
+                                         (klondike--stack-get-visible klondike----pile-3-stack)))
+                             t))
+    (let* ((cards (klondike--stack-get-cards klondike----pile-4-stack))
+           (len   (length cards)))
+      (klondike--card-insert (klondike--stack-get-x klondike----pile-4-stack)
+                             (klondike--stack-get-y klondike----pile-4-stack)
+                             nil
+                             nil
+                             len
+                             (butlast cards
+                                      (- len
+                                         (klondike--stack-get-visible klondike----pile-4-stack)))
+                             t))
+    (let* ((cards (klondike--stack-get-cards klondike----pile-5-stack))
+           (len   (length cards)))
+      (klondike--card-insert (klondike--stack-get-x klondike----pile-5-stack)
+                             (klondike--stack-get-y klondike----pile-5-stack)
+                             nil
+                             nil
+                             len
+                             (butlast cards
+                                      (- len
+                                         (klondike--stack-get-visible klondike----pile-5-stack)))
+                             t))
+    (let* ((cards (klondike--stack-get-cards klondike----pile-6-stack))
+           (len   (length cards)))
+      (klondike--card-insert (klondike--stack-get-x klondike----pile-6-stack)
+                             (klondike--stack-get-y klondike----pile-6-stack)
+                             nil
+                             nil
+                             len
+                             (butlast cards
+                                      (- len
+                                         (klondike--stack-get-visible klondike----pile-6-stack)))
+                             t)))
+
+  (read-only-mode        t))
+

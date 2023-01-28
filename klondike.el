@@ -627,16 +627,15 @@
             (klondike--stack-pile-number stack)
 
             (let* ((try  (lambda (self repeat-p)
-                           (let ((n (string-to-number
-                                     (char-to-string
-                                      (read-char-exclusive (concat (if repeat-p
-                                                                       "Mmmm…that's not an option. "
-                                                                     "")
-                                                                   "Move which card in the stack?"))))))
-                             (if (or (< n 1)
-                                     (> n (klondike--stack-get-visible stack)))
+                           (let ((key (read-key (concat (if repeat-p
+                                                            "Mmmm…that's not an option. "
+                                                          "")
+                                                        "Move which card in the stack?"))))
+                             (if (or (not (numberp key))
+                                     (or (< key ?1)
+                                         (> key (+ ?0 (klondike--stack-get-visible stack)))))
                                  (funcall self self t)
-                               n))))
+                               (- key ?0)))))
                    (try2 (lambda (self repeat-p)
                            (let ((n (char-to-string
                                      (read-char-exclusive (concat (if repeat-p

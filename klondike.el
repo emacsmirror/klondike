@@ -700,22 +700,22 @@
 
                             (define-key mode-map (kbd "0") #'klondike-stack-faceup-pick)
 
-                            (define-key mode-map (kbd "` 1") (lambda ()
-                                                               (interactive)
+                            (define-key mode-map (kbd "!") (lambda ()
+                                                             (interactive)
 
-                                                               (klondike--stack-empty-pick 0)))
-                            (define-key mode-map (kbd "` 2") (lambda ()
-                                                               (interactive)
+                                                             (klondike--stack-empty-pick 0)))
+                            (define-key mode-map (kbd "@") (lambda ()
+                                                             (interactive)
 
-                                                               (klondike--stack-empty-pick 1)))
-                            (define-key mode-map (kbd "` 3") (lambda ()
-                                                               (interactive)
+                                                             (klondike--stack-empty-pick 1)))
+                            (define-key mode-map (kbd "#") (lambda ()
+                                                             (interactive)
 
-                                                               (klondike--stack-empty-pick 2)))
-                            (define-key mode-map (kbd "` 4") (lambda ()
-                                                               (interactive)
+                                                             (klondike--stack-empty-pick 2)))
+                            (define-key mode-map (kbd "$") (lambda ()
+                                                             (interactive)
 
-                                                               (klondike--stack-empty-pick 3)))
+                                                             (klondike--stack-empty-pick 3)))
 
                             (define-key mode-map (kbd "1") (lambda ()
                                                              (interactive)

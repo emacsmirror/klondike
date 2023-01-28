@@ -528,3 +528,143 @@
                                       (- (length (klondike--stack-get-cards stack2))
                                          (klondike--stack-get-visible stack2)))
                              (eq type2 'pile)))))
+(defun klondike-stack-faceup-pick ()
+  ""
+  (interactive)
+
+  (if (not (klondike--stack-get-cards klondike----faceup-stack))
+      (message "That spot there's empty, pardner…")
+    (let ((try  (lambda (self repeat-p)
+                  (let ((n (char-to-string
+                            (read-char-exclusive (concat (if repeat-p
+                                                             "Mmmm…that's not an option. "
+                                                           "")
+                                                         "Move the cards to which stack "
+                                                         "(hit ` to move to one of the 4 "
+                                                         "stacks on the top-right)?")))))
+                    (if (or (string= "`" n) (and (> (string-to-number n) 0)
+                                                 (< (string-to-number n) 8)))
+                        n
+                      (funcall self self t)))))
+          (try2 (lambda (self repeat-p)
+                  (let ((n (string-to-number
+                            (char-to-string
+                             (read-char-exclusive (concat (if repeat-p
+                                                              "Mmmm…that's not an option. "
+                                                            "")
+                                                          "Move the cards to which top-right stack?"))))))
+                    (if (or (< n 1) (> n 4)) (funcall self self t) (1- n))))))
+      ;; (klondike--stack-pile-number-select stack 1)
+
+      (pcase (funcall try try nil)
+        ("`" (let ((l (funcall try2 try2 nil)))
+               ;; (klondike--stack-pile-clear-selects klondike----faceup-stack)
+
+               (klondike--card-move-faceup 'empty l)))
+        (m   ;; (klondike--stack-pile-clear-selects klondike----faceup-stack)
+
+             (klondike--card-move-faceup 'pile (1- (string-to-number m))))))))
+(defun klondike--stack-empty-pick (stack-num)
+  ""
+
+  (let ((stack (pcase stack-num
+                 (0 klondike----empty-0-stack)
+                 (1 klondike----empty-1-stack)
+                 (2 klondike----empty-2-stack)
+                 (3 klondike----empty-3-stack))))
+    (if (not (klondike--stack-get-cards stack))
+        (message "That spot there's empty, pardner…")
+      (let ((try  (lambda (self repeat-p)
+                    (let ((n (char-to-string
+                              (read-char-exclusive (concat (if repeat-p
+                                                               "Mmmm…that's not an option. "
+                                                             "")
+                                                           "Move the cards to which stack "
+                                                           "(hit ` to move to one of the 4 "
+                                                           "stacks on the top-right)?")))))
+                      (if (or (string= "`" n) (and (> (string-to-number n) 0)
+                                                   (< (string-to-number n) 8)))
+                          n
+                        (funcall self self t)))))
+            (try2 (lambda (self repeat-p)
+                    (let ((n (string-to-number
+                              (char-to-string
+                               (read-char-exclusive (concat (if repeat-p
+                                                                "Mmmm…that's not an option. "
+                                                              "")
+                                                            "Move the cards to which top-right stack?"))))))
+                      (if (or (< n 1) (> n 4)) (funcall self self t) (1- n))))))
+        ;; (klondike--stack-pile-number-select stack 1)
+
+        (pcase (funcall try try nil)
+          ("`" (let ((l (funcall try2 try2 nil)))
+                 ;; (klondike--stack-pile-clear-selects stack)
+
+                 (klondike--card-move 'empty stack-num 1 'empty l)))
+          (m   ;; (klondike--stack-pile-clear-selects stack)
+
+               (klondike--card-move 'empty stack-num 1 'pile (1- (string-to-number m)))))))))
+(defun klondike--stack-pile-pick (stack-num)
+  ""
+
+  (let ((stack (pcase stack-num
+                 (0 klondike----pile-0-stack)
+                 (1 klondike----pile-1-stack)
+                 (2 klondike----pile-2-stack)
+                 (3 klondike----pile-3-stack)
+                 (4 klondike----pile-4-stack)
+                 (5 klondike----pile-5-stack)
+                 (6 klondike----pile-6-stack))))
+    (if (not (klondike--stack-get-cards stack))
+        (message "That spot there's empty, pardner…")
+      (unwind-protect
+          (progn
+            (klondike--stack-pile-number stack)
+
+            (let* ((try  (lambda (self repeat-p)
+                           (let ((n (string-to-number
+                                     (char-to-string
+                                      (read-char-exclusive (concat (if repeat-p
+                                                                       "Mmmm…that's not an option. "
+                                                                     "")
+                                                                   "Move which card in the stack?"))))))
+                             (if (or (< n 1)
+                                     (> n (klondike--stack-get-visible stack)))
+                                 (funcall self self t)
+                               n))))
+                   (try2 (lambda (self repeat-p)
+                           (let ((n (char-to-string
+                                     (read-char-exclusive (concat (if repeat-p
+                                                                      "Mmmm…that's not an option. "
+                                                                    "")
+                                                                  "Move the cards to which stack "
+                                                                  "(hit ` to move to one of the 4 "
+                                                                  "stacks on the top-right)?")))))
+                             (if (or (string= "`" n) (and (> (string-to-number n) 0)
+                                                          (< (string-to-number n) 8)))
+                                 n
+                               (funcall self self t)))))
+                   (try3 (lambda (self repeat-p)
+                           (let ((n (string-to-number
+                                     (char-to-string
+                                      (read-char-exclusive (concat (if repeat-p
+                                                                       "Mmmm…that's not an option. "
+                                                                     "")
+                                                                   "Move the cards to which top-right stack?"))))))
+                             (if (or (< n 1) (> n 4)) (funcall self self t) (1- n)))))
+                   (n    (pcase (klondike--stack-get-visible stack)
+                           (1 1)
+                           (_ (funcall try try nil)))))
+              (klondike--stack-pile-number-select stack n)
+
+              (pcase (funcall try2 try2 nil)
+                ("`" (let ((l (funcall try3 try3 nil)))
+                       (klondike--stack-pile-clear-selects stack)
+
+                       (klondike--card-move 'pile stack-num n 'empty l)))
+                (m   (klondike--stack-pile-clear-selects stack)
+
+                     (klondike--card-move 'pile stack-num n 'pile  (1- (string-to-number m)))))))
+        (when (klondike--stack-get-cards stack)
+          (klondike--stack-pile-clear-selects stack))))))
+

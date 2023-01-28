@@ -348,3 +348,84 @@
   (goto-line      0)
   (move-to-column 1))
 
+
+
+(defun klondike--initialize-cards ()
+  ""
+
+  (let* ((1card+padding (+ klondike----card-width     klondike----window-padding))
+         (topBotPadding (/ klondike----window-padding 2))
+         (cardPack      (let ((suits  '(club heart spade diamond))
+                              (result '()))
+                          (dotimes (index 4)
+                            (setq result (append result
+                                                 (mapcar (lambda (value)
+                                                           (klondike--card-create (nth index
+                                                                                       suits)
+                                                                                  value))
+                                                         klondike----card-values))))
+
+                          result))
+         (fill-stack    (lambda (num)
+                          (let ((result '()))
+                            (dotimes (n num)
+                              (let* ((r    (random (length cardPack)))
+                                     (tail (nthcdr r cardPack)))
+                                (setq cardPack (append (butlast cardPack
+                                                                (length tail))
+                                                       (cdr tail))
+                                      result   (cons (car tail) result))))
+
+                            result))))
+    (klondike--stack-set klondike----empty-0-stack
+                         '()
+                         0
+                         (+ klondike----window-padding (* (+ 0 3) 1card+padding))
+                         topBotPadding)
+    (klondike--stack-set klondike----empty-1-stack
+                         '()
+                         0
+                         (+ klondike----window-padding (* (+ 1 3) 1card+padding))
+                         topBotPadding)
+    (klondike--stack-set klondike----empty-2-stack
+                         '()
+                         0
+                         (+ klondike----window-padding (* (+ 2 3) 1card+padding))
+                         topBotPadding)
+    (klondike--stack-set klondike----empty-3-stack
+                         '()
+                         0
+                         (+ klondike----window-padding (* (+ 3 3) 1card+padding))
+                         topBotPadding)
+
+    (let ((y (+ topBotPadding
+                klondike----card-height
+                klondike----top-&-bottom-row-spacing))
+          (x (lambda (cardIndex)
+               (+ klondike----window-padding (* cardIndex 1card+padding)))))
+      (klondike--stack-set klondike----pile-0-stack (funcall fill-stack 1) 1
+                                                    (funcall x 0)          y)
+      (klondike--stack-set klondike----pile-1-stack (funcall fill-stack 2) 1
+                                                    (funcall x 1)          y)
+      (klondike--stack-set klondike----pile-2-stack (funcall fill-stack 3) 1
+                                                    (funcall x 2)          y)
+      (klondike--stack-set klondike----pile-3-stack (funcall fill-stack 4) 1
+                                                    (funcall x 3)          y)
+      (klondike--stack-set klondike----pile-4-stack (funcall fill-stack 5) 1
+                                                    (funcall x 4)          y)
+      (klondike--stack-set klondike----pile-5-stack (funcall fill-stack 6) 1
+                                                    (funcall x 5)          y)
+      (klondike--stack-set klondike----pile-6-stack (funcall fill-stack 7) 1
+                                                    (funcall x 6)          y))
+
+    (klondike--stack-set klondike----facedown-stack
+                         (funcall fill-stack 24)
+                         0
+                         klondike----window-padding
+                         topBotPadding)
+    (klondike--stack-set klondike----faceup-stack
+                         '()
+                         0
+                         (+ klondike----window-padding (1- 1card+padding))
+                         topBotPadding)))
+

@@ -160,3 +160,123 @@
 
   (cddr stack))
 
+
+
+(defun klondike--card-insert (x y empty-p &optional facedown-p   total-num
+                                                    faceup-cards show-stack-p)
+  ""
+
+  (read-only-mode 0)
+
+  (let* ((delete-reg (lambda ()
+                       (delete-region (point) (+ (point)
+                                                 klondike----card-width))))
+         (move-to    (lambda (w z)
+                       (goto-line      z)
+                       (move-to-column w)
+
+                       (funcall delete-reg))))
+    (funcall move-to x (1+ y))
+    (insert (if empty-p " _ _ _ _ _ " " _________ "))
+
+
+
+    (let* ((cardHeightW/oTopBot (- klondike----card-height 2))
+           (totalN              (if total-num total-num 0))
+           (faceups             (if (and (not show-stack-p) (> (length faceup-cards) 0))
+                                    (list (car faceup-cards))
+                                  faceup-cards))
+           (numOfFacedownCards  (if show-stack-p (- totalN
+                                                    (length faceups)) 0)))
+      (dotimes (i numOfFacedownCards)
+        (funcall move-to x (+ y 1 (1+ i)))
+        (insert "|\\ \\ \\ \\ \\|"))
+
+
+
+      (if faceups
+          (let ((faceupRev (reverse faceups)))
+            (dotimes (faceupIndex (length faceups))
+              (funcall move-to x (+ y 1 numOfFacedownCards (1+ faceupIndex)))
+              (insert (string-replace " "
+                                      (if (and (zerop numOfFacedownCards) (= faceupIndex 0)) " " "‾")
+                                      (format (concat "|%-2s%"
+                                                      (number-to-string
+                                                        (- klondike----card-width 4))
+                                                      "s|")
+                                              (klondike--card-get-value
+                                                (nth faceupIndex faceupRev))
+                                              "")))))
+        (funcall move-to x (+ y 1 (1+ numOfFacedownCards)))
+        (insert "|" (make-string (- klondike----card-width 2)
+                                 (if (zerop totalN) ?  ?‾))    "|"))
+
+
+
+      (let ((rows (- cardHeightW/oTopBot 2)))
+        (dotimes (offset rows)
+          (funcall move-to x (+ y
+                                1
+                                numOfFacedownCards
+                                (if faceups (length faceups) 1)
+                                (1+ offset)))
+          (let ((top (= offset (1- (/ rows 2))))
+                (mid (= offset     (/ rows 2)))
+                (bot (= offset (1+ (/ rows 2)))))
+            (if (and (not empty-p) facedown-p (or top mid bot))
+                (insert (cond
+                         (top "| _       |")
+                         (mid "|/ `/|// /|")
+                         (bot "|_;/ |/_/ |")))
+              (let* ((widthMinus (- klondike----card-width 2))
+                     (widthHalf  (/ widthMinus 2))
+                     (widthRest  (- widthMinus widthHalf 1)))
+                (insert (if (and empty-p (evenp offset)) " " "|")
+                        (make-string widthRest ? )
+                        (if (and faceups (= offset (/ rows 2)))
+                            (klondike--card-get-suit (car faceups))
+                          " ")
+                        (make-string widthHalf ? )
+                        (if (and empty-p (evenp offset)) " " "|"))))))
+
+
+
+        (funcall move-to x (+ y
+                              1
+                              numOfFacedownCards
+                              (if faceups (length faceups) 1)
+                              (1+ rows)))
+        (insert (format (concat "|%"
+                                (number-to-string (- klondike----card-width 4))
+                                "s%2s|")
+                        ""
+                        (if faceups
+                            (klondike--card-get-value (car faceups))
+                          "")))
+
+
+
+        (funcall move-to x (+ y
+                              1
+                              numOfFacedownCards
+                              (if faceups (length faceups) 1)
+                              (1+ rows)
+                              1))
+        (insert (if empty-p " ‾ ‾ ‾ ‾ ‾ " " ‾‾‾‾‾‾‾‾‾ "))
+
+
+
+        (when show-stack-p
+          (dotimes (offset 10)
+            (funcall move-to x (+ y
+                                  1
+                                  numOfFacedownCards
+                                  (if faceups (length faceups) 1)
+                                  (1+ rows)
+                                  1
+                                  (1+ offset)))
+            (insert "           "))))))
+
+  (read-only-mode t)
+  (goto-line      0)
+  (move-to-column 1))

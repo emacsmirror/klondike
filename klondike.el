@@ -429,3 +429,102 @@
                          (+ klondike----window-padding (1- 1card+padding))
                          topBotPadding)))
 
+
+
+(defun klondike--card-move-faceup (type index)
+  ""
+
+  (let* ((stack      (pcase type
+                       ('pile  (pcase index
+                                 (0 klondike----pile-0-stack)
+                                 (1 klondike----pile-1-stack)
+                                 (2 klondike----pile-2-stack)
+                                 (3 klondike----pile-3-stack)
+                                 (4 klondike----pile-4-stack)
+                                 (5 klondike----pile-5-stack)
+                                 (6 klondike----pile-6-stack)))
+                       ('empty (pcase index
+                                 (0 klondike----empty-0-stack)
+                                 (1 klondike----empty-1-stack)
+                                 (2 klondike----empty-2-stack)
+                                 (3 klondike----empty-3-stack)))))
+         (movingCard (car (klondike--stack-get-cards klondike----faceup-stack)))
+         ( underCard (car (klondike--stack-get-cards stack))))
+    (if (not (klondike--card-next-p movingCard underCard (eq type 'empty)))
+        (message "Can't do that, Jack!")
+      (klondike--stack-set-cards stack                    (cons (car (klondike--stack-get-cards klondike----faceup-stack))
+                                                                (klondike--stack-get-cards stack)))
+      (klondike--stack-set-cards klondike----faceup-stack (cdr (klondike--stack-get-cards klondike----faceup-stack)))
+
+      (klondike--stack-set-visible stack (1+ (klondike--stack-get-visible stack)))
+
+      (klondike--card-insert (klondike--stack-get-x klondike----faceup-stack)
+                             (klondike--stack-get-y klondike----faceup-stack)
+                             (zerop (length (klondike--stack-get-cards klondike----faceup-stack)))
+                             nil
+                             (length (klondike--stack-get-cards klondike----faceup-stack))
+                             (klondike--stack-get-cards klondike----faceup-stack))
+      (klondike--card-insert (klondike--stack-get-x stack)
+                             (klondike--stack-get-y stack)
+                             (zerop (length (klondike--stack-get-cards stack)))
+                             nil
+                             (length (klondike--stack-get-cards stack))
+                             (butlast (klondike--stack-get-cards stack)
+                                      (- (length (klondike--stack-get-cards stack))
+                                         (klondike--stack-get-visible stack)))
+                             (eq type 'pile)))))
+(defun klondike--card-move (type1 index1 stack-depth type2 index2)
+  ""
+
+  (let* ((get        (lambda (type index)
+                       (pcase type
+                         ('pile  (pcase index
+                                   (0 klondike----pile-0-stack)
+                                   (1 klondike----pile-1-stack)
+                                   (2 klondike----pile-2-stack)
+                                   (3 klondike----pile-3-stack)
+                                   (4 klondike----pile-4-stack)
+                                   (5 klondike----pile-5-stack)
+                                   (6 klondike----pile-6-stack)))
+                         ('empty (pcase index
+                                   (0 klondike----empty-0-stack)
+                                   (1 klondike----empty-1-stack)
+                                   (2 klondike----empty-2-stack)
+                                   (3 klondike----empty-3-stack))))))
+         (stack1     (funcall get type1 index1))
+         (stack2     (funcall get type2 index2))
+         (movingCard (nth (1- stack-depth) (klondike--stack-get-cards stack1)))
+         ( underCard (car (klondike--stack-get-cards stack2))))
+    (if (or (> stack-depth (klondike--stack-get-visible stack1))
+            (not (klondike--card-next-p movingCard underCard (eq type2 'empty))))
+        (message "Can't do that, Jack!")
+      (klondike--stack-set-cards stack2 (append (butlast (klondike--stack-get-cards stack1)
+                                                         (- (length (klondike--stack-get-cards stack1))
+                                                            stack-depth))
+                                                (klondike--stack-get-cards stack2)))
+      (klondike--stack-set-cards stack1 (cdr (member movingCard
+                                                     (klondike--stack-get-cards stack1))))
+
+      (klondike--stack-set-visible stack1 (let ((v (- (klondike--stack-get-visible stack1)
+                                                      stack-depth)))
+                                            (if (> v 0) v 1)))
+      (klondike--stack-set-visible stack2 (+ (klondike--stack-get-visible stack2) stack-depth))
+
+      (klondike--card-insert (klondike--stack-get-x stack1)
+                             (klondike--stack-get-y stack1)
+                             (zerop (length (klondike--stack-get-cards stack1)))
+                             nil
+                             (length (klondike--stack-get-cards stack1))
+                             (butlast (klondike--stack-get-cards stack1)
+                                      (- (length (klondike--stack-get-cards stack1))
+                                         (klondike--stack-get-visible stack1)))
+                             (eq type1 'pile))
+      (klondike--card-insert (klondike--stack-get-x stack2)
+                             (klondike--stack-get-y stack2)
+                             (zerop (length (klondike--stack-get-cards stack2)))
+                             nil
+                             (length (klondike--stack-get-cards stack2))
+                             (butlast (klondike--stack-get-cards stack2)
+                                      (- (length (klondike--stack-get-cards stack2))
+                                         (klondike--stack-get-visible stack2)))
+                             (eq type2 'pile)))))

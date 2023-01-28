@@ -651,14 +651,15 @@
                            (_ (funcall try try nil)))))
               (klondike--stack-pile-number-select stack n)
 
-              (pcase (funcall try2 try2 nil)
-                ("`" (let ((l (funcall try3 try3 nil)))
-                       (klondike--stack-pile-clear-selects stack)
+              (let ((key (funcall try2 try2 nil)))
+                (klondike--stack-pile-clear-selects stack)
 
-                       (klondike--card-move 'pile stack-num n 'empty l)))
-                (m   (klondike--stack-pile-clear-selects stack)
-
-                     (klondike--card-move 'pile stack-num n 'pile  (1- (string-to-number m)))))))
+                (pcase key
+                  ("!" (klondike--card-move 'pile stack-num n 'empty 0))
+                  ("@" (klondike--card-move 'pile stack-num n 'empty 1))
+                  ("#" (klondike--card-move 'pile stack-num n 'empty 2))
+                  ("$" (klondike--card-move 'pile stack-num n 'empty 3))
+                  (_   (klondike--card-move 'pile stack-num n 'pile  (1- key)))))))
         (when (klondike--stack-get-cards stack)
           (klondike--stack-pile-clear-selects stack))))))
 

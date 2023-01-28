@@ -29,3 +29,14 @@
 (defconst klondike----buffer-name "Klondike"
   "The name of the buffer the Klondike solitaire game always runs in.")
 
+(defconst klondike----window-padding 2
+  "")
+
+(defconst klondike----card-width  11
+  "")
+(defconst klondike----card-height 11
+  "")
+
+(defconst klondike----top-&-bottom-row-spacing 4
+  "")
+

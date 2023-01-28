@@ -668,3 +668,29 @@
         (when (klondike--stack-get-cards stack)
           (klondike--stack-pile-clear-selects stack))))))
 
+(defun klondike-card-deck-next ()
+  ""
+  (interactive)
+
+  (if (zerop (length (klondike--stack-get-cards klondike----facedown-stack)))
+      (progn
+        (klondike--stack-set-cards klondike----facedown-stack
+                                   (reverse (klondike--stack-get-cards klondike----faceup-stack)))
+        (klondike--stack-set-cards klondike----faceup-stack   '()))
+    (klondike--stack-set-cards klondike----faceup-stack
+                               (cons (car (klondike--stack-get-cards klondike----facedown-stack))
+                                     (klondike--stack-get-cards klondike----faceup-stack)))
+    (klondike--stack-set-cards klondike----facedown-stack
+                               (cdr (klondike--stack-get-cards klondike----facedown-stack))))
+
+  (klondike--card-insert (klondike--stack-get-x klondike----facedown-stack)
+                         (klondike--stack-get-y klondike----facedown-stack)
+                         (zerop (length (klondike--stack-get-cards klondike----facedown-stack)))
+                         t)
+  (klondike--card-insert (klondike--stack-get-x klondike----faceup-stack)
+                         (klondike--stack-get-y klondike----faceup-stack)
+                         (zerop (length (klondike--stack-get-cards klondike----faceup-stack)))
+                         nil
+                         (length (klondike--stack-get-cards klondike----faceup-stack))
+                         (klondike--stack-get-cards klondike----faceup-stack)))
+

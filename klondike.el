@@ -130,3 +130,33 @@
 (defvar klondike----pile-6-stack  `(() . ())
   "")
 
+(defmacro klondike--stack-set (stack cards visible-num x y)
+  ""
+
+  `(setq ,stack (cons (cons ,cards ,visible-num) (cons ,x ,y))))
+(defun klondike--stack-get-cards (stack)
+  ""
+
+  (caar stack))
+(defun klondike--stack-set-cards (stack cards)
+  ""
+
+  (setcar (car stack) cards))
+(defun klondike--stack-get-visible (stack)
+  ""
+
+  (cdar stack))
+(defun klondike--stack-set-visible (stack visible-num)
+  ""
+
+  (let ((l (length (klondike--stack-get-cards stack))))
+    (setcdr (car stack) (if (> visible-num l) l visible-num))))
+(defun klondike--stack-get-x (stack)
+  ""
+
+  (cadr stack))
+(defun klondike--stack-get-y (stack)
+  ""
+
+  (cddr stack))
+

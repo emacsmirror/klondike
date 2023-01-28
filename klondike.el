@@ -539,36 +539,33 @@
 
   (if (not (klondike--stack-get-cards klondike----faceup-stack))
       (message "That spot there's empty, pardner…")
-    (let ((try  (lambda (self repeat-p)
-                  (let ((n (char-to-string
-                            (read-char-exclusive (concat (if repeat-p
-                                                             "Mmmm…that's not an option. "
-                                                           "")
-                                                         "Move the cards to which stack "
-                                                         "(hit ` to move to one of the 4 "
-                                                         "stacks on the top-right)?")))))
-                    (if (or (string= "`" n) (and (> (string-to-number n) 0)
-                                                 (< (string-to-number n) 8)))
-                        n
-                      (funcall self self t)))))
-          (try2 (lambda (self repeat-p)
-                  (let ((n (string-to-number
-                            (char-to-string
-                             (read-char-exclusive (concat (if repeat-p
-                                                              "Mmmm…that's not an option. "
-                                                            "")
-                                                          "Move the cards to which top-right stack?"))))))
-                    (if (or (< n 1) (> n 4)) (funcall self self t) (1- n))))))
+    (let ((try (lambda (self repeat-p)
+                 (let ((key (read-key (concat (if repeat-p
+                                                  "Mmmm…that's not an option. "
+                                                "")
+                                              "Move the cards to which stack "
+                                              "(use Shift to move to one of "
+                                              "the 4 stacks on the top-right)?"))))
+                   (pcase key
+                     (?!                       "!")
+                     (?@                       "@")
+                     (?#                       "#")
+                     (?$                       "$")
+                     ((guard (and (> key ?0)
+                                  (< key ?8))) (string-to-number
+                                                 (char-to-string key)))
+                     (_                        (funcall self self t)))))))
       ;; (klondike--stack-pile-number-select stack 1)
 
-      (pcase (funcall try try nil)
-        ("`" (let ((l (funcall try2 try2 nil)))
-               ;; (klondike--stack-pile-clear-selects klondike----faceup-stack)
+      (let ((key (funcall try try nil)))
+        ;; (klondike--stack-pile-clear-selects klondike----faceup-stack)
 
-               (klondike--card-move-faceup 'empty l)))
-        (m   ;; (klondike--stack-pile-clear-selects klondike----faceup-stack)
-
-             (klondike--card-move-faceup 'pile (1- (string-to-number m))))))))
+        (pcase key
+          ("!" (klondike--card-move-faceup 'empty 0))
+          ("@" (klondike--card-move-faceup 'empty 1))
+          ("#" (klondike--card-move-faceup 'empty 3))
+          ("$" (klondike--card-move-faceup 'empty 4))
+          (_   (klondike--card-move-faceup 'pile  (1- key))))))))
 (defun klondike--stack-empty-pick (stack-num)
   ""
 

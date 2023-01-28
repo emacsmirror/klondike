@@ -694,3 +694,56 @@
                          (length (klondike--stack-get-cards klondike----faceup-stack))
                          (klondike--stack-get-cards klondike----faceup-stack)))
 
+(defvar klondike-mode-map (let ((mode-map (make-sparse-keymap)))
+                            (define-key mode-map (kbd "SPC") #'klondike-card-deck-next)
+
+                            (define-key mode-map (kbd "0") #'klondike-stack-faceup-pick)
+
+                            (define-key mode-map (kbd "` 1") (lambda ()
+                                                               (interactive)
+
+                                                               (klondike--stack-empty-pick 0)))
+                            (define-key mode-map (kbd "` 2") (lambda ()
+                                                               (interactive)
+
+                                                               (klondike--stack-empty-pick 1)))
+                            (define-key mode-map (kbd "` 3") (lambda ()
+                                                               (interactive)
+
+                                                               (klondike--stack-empty-pick 2)))
+                            (define-key mode-map (kbd "` 4") (lambda ()
+                                                               (interactive)
+
+                                                               (klondike--stack-empty-pick 3)))
+
+                            (define-key mode-map (kbd "1") (lambda ()
+                                                             (interactive)
+
+                                                             (klondike--stack-pile-pick 0)))
+                            (define-key mode-map (kbd "2") (lambda ()
+                                                             (interactive)
+
+                                                             (klondike--stack-pile-pick 1)))
+                            (define-key mode-map (kbd "3") (lambda ()
+                                                             (interactive)
+
+                                                             (klondike--stack-pile-pick 2)))
+                            (define-key mode-map (kbd "4") (lambda ()
+                                                             (interactive)
+
+                                                             (klondike--stack-pile-pick 3)))
+                            (define-key mode-map (kbd "5") (lambda ()
+                                                             (interactive)
+
+                                                             (klondike--stack-pile-pick 4)))
+                            (define-key mode-map (kbd "6") (lambda ()
+                                                             (interactive)
+
+                                                             (klondike--stack-pile-pick 5)))
+                            (define-key mode-map (kbd "7") (lambda ()
+                                                             (interactive)
+
+                                                             (klondike--stack-pile-pick 6)))
+
+                            mode-map)
+  "Keymap for `klondike-mode-mode'.")

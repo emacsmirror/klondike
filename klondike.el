@@ -26,6 +26,11 @@
 ;; Sterf
 
 ;;; Code:
+;; pcase
+(require 'pcase)
+;; if-let*
+(require 'subr-x)
+
 (defconst klondike----buffer-name "Klondike"
   "The name of the buffer the Klondike solitaire game always runs in.")
 

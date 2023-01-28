@@ -26,3 +26,6 @@
 ;; Sterf
 
 ;;; Code:
+(defconst klondike----buffer-name "Klondike"
+  "The name of the buffer the Klondike solitaire game always runs in.")
+

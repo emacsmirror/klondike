@@ -52,3 +52,27 @@
 (defconst klondike----card-values '("A" "2" "3"  "4" "5" "6"
                                     "7" "8" "9" "10" "J" "Q" "K")
   "")
+(defun klondike--card-create (suit-symbol value)
+  ""
+
+  `((:suit . ,(pcase suit-symbol
+                ((or 'spade 'club)    (pcase suit-symbol
+                                        ('spade klondike----suits-icon-spade)
+                                        ('club  klondike----suits-icon-club)))
+                ((or 'heart 'diamond) (propertize (pcase suit-symbol
+                                                    ('heart   klondike----suits-icon-heart)
+                                                    ('diamond klondike----suits-icon-diamond))
+                                                  'face
+                                                  '(:foreground "red")))))
+    (:value . ,(let ((v (if (numberp value) (number-to-string value) value)))
+                 (pcase suit-symbol
+                   ((or 'spade 'club)    v)
+                   ((or 'heart 'diamond) (propertize v 'face '(:foreground "red"))))))))
+(defun klondike--card-get-suit (card)
+  ""
+
+  (alist-get :suit card))
+(defun klondike--card-get-value (card)
+  ""
+
+  (alist-get :value card))

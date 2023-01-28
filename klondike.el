@@ -873,3 +873,13 @@
 
   (read-only-mode        t))
 
+(defun klondike ()
+  ""
+  (interactive)
+
+  (if-let ((existing (get-buffer klondike----buffer-name)))
+      (switch-to-buffer existing)
+    (switch-to-buffer klondike----buffer-name))
+
+  (klondike-mode))
+

@@ -302,3 +302,30 @@
   (read-only-mode t)
   (goto-line      0)
   (move-to-column 1))
+(defun klondike--stack-pile-number-select (stack selected-num)
+  ""
+
+  (read-only-mode 0)
+
+  (let ((  totalNum (length (klondike--stack-get-cards stack)))
+        (visibleNum (klondike--stack-get-visible stack)))
+    (goto-line      (+ 1
+                       (klondike--stack-get-y stack)
+                       (- totalNum        visibleNum)
+                       (- (1+ visibleNum) selected-num)))
+    (move-to-column (+ (klondike--stack-get-x stack) (- klondike----card-width 3)))
+
+    (delete-region (point) (+ (point) 2))
+
+    (let ((stringNum (number-to-string selected-num)))
+      (insert (concat (if (= (length stringNum) 1)
+                          (if (= selected-num visibleNum totalNum) " " "‾")
+                        "")
+                      (propertize stringNum
+                                  'face '(:slant      italic
+                                          :weight     bold
+                                          :foreground "purple"))))))
+
+  (read-only-mode t)
+  (goto-line      0)
+  (move-to-column 1))

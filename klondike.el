@@ -608,7 +608,7 @@
         (message "That spot there's empty, pardner…")
       (let* ((try  (lambda (self funct2 funct3 retrying-p)
                      (let ((n (pcase (klondike--stack-get-visible stack)
-                                (1 1)
+                                (1 ?1)
                                 (_ (funcall funct2 funct2 nil)))))
                        (if (or (= n ?\C-g)
                                (and (= (klondike--stack-get-visible stack) 1)

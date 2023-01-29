@@ -555,6 +555,7 @@
                      (?@                       (klondike--card-move-faceup 'empty 1))
                      (?#                       (klondike--card-move-faceup 'empty 2))
                      (?$                       (klondike--card-move-faceup 'empty 3))
+                     (?\C-g                    t)
                      ((guard (and (> key ?0)
                                   (< key ?8))) (klondike--card-move-faceup 'pile  (1- (string-to-number
                                                                                         (char-to-string key)))))
@@ -586,6 +587,7 @@
                        (?@                       (klondike--card-move 'empty stack-num 1 'empty 1))
                        (?#                       (klondike--card-move 'empty stack-num 1 'empty 2))
                        (?$                       (klondike--card-move 'empty stack-num 1 'empty 3))
+                       (?\C-g                    t)
                        ((guard (and (> key ?0)
                                     (< key ?8))) (klondike--card-move 'empty stack-num 1 'pile  (1- (string-to-number
                                                                                                       (char-to-string key)))))

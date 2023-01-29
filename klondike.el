@@ -358,12 +358,15 @@
                                              (klondike--card-to-unicode
                                                (car (klondike--stack-get-cards
                                                       klondike----empty-0-stack)))
+                                             " "
                                              (klondike--card-to-unicode
                                                (car (klondike--stack-get-cards
                                                       klondike----empty-1-stack)))
+                                             " "
                                              (klondike--card-to-unicode
                                                (car (klondike--stack-get-cards
                                                       klondike----empty-2-stack)))
+                                             " "
                                              (klondike--card-to-unicode
                                                (car (klondike--stack-get-cards
                                                       klondike----empty-3-stack)))

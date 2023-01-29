@@ -697,9 +697,9 @@
                      (klondike--stack-pile-number stack)
 
                      (let ((n (pcase (klondike--stack-get-visible stack)
-                                (1 ?1)
+                                (1 'f1)
                                 (_ (funcall funct2 funct2 nil)))))
-                       (if (or (= n ?\C-g)
+                       (if (or (eq n ?\C-g)
                                (and (= (klondike--stack-get-visible stack) 1)
                                     retrying-p))
                            (klondike--stack-pile-clear-selects stack)
@@ -709,10 +709,20 @@
                                                       "Mmmm…that's not an option. "
                                                     "")
                                                   "Move which card in the stack?"))))
-                       (if (or (not (numberp key))
-                               (and (not (= key ?\C-g))
-                                    (or (< key ?1)
-                                        (> key (+ ?0 (klondike--stack-get-visible stack))))))
+                       (if (or (and (symbolp key)
+                                    (not (member key
+                                                 (mapcar (lambda (elem)
+                                                           (intern (concat "f" (number-to-string
+                                                                                 elem))))
+                                                         (number-sequence 1 (klondike--stack-get-visible
+                                                                              stack))))))
+                               (and (numberp key)
+                                    (not (= key ?\C-g))
+                                    (not (= key ?!))
+                                    (not (= key ?@))
+                                    (not (= key ?#))
+                                    (not (= key ?$))
+                                    (or (< key ?1) (> key ?7))))
                            (funcall self self t)
                          key))))
              (try3 (lambda (card-num funct funct2 self repeat-p)

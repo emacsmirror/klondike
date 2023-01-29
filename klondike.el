@@ -726,27 +726,46 @@
                            (funcall self self t)
                          key))))
              (try3 (lambda (card-num funct funct2 self repeat-p)
-                     (let ((cNum (- card-num ?0)))
-                       (klondike--stack-pile-number-select stack cNum)
+                     (if-let ((cNum (pcase card-num
+                                      ('f1    1) ('f2    2) ('f3    3)
+                                      ('f4    4) ('f5    5) ('f6    6)
+                                      ('f7    7) ('f8    8) ('f9    9)
+                                      ('f10  10) ('f11  11) ('f12  12) (_ nil))))
+                         (progn
+                           (klondike--stack-pile-number-select stack cNum)
 
-                       (let ((key (read-key (concat (if repeat-p
-                                                        "Mmmm…that's not an option. "
-                                                      "")
-                                                    "Move the cards to which stack "
-                                                    "(use Shift to move to one of "
-                                                    "the 4 stacks on the top-right)?"))))
-                         (klondike--stack-pile-clear-selects stack)
+                           (let ((key (read-key (concat (if repeat-p
+                                                            "Mmmm…that's not an option. "
+                                                          "")
+                                                        "Move the cards to which stack "
+                                                        "(use Shift to move to one of "
+                                                        "the 4 stacks on the top-right)?"))))
+                             (klondike--stack-pile-clear-selects stack)
 
-                         (pcase key
-                           (?!                       (klondike--card-move 'pile stack-num cNum 'empty 0))
-                           (?@                       (klondike--card-move 'pile stack-num cNum 'empty 1))
-                           (?#                       (klondike--card-move 'pile stack-num cNum 'empty 2))
-                           (?$                       (klondike--card-move 'pile stack-num cNum 'empty 3))
-                           (?\C-g                    (funcall funct funct funct2 self t))
-                           ((guard (and (> key ?0)
-                                        (< key ?8))) (klondike--card-move 'pile stack-num cNum 'pile  (1- (string-to-number
-                                                                                                            (char-to-string key)))))
-                           (_                        (funcall self n funct funct2 self t))))))))
+                             (pcase key
+                               (?!                       (klondike--card-move 'pile stack-num cNum 'empty 0))
+                               (?@                       (klondike--card-move 'pile stack-num cNum 'empty 1))
+                               (?#                       (klondike--card-move 'pile stack-num cNum 'empty 2))
+                               (?$                       (klondike--card-move 'pile stack-num cNum 'empty 3))
+                               (?\C-g                    (funcall funct funct funct2 self t))
+                               ((guard (and (> key ?0)
+                                            (< key ?8))) (klondike--card-move 'pile stack-num cNum 'pile  (1- (string-to-number
+                                                                                                                (char-to-string key)))))
+                               (_                        (funcall self cNum funct funct2 self t)))))
+                       (klondike--stack-pile-clear-selects stack)
+
+                       (pcase card-num
+                         (?!                            (klondike--card-move 'pile stack-num 1 'empty 0))
+                         (?@                            (klondike--card-move 'pile stack-num 1 'empty 1))
+                         (?#                            (klondike--card-move 'pile stack-num 1 'empty 2))
+                         (?$                            (klondike--card-move 'pile stack-num 1 'empty 3))
+                         (?\C-g                         t)
+                         ((guard (and (> card-num ?0)
+                                      (< card-num ?8))) (klondike--card-move 'pile stack-num
+                                                                             (klondike--stack-get-visible stack)
+                                                                             'pile (1- (string-to-number
+                                                                                         (char-to-string card-num)))))
+                         (_                             (funcall funct funct funct2 funct3 t)))))))
         (funcall try try try2 try3 nil)))))
 
 (defun klondike-card-deck-next ()

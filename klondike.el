@@ -307,12 +307,12 @@
   (read-only-mode t)
   (goto-line      0)
   (move-to-column 1))
-(defun klondike--stack-pile-number-select (stack selected-num)
+(defun klondike--stack-pile-number-select (stack selected-num &optional hide-stack-p)
   ""
 
   (read-only-mode 0)
 
-  (let ((  totalNum (length (klondike--stack-get-cards stack)))
+  (let ((  totalNum (if hide-stack-p 1 (length (klondike--stack-get-cards stack))))
         (visibleNum (klondike--stack-get-visible stack)))
     (goto-line      (+ 1
                        (klondike--stack-get-y stack)
@@ -334,12 +334,12 @@
   (read-only-mode t)
   (goto-line      0)
   (move-to-column 1))
-(defun klondike--stack-pile-clear-selects (stack)
+(defun klondike--stack-pile-clear-selects (stack &optional hide-stack-p)
   ""
 
   (read-only-mode 0)
 
-  (let ((totalNum (length (klondike--stack-get-cards stack))))
+  (let ((totalNum (if hide-stack-p 1 (length (klondike--stack-get-cards stack)))))
     (dotimes (stackIndex (klondike--stack-get-visible stack))
       (goto-line      (+ 1 (klondike--stack-get-y stack) (- totalNum stackIndex)))
       (move-to-column (+ (klondike--stack-get-x stack) (- klondike----card-width 3)))
@@ -540,7 +540,7 @@
   (if (not (klondike--stack-get-cards klondike----faceup-stack))
       (message "That spot there's empty, pardner…")
     (let ((try (lambda (self repeat-p)
-                 ;; (klondike--stack-pile-number-select stack 1)
+                 (klondike--stack-pile-number-select klondike----faceup-stack 1 t)
 
                  (let ((key (read-key (concat (if repeat-p
                                                   "Mmmm…that's not an option. "
@@ -548,7 +548,7 @@
                                               "Move the cards to which stack "
                                               "(use Shift to move to one of "
                                               "the 4 stacks on the top-right)?"))))
-                   ;; (klondike--stack-pile-clear-selects klondike----faceup-stack)
+                   (klondike--stack-pile-clear-selects klondike----faceup-stack t)
 
                    (pcase key
                      (?!                       (klondike--card-move-faceup 'empty 0))
@@ -660,12 +660,16 @@
       (progn
         (klondike--stack-set-cards klondike----facedown-stack
                                    (reverse (klondike--stack-get-cards klondike----faceup-stack)))
-        (klondike--stack-set-cards klondike----faceup-stack   '()))
+        (klondike--stack-set-cards klondike----faceup-stack   '())
+
+        (klondike--stack-set-visible klondike----faceup-stack 0))
     (klondike--stack-set-cards klondike----faceup-stack
                                (cons (car (klondike--stack-get-cards klondike----facedown-stack))
                                      (klondike--stack-get-cards klondike----faceup-stack)))
     (klondike--stack-set-cards klondike----facedown-stack
-                               (cdr (klondike--stack-get-cards klondike----facedown-stack))))
+                               (cdr (klondike--stack-get-cards klondike----facedown-stack)))
+
+    (klondike--stack-set-visible klondike----faceup-stack 1))
 
   (klondike--card-insert (klondike--stack-get-x klondike----facedown-stack)
                          (klondike--stack-get-y klondike----facedown-stack)

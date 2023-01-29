@@ -540,32 +540,26 @@
   (if (not (klondike--stack-get-cards klondike----faceup-stack))
       (message "That spot there's empty, pardner…")
     (let ((try (lambda (self repeat-p)
+                 ;; (klondike--stack-pile-number-select stack 1)
+
                  (let ((key (read-key (concat (if repeat-p
                                                   "Mmmm…that's not an option. "
                                                 "")
                                               "Move the cards to which stack "
                                               "(use Shift to move to one of "
                                               "the 4 stacks on the top-right)?"))))
+                   ;; (klondike--stack-pile-clear-selects klondike----faceup-stack)
+
                    (pcase key
-                     (?!                       "!")
-                     (?@                       "@")
-                     (?#                       "#")
-                     (?$                       "$")
+                     (?!                       (klondike--card-move-faceup 'empty 0))
+                     (?@                       (klondike--card-move-faceup 'empty 1))
+                     (?#                       (klondike--card-move-faceup 'empty 2))
+                     (?$                       (klondike--card-move-faceup 'empty 3))
                      ((guard (and (> key ?0)
-                                  (< key ?8))) (string-to-number
-                                                 (char-to-string key)))
+                                  (< key ?8))) (klondike--card-move-faceup 'pile  (1- (string-to-number
+                                                                                        (char-to-string key)))))
                      (_                        (funcall self self t)))))))
-      ;; (klondike--stack-pile-number-select stack 1)
-
-      (let ((key (funcall try try nil)))
-        ;; (klondike--stack-pile-clear-selects klondike----faceup-stack)
-
-        (pcase key
-          ("!" (klondike--card-move-faceup 'empty 0))
-          ("@" (klondike--card-move-faceup 'empty 1))
-          ("#" (klondike--card-move-faceup 'empty 2))
-          ("$" (klondike--card-move-faceup 'empty 3))
-          (_   (klondike--card-move-faceup 'pile  (1- key))))))))
+      (funcall try try nil))))
 (defun klondike--stack-empty-pick (stack-num)
   ""
 

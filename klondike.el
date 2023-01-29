@@ -34,6 +34,9 @@
 (defconst klondike----buffer-name "Klondike"
   "The name of the buffer the Klondike solitaire game always runs in.")
 
+(defvar klondike----mode-line-status ""
+  "")
+
 (defconst klondike----window-padding 2
   "")
 
@@ -105,6 +108,71 @@
                             (string= (klondike--card-get-suit card2) klondike----suits-icon-spade))
                         (or (string= (klondike--card-get-suit card1) klondike----suits-icon-heart)
                             (string= (klondike--card-get-suit card1) klondike----suits-icon-diamond)))))))))
+(defun klondike--card-to-unicode (card)
+  ""
+
+  (pcase (klondike--card-get-suit card)
+    ('nil                           "🂠")
+    (klondike----suits-icon-club    (pcase (klondike--card-get-value card)
+                                      ( "A" "🃑")
+                                      ( "2" "🃒")
+                                      ( "3" "🃓")
+                                      ( "4" "🃔")
+                                      ( "5" "🃕")
+                                      ( "6" "🃖")
+                                      ( "7" "🃗")
+                                      ( "8" "🃘")
+                                      ( "9" "🃙")
+                                      ("10" "🃚")
+                                      ( "J" "🃛")
+                                      ( "Q" "🃝")
+                                      ( "K" "🃞")))
+    (klondike----suits-icon-heart   (propertize (pcase (klondike--card-get-value card)
+                                                  ( "A" "🂱")
+                                                  ( "2" "🂲")
+                                                  ( "3" "🂳")
+                                                  ( "4" "🂴")
+                                                  ( "5" "🂵")
+                                                  ( "6" "🂶")
+                                                  ( "7" "🂷")
+                                                  ( "8" "🂸")
+                                                  ( "9" "🂹")
+                                                  ("10" "🂺")
+                                                  ( "J" "🂻")
+                                                  ( "Q" "🂽")
+                                                  ( "K" "🂾"))
+                                                'face
+                                                '(:foreground "red")))
+    (klondike----suits-icon-spade   (pcase (klondike--card-get-value card)
+                                      ( "A" "🂡")
+                                      ( "2" "🂢")
+                                      ( "3" "🂣")
+                                      ( "4" "🂤")
+                                      ( "5" "🂥")
+                                      ( "6" "🂦")
+                                      ( "7" "🂧")
+                                      ( "8" "🂨")
+                                      ( "9" "🂩")
+                                      ("10" "🂪")
+                                      ( "J" "🂫")
+                                      ( "Q" "🂭")
+                                      ( "K" "🂮")))
+    (klondike----suits-icon-diamond (propertize (pcase (klondike--card-get-value card)
+                                                  ( "A" "🃁")
+                                                  ( "2" "🃂")
+                                                  ( "3" "🃃")
+                                                  ( "4" "🃄")
+                                                  ( "5" "🃅")
+                                                  ( "6" "🃆")
+                                                  ( "7" "🃇")
+                                                  ( "8" "🃈")
+                                                  ( "9" "🃉")
+                                                  ("10" "🃊")
+                                                  ( "J" "🃋")
+                                                  ( "Q" "🃍")
+                                                  ( "K" "🃎"))
+                                                'face
+                                                '(:foreground "red")))))
 
 (defvar klondike----facedown-stack `(() . ())
   "")
@@ -284,7 +352,22 @@
 
   (read-only-mode t)
   (goto-line      0)
-  (move-to-column 1))
+  (move-to-column 1)
+
+  (setq klondike----mode-line-status (concat " "
+                                             (klondike--card-to-unicode
+                                               (car (klondike--stack-get-cards
+                                                      klondike----empty-0-stack)))
+                                             (klondike--card-to-unicode
+                                               (car (klondike--stack-get-cards
+                                                      klondike----empty-1-stack)))
+                                             (klondike--card-to-unicode
+                                               (car (klondike--stack-get-cards
+                                                      klondike----empty-2-stack)))
+                                             (klondike--card-to-unicode
+                                               (car (klondike--stack-get-cards
+                                                      klondike----empty-3-stack)))
+                                             "  ")))
 (defun klondike--stack-pile-number (stack)
   ""
 
@@ -874,6 +957,16 @@
     (switch-to-buffer klondike----buffer-name))
 
   (klondike-mode))
+
+
+(setq global-mode-string
+      (cond
+       ((consp global-mode-string)   (add-to-list 'global-mode-string
+                                                  'klondike----mode-line-status
+                                                  'APPEND))
+       ((not global-mode-string)     (list "" 'klondike----mode-line-status))
+       ((stringp global-mode-string) (list global-mode-string
+                                           'klondike----mode-line-status))))
 
 
 

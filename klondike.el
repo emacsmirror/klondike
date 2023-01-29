@@ -510,10 +510,14 @@
       (klondike--stack-set-cards stack1 (cdr (member movingCard
                                                      (klondike--stack-get-cards stack1))))
 
-      (klondike--stack-set-visible stack1 (let ((v (- (klondike--stack-get-visible stack1)
-                                                      stack-depth)))
-                                            (if (> v 0) v 1)))
-      (klondike--stack-set-visible stack2 (+ (klondike--stack-get-visible stack2) stack-depth))
+      (klondike--stack-set-visible stack1 (if (eq type1 'empty)
+                                              (if (klondike--stack-get-cards stack1) 1 0)
+                                            (let ((v (- (klondike--stack-get-visible stack1)
+                                                        stack-depth)))
+                                              (if (> v 0) v 1))))
+      (klondike--stack-set-visible stack2 (if (eq type2 'empty)
+                                              (if (klondike--stack-get-cards stack2) 1 0)
+                                            (+ (klondike--stack-get-visible stack2) stack-depth)))
 
       (klondike--card-insert (klondike--stack-get-x stack1)
                              (klondike--stack-get-y stack1)
@@ -572,7 +576,7 @@
     (if (not (klondike--stack-get-cards stack))
         (message "That spot there's empty, pardner…")
       (let ((try (lambda (self repeat-p)
-                   ;; (klondike--stack-pile-number-select stack 1)
+                   (klondike--stack-pile-number-select stack 1 t)
 
                    (let ((key (read-key (concat (if repeat-p
                                                     "Mmmm…that's not an option. "
@@ -580,7 +584,7 @@
                                                 "Move the cards to which stack "
                                                 "(use Shift to move to one of "
                                                 "the 4 stacks on the top-right)?"))))
-                     ;; (klondike--stack-pile-clear-selects stack)
+                     (klondike--stack-pile-clear-selects stack t)
 
                      (pcase key
                        (?!                       (klondike--card-move 'empty stack-num 1 'empty 0))

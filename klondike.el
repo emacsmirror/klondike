@@ -694,6 +694,8 @@
     (if (not (klondike--stack-get-cards stack))
         (message "That spot there's empty, pardner…")
       (let* ((try  (lambda (self funct2 funct3 retrying-p)
+                     (klondike--stack-pile-number stack)
+
                      (let ((n (pcase (klondike--stack-get-visible stack)
                                 (1 ?1)
                                 (_ (funcall funct2 funct2 nil)))))
@@ -703,8 +705,6 @@
                            (klondike--stack-pile-clear-selects stack)
                          (funcall funct3 n self funct2 funct3 nil)))))
              (try2 (lambda (self repeat-p)
-                     (klondike--stack-pile-number stack)
-
                      (let ((key (read-key (concat (if repeat-p
                                                       "Mmmm…that's not an option. "
                                                     "")

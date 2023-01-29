@@ -622,13 +622,12 @@
                                                       "Mmmm…that's not an option. "
                                                     "")
                                                   "Move which card in the stack?"))))
-                       (if (= key ?\C-g)
-                           key
-                         (if (or (not (numberp key))
-                                 (or (< key ?1)
-                                     (> key (+ ?0 (klondike--stack-get-visible stack)))))
-                             (funcall self self t)
-                           (- key ?0))))))
+                       (if (or (not (numberp key))
+                               (and (not (= key ?\C-g))
+                                    (or (< key ?1)
+                                        (> key (+ ?0 (klondike--stack-get-visible stack))))))
+                           (funcall self self t)
+                         key))))
              (try3 (lambda (card-num funct funct2 self repeat-p)
                      (klondike--stack-pile-number-select stack card-num)
 

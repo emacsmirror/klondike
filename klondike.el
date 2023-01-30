@@ -666,6 +666,7 @@
                    (klondike--stack-pile-clear-selects klondike----faceup-stack t)
 
                    (pcase key
+                     (?\t                      (klondike--card-find-available-empty 'faceup))
                      (?!                       (klondike--card-move-faceup 'empty 0))
                      (?@                       (klondike--card-move-faceup 'empty 1))
                      (?#                       (klondike--card-move-faceup 'empty 2))
@@ -746,6 +747,7 @@
                                                                               stack))))))
                                (and (numberp key)
                                     (not (= key ?\C-g))
+                                    (not (= key ?\t))
                                     (not (= key ?!))
                                     (not (= key ?@))
                                     (not (= key ?#))
@@ -772,6 +774,12 @@
                          (klondike--stack-pile-clear-selects stack)
 
                          (pcase key
+                           (?\t                      (if (and num (> (klondike--stack-get-visible stack) 1))
+                                                         (progn
+                                                           (klondike--stack-pile-number stack)
+
+                                                           (funcall self card-num funct funct2 self t))
+                                                       (klondike--card-find-available-empty 'pile stack-num)))
                            (?!                       (klondike--card-move 'pile stack-num (if num num 1) 'empty 0))
                            (?@                       (klondike--card-move 'pile stack-num (if num num 1) 'empty 1))
                            (?#                       (klondike--card-move 'pile stack-num (if num num 1) 'empty 2))

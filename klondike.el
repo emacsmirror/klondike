@@ -522,6 +522,31 @@
 
 
 
+(defun klondike--card-find-available-empty (stack-symbol &optional stack-num)
+  ""
+
+  (let* ((stack (pcase stack-symbol
+                  ('faceup klondike----faceup-stack)
+                  ('pile   (pcase stack-num
+                             (0 klondike----pile-0-stack)
+                             (1 klondike----pile-1-stack)
+                             (2 klondike----pile-2-stack)
+                             (3 klondike----pile-3-stack)
+                             (4 klondike----pile-4-stack)
+                             (5 klondike----pile-5-stack)
+                             (6 klondike----pile-6-stack)))))
+         (card  (car (klondike--stack-get-cards stack)))
+         (mNum  (cond
+                 ((klondike--card-next-p card (car (klondike--stack-get-cards klondike----empty-0-stack)) t) 0)
+                 ((klondike--card-next-p card (car (klondike--stack-get-cards klondike----empty-1-stack)) t) 1)
+                 ((klondike--card-next-p card (car (klondike--stack-get-cards klondike----empty-2-stack)) t) 2)
+                 ((klondike--card-next-p card (car (klondike--stack-get-cards klondike----empty-3-stack)) t) 3)
+                 (t                                                                                          nil))))
+    (if mNum
+        (if (eq stack-symbol 'faceup)
+            (klondike--card-move-faceup 'empty mNum)
+          (klondike--card-move 'pile stack-num 1 'empty mNum))
+      (message "Ain't any available spot…"))))
 (defun klondike--card-move-faceup (type index)
   ""
 

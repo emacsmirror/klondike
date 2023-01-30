@@ -90,6 +90,21 @@
   (klondike--history-set-index index)
 
   (klondike--card-insert-all))
+(defun klondike-history-prev ()
+  ""
+  (interactive)
+
+  (if (zerop (klondike--history-get-index))
+      (message "No more undo!")
+    (klondike--history-alter (1- (klondike--history-get-index)))))
+(defun klondike-history-next ()
+  ""
+  (interactive)
+
+  (if (= (klondike--history-get-index)
+         (1- (length (klondike--history-get-timeline))))
+      (message "No more redo!")
+    (klondike--history-alter (1+ (klondike--history-get-index)))))
 
 (defconst klondike----suits-icon-spade   "♠"
   "")

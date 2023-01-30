@@ -54,6 +54,10 @@
   ""
 
   (car klondike----history))
+(defun klondike--history-get-timeline-current ()
+  ""
+
+  (nth (klondike--history-get-index) (klondike--history-get-timeline)))
 (defconst klondike----suits-icon-spade   "♠"
   "")
 (defconst klondike----suits-icon-heart   "♥"

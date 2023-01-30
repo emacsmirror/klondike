@@ -554,7 +554,9 @@
                          '()
                          0
                          (+ klondike----window-padding (1- 1card+padding))
-                         topBotPadding)))
+                         topBotPadding))
+
+  (klondike--history-save))
 
 
 
@@ -625,6 +627,7 @@
                                       (- (length (klondike--stack-get-cards stack))
                                          (klondike--stack-get-visible stack)))
                              (eq type 'pile)))))
+      (klondike--history-save)
 (defun klondike--card-move (type1 index1 stack-depth type2 index2)
   ""
 
@@ -684,6 +687,7 @@
                                       (- (length (klondike--stack-get-cards stack2))
                                          (klondike--stack-get-visible stack2)))
                              (eq type2 'pile)))))
+      (klondike--history-save)
 (defun klondike-stack-faceup-pick ()
   ""
   (interactive)
@@ -865,6 +869,7 @@
                          nil
                          (length (klondike--stack-get-cards klondike----faceup-stack))
                          (klondike--stack-get-cards klondike----faceup-stack)))
+  (klondike--history-save)
 
 (defvar klondike-mode-map (let ((mode-map (make-sparse-keymap)))
                             (define-key mode-map (kbd "SPC") #'klondike-card-deck-next)

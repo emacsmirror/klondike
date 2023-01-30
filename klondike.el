@@ -62,6 +62,10 @@
   ""
 
   (cdr klondike----history))
+(defun klondike--history-set-index (index)
+  ""
+
+  (setcdr klondike----history index))
 (defconst klondike----suits-icon-spade   "♠"
   "")
 (defconst klondike----suits-icon-heart   "♥"

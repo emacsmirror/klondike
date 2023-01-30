@@ -760,8 +760,11 @@
                                                                           'pile  (1- (string-to-number
                                                                                        (char-to-string key)))))
                            (_                        (if num
-                                                         (funcall self num funct funct2 self t)
-                                                       (funcall funct funct funct2 funct3 t)))))))))
+                                                         (progn
+                                                           (klondike--stack-pile-number stack)
+
+                                                           (funcall self card-num funct funct2 self t))
+                                                       (funcall funct funct funct2 self t)))))))))
         (funcall try try try2 try3 nil)))))
 
 (defun klondike-card-deck-next ()

@@ -84,6 +84,13 @@
                                              (:pile5    . ,klondike----pile-5-stack)
                                              (:pile6    . ,klondike----pile-6-stack))))
                                   (1+ (klondike--history-get-index)))))
+(defun klondike--history-alter (index)
+  ""
+
+  (klondike--history-set-index index)
+
+  (klondike--card-insert-all))
+
 (defconst klondike----suits-icon-spade   "♠"
   "")
 (defconst klondike----suits-icon-heart   "♥"

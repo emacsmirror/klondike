@@ -50,6 +50,10 @@
 
 (defvar klondike----history '(() . -1)
   "")
+(defun klondike--history-get-timeline ()
+  ""
+
+  (car klondike----history))
 (defconst klondike----suits-icon-spade   "♠"
   "")
 (defconst klondike----suits-icon-heart   "♥"

@@ -407,6 +407,35 @@
                                                (car (klondike--stack-get-cards
                                                       klondike----empty-3-stack)))
                                              "  ")))
+(defun klondike--card-insert-all (&optional stacks-to-print)
+  ""
+
+  (let ((current (klondike--history-get-timeline-current)))
+    (mapc (lambda (toPrintSymbol)
+            (let ((stack (alist-get toPrintSymbol current)))
+              (pcase toPrintSymbol
+                (:facedown (klondike--card-insert (klondike--stack-get-x stack)
+                                                  (klondike--stack-get-y stack)
+                                                  (zerop (length (klondike--stack-get-cards stack)))
+                                                  t))
+                (:faceup   (klondike--card-insert (klondike--stack-get-x stack)
+                                                  (klondike--stack-get-y stack)
+                                                  (zerop (length (klondike--stack-get-cards stack)))
+                                                  nil
+                                                  (length (klondike--stack-get-cards stack))
+                                                  (klondike--stack-get-cards stack)))
+                (_         (klondike--card-insert (klondike--stack-get-x stack)
+                                                  (klondike--stack-get-y stack)
+                                                  (zerop (length (klondike--stack-get-cards stack)))
+                                                  nil
+                                                  (length (klondike--stack-get-cards stack))
+                                                  (butlast (klondike--stack-get-cards stack)
+                                                           (- (length (klondike--stack-get-cards stack))
+                                                              (klondike--stack-get-visible stack)))
+                                                  (let ((str (symbol-name toPrintSymbol)))
+                                                    (string= "pile"
+                                                             (substring str 1 (1- (length str))))))))))
+          (if stacks-to-print stacks-to-print (mapcar 'car current)))))
 (defun klondike--stack-pile-number (stack)
   ""
 
@@ -612,22 +641,16 @@
 
       (klondike--stack-set-visible stack (1+ (klondike--stack-get-visible stack)))
 
-      (klondike--card-insert (klondike--stack-get-x klondike----faceup-stack)
-                             (klondike--stack-get-y klondike----faceup-stack)
-                             (zerop (length (klondike--stack-get-cards klondike----faceup-stack)))
-                             nil
-                             (length (klondike--stack-get-cards klondike----faceup-stack))
-                             (klondike--stack-get-cards klondike----faceup-stack))
-      (klondike--card-insert (klondike--stack-get-x stack)
-                             (klondike--stack-get-y stack)
-                             (zerop (length (klondike--stack-get-cards stack)))
-                             nil
-                             (length (klondike--stack-get-cards stack))
-                             (butlast (klondike--stack-get-cards stack)
-                                      (- (length (klondike--stack-get-cards stack))
-                                         (klondike--stack-get-visible stack)))
-                             (eq type 'pile)))))
       (klondike--history-save)
+      (klondike--card-insert-all `(:faceup ,(pcase type
+                                              ('pile  (pcase index
+                                                        (0 :pile0) (1 :pile1)
+                                                        (2 :pile2) (3 :pile3)
+                                                        (4 :pile4) (5 :pile5)
+                                                        (6 :pile6)))
+                                              ('empty (pcase index
+                                                        (0 :empty0) (1 :empty1)
+                                                        (2 :empty2) (3 :empty3)))))))))
 (defun klondike--card-move (type1 index1 stack-depth type2 index2)
   ""
 
@@ -669,25 +692,25 @@
                                               (if (klondike--stack-get-cards stack2) 1 0)
                                             (+ (klondike--stack-get-visible stack2) stack-depth)))
 
-      (klondike--card-insert (klondike--stack-get-x stack1)
-                             (klondike--stack-get-y stack1)
-                             (zerop (length (klondike--stack-get-cards stack1)))
-                             nil
-                             (length (klondike--stack-get-cards stack1))
-                             (butlast (klondike--stack-get-cards stack1)
-                                      (- (length (klondike--stack-get-cards stack1))
-                                         (klondike--stack-get-visible stack1)))
-                             (eq type1 'pile))
-      (klondike--card-insert (klondike--stack-get-x stack2)
-                             (klondike--stack-get-y stack2)
-                             (zerop (length (klondike--stack-get-cards stack2)))
-                             nil
-                             (length (klondike--stack-get-cards stack2))
-                             (butlast (klondike--stack-get-cards stack2)
-                                      (- (length (klondike--stack-get-cards stack2))
-                                         (klondike--stack-get-visible stack2)))
-                             (eq type2 'pile)))))
       (klondike--history-save)
+      (klondike--card-insert-all `(,(pcase type1
+                                      ('pile  (pcase index1
+                                                (0 :pile0) (1 :pile1)
+                                                (2 :pile2) (3 :pile3)
+                                                (4 :pile4) (5 :pile5)
+                                                (6 :pile6)))
+                                      ('empty (pcase index1
+                                                (0 :empty0) (1 :empty1)
+                                                (2 :empty2) (3 :empty3))))
+                                   ,(pcase type2
+                                      ('pile  (pcase index2
+                                                (0 :pile0) (1 :pile1)
+                                                (2 :pile2) (3 :pile3)
+                                                (4 :pile4) (5 :pile5)
+                                                (6 :pile6)))
+                                      ('empty (pcase index2
+                                                (0 :empty0) (1 :empty1)
+                                                (2 :empty2) (3 :empty3)))))))))
 (defun klondike-stack-faceup-pick ()
   ""
   (interactive)
@@ -859,17 +882,8 @@
 
     (klondike--stack-set-visible klondike----faceup-stack 1))
 
-  (klondike--card-insert (klondike--stack-get-x klondike----facedown-stack)
-                         (klondike--stack-get-y klondike----facedown-stack)
-                         (zerop (length (klondike--stack-get-cards klondike----facedown-stack)))
-                         t)
-  (klondike--card-insert (klondike--stack-get-x klondike----faceup-stack)
-                         (klondike--stack-get-y klondike----faceup-stack)
-                         (zerop (length (klondike--stack-get-cards klondike----faceup-stack)))
-                         nil
-                         (length (klondike--stack-get-cards klondike----faceup-stack))
-                         (klondike--stack-get-cards klondike----faceup-stack)))
   (klondike--history-save)
+  (klondike--card-insert-all '(:facedown :faceup)))
 
 (defvar klondike-mode-map (let ((mode-map (make-sparse-keymap)))
                             (define-key mode-map (kbd "SPC") #'klondike-card-deck-next)
@@ -948,105 +962,7 @@
       (insert (make-string (+ klondike----window-padding
                               (* 7 1card+padding))        ? ) "\n"))
 
-    (klondike--card-insert (klondike--stack-get-x klondike----facedown-stack)
-                           (klondike--stack-get-y klondike----facedown-stack)
-                           nil
-                           t)
-    (klondike--card-insert (klondike--stack-get-x klondike----faceup-stack)
-                           (klondike--stack-get-y klondike----faceup-stack)
-                           t)
-
-
-    (klondike--card-insert (klondike--stack-get-x klondike----empty-0-stack)
-                           (klondike--stack-get-y klondike----empty-0-stack)
-                           t)
-    (klondike--card-insert (klondike--stack-get-x klondike----empty-1-stack)
-                           (klondike--stack-get-y klondike----empty-1-stack)
-                           t)
-    (klondike--card-insert (klondike--stack-get-x klondike----empty-2-stack)
-                           (klondike--stack-get-y klondike----empty-2-stack)
-                           t)
-    (klondike--card-insert (klondike--stack-get-x klondike----empty-3-stack)
-                           (klondike--stack-get-y klondike----empty-3-stack)
-                           t)
-
-    (let* ((cards (klondike--stack-get-cards klondike----pile-0-stack))
-           (len   (length cards)))
-      (klondike--card-insert (klondike--stack-get-x klondike----pile-0-stack)
-                             (klondike--stack-get-y klondike----pile-0-stack)
-                             nil
-                             nil
-                             len
-                             (butlast cards
-                                      (- len
-                                         (klondike--stack-get-visible klondike----pile-0-stack)))
-                             t))
-    (let* ((cards (klondike--stack-get-cards klondike----pile-1-stack))
-           (len   (length cards)))
-      (klondike--card-insert (klondike--stack-get-x klondike----pile-1-stack)
-                             (klondike--stack-get-y klondike----pile-1-stack)
-                             nil
-                             nil
-                             len
-                             (butlast cards
-                                      (- len
-                                         (klondike--stack-get-visible klondike----pile-1-stack)))
-                             t))
-    (let* ((cards (klondike--stack-get-cards klondike----pile-2-stack))
-           (len   (length cards)))
-      (klondike--card-insert (klondike--stack-get-x klondike----pile-2-stack)
-                             (klondike--stack-get-y klondike----pile-2-stack)
-                             nil
-                             nil
-                             len
-                             (butlast cards
-                                      (- len
-                                         (klondike--stack-get-visible klondike----pile-2-stack)))
-                             t))
-    (let* ((cards (klondike--stack-get-cards klondike----pile-3-stack))
-           (len   (length cards)))
-      (klondike--card-insert (klondike--stack-get-x klondike----pile-3-stack)
-                             (klondike--stack-get-y klondike----pile-3-stack)
-                             nil
-                             nil
-                             len
-                             (butlast cards
-                                      (- len
-                                         (klondike--stack-get-visible klondike----pile-3-stack)))
-                             t))
-    (let* ((cards (klondike--stack-get-cards klondike----pile-4-stack))
-           (len   (length cards)))
-      (klondike--card-insert (klondike--stack-get-x klondike----pile-4-stack)
-                             (klondike--stack-get-y klondike----pile-4-stack)
-                             nil
-                             nil
-                             len
-                             (butlast cards
-                                      (- len
-                                         (klondike--stack-get-visible klondike----pile-4-stack)))
-                             t))
-    (let* ((cards (klondike--stack-get-cards klondike----pile-5-stack))
-           (len   (length cards)))
-      (klondike--card-insert (klondike--stack-get-x klondike----pile-5-stack)
-                             (klondike--stack-get-y klondike----pile-5-stack)
-                             nil
-                             nil
-                             len
-                             (butlast cards
-                                      (- len
-                                         (klondike--stack-get-visible klondike----pile-5-stack)))
-                             t))
-    (let* ((cards (klondike--stack-get-cards klondike----pile-6-stack))
-           (len   (length cards)))
-      (klondike--card-insert (klondike--stack-get-x klondike----pile-6-stack)
-                             (klondike--stack-get-y klondike----pile-6-stack)
-                             nil
-                             nil
-                             len
-                             (butlast cards
-                                      (- len
-                                         (klondike--stack-get-visible klondike----pile-6-stack)))
-                             t)))
+    (klondike--card-insert-all))
 
   (read-only-mode        t))
 

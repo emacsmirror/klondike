@@ -58,6 +58,10 @@
   ""
 
   (nth (klondike--history-get-index) (klondike--history-get-timeline)))
+(defun klondike--history-get-index ()
+  ""
+
+  (cdr klondike----history))
 (defconst klondike----suits-icon-spade   "♠"
   "")
 (defconst klondike----suits-icon-heart   "♥"

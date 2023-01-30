@@ -66,6 +66,24 @@
   ""
 
   (setcdr klondike----history index))
+(defun klondike--history-save ()
+  ""
+
+  (setq klondike----history (cons (append (klondike--history-get-timeline)
+                                          `(((:facedown . ,klondike----facedown-stack)
+                                             (:faceup   . ,klondike----faceup-stack)
+                                             (:empty0   . ,klondike----empty-0-stack)
+                                             (:empty1   . ,klondike----empty-1-stack)
+                                             (:empty2   . ,klondike----empty-2-stack)
+                                             (:empty3   . ,klondike----empty-3-stack)
+                                             (:pile0    . ,klondike----pile-0-stack)
+                                             (:pile1    . ,klondike----pile-1-stack)
+                                             (:pile2    . ,klondike----pile-2-stack)
+                                             (:pile3    . ,klondike----pile-3-stack)
+                                             (:pile4    . ,klondike----pile-4-stack)
+                                             (:pile5    . ,klondike----pile-5-stack)
+                                             (:pile6    . ,klondike----pile-6-stack))))
+                                  (1+ (klondike--history-get-index)))))
 (defconst klondike----suits-icon-spade   "♠"
   "")
 (defconst klondike----suits-icon-heart   "♥"

@@ -48,6 +48,8 @@
 (defconst klondike----top-&-bottom-row-spacing 4
   "")
 
+(defvar klondike----history '(() . -1)
+  "")
 (defconst klondike----suits-icon-spade   "♠"
   "")
 (defconst klondike----suits-icon-heart   "♥"

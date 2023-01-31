@@ -26,6 +26,8 @@
 ;; Sterf
 
 ;;; Code:
+;; cl-evenp
+(require 'cl-lib)
 ;; pcase
 (require 'pcase)
 ;; if-let*
@@ -379,13 +381,13 @@
               (let* ((widthMinus (- klondike----card-width 2))
                      (widthHalf  (/ widthMinus 2))
                      (widthRest  (- widthMinus widthHalf 1)))
-                (insert (if (and empty-p (evenp offset)) " " "|")
+                (insert (if (and empty-p (cl-evenp offset)) " " "|")
                         (make-string widthRest ? )
                         (if (and faceups (= offset (/ rows 2)))
                             (klondike--card-get-suit (car faceups))
                           " ")
                         (make-string widthHalf ? )
-                        (if (and empty-p (evenp offset)) " " "|"))))))
+                        (if (and empty-p (cl-evenp offset)) " " "|"))))))
 
 
 

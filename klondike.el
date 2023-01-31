@@ -975,6 +975,11 @@
 
                                                              (klondike--stack-pile-pick 6)))
 
+                            (define-key mode-map (kbd "C-/")    #'klondike-history-prev)
+                            (define-key mode-map (kbd "C-_")    #'klondike-history-prev)
+                            (define-key mode-map (kbd "<undo>") #'klondike-history-prev)
+                            (define-key mode-map (kbd "C-x u")  #'klondike-history-prev)
+
                             mode-map)
   "Keymap for `klondike-mode-mode'.")
 (define-derived-mode klondike-mode fundamental-mode "Klondike"

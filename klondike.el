@@ -91,6 +91,21 @@
 
   (klondike--history-set-index index)
 
+  (let ((current (klondike--history-get-timeline-current)))
+    (setq klondike----facedown-stack (copy-tree (alist-get :facedown current)))
+    (setq klondike----faceup-stack   (copy-tree (alist-get :faceup   current)))
+    (setq klondike----empty-0-stack  (copy-tree (alist-get :empty0   current)))
+    (setq klondike----empty-1-stack  (copy-tree (alist-get :empty1   current)))
+    (setq klondike----empty-2-stack  (copy-tree (alist-get :empty2   current)))
+    (setq klondike----empty-3-stack  (copy-tree (alist-get :empty3   current)))
+    (setq klondike----pile-0-stack   (copy-tree (alist-get :pile0    current)))
+    (setq klondike----pile-1-stack   (copy-tree (alist-get :pile1    current)))
+    (setq klondike----pile-2-stack   (copy-tree (alist-get :pile2    current)))
+    (setq klondike----pile-3-stack   (copy-tree (alist-get :pile3    current)))
+    (setq klondike----pile-4-stack   (copy-tree (alist-get :pile4    current)))
+    (setq klondike----pile-5-stack   (copy-tree (alist-get :pile5    current)))
+    (setq klondike----pile-6-stack   (copy-tree (alist-get :pile6    current))))
+
   (klondike--card-insert-all))
 (defun klondike-history-prev ()
   ""

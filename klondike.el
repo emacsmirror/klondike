@@ -26,6 +26,7 @@
 ;; Sterf
 
 ;;; Code:
+;; cl-case
 ;; cl-evenp
 (require 'cl-lib)
 ;; pcase
@@ -200,10 +201,10 @@
   ""
 
   `((:suit . ,(pcase suit-symbol
-                ((or 'spade 'club)    (pcase suit-symbol
+                ((or 'spade 'club)    (cl-case suit-symbol
                                         ('spade klondike----suits-icon-spade)
                                         ('club  klondike----suits-icon-club)))
-                ((or 'heart 'diamond) (propertize (pcase suit-symbol
+                ((or 'heart 'diamond) (propertize (cl-case suit-symbol
                                                     ('heart   klondike----suits-icon-heart)
                                                     ('diamond klondike----suits-icon-diamond))
                                                   'face

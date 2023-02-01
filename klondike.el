@@ -949,34 +949,14 @@
 
                                                              (klondike--stack-empty-pick 3)))
 
-                            (define-key mode-map (kbd "1") (lambda ()
-                                                             (interactive)
+                            (mapc (lambda (num)
+                                    (define-key mode-map
+                                                (kbd (number-to-string (1+ num)))
+                                                (lambda ()
+                                                  (interactive)
 
-                                                             (klondike--stack-pile-pick 0)))
-                            (define-key mode-map (kbd "2") (lambda ()
-                                                             (interactive)
-
-                                                             (klondike--stack-pile-pick 1)))
-                            (define-key mode-map (kbd "3") (lambda ()
-                                                             (interactive)
-
-                                                             (klondike--stack-pile-pick 2)))
-                            (define-key mode-map (kbd "4") (lambda ()
-                                                             (interactive)
-
-                                                             (klondike--stack-pile-pick 3)))
-                            (define-key mode-map (kbd "5") (lambda ()
-                                                             (interactive)
-
-                                                             (klondike--stack-pile-pick 4)))
-                            (define-key mode-map (kbd "6") (lambda ()
-                                                             (interactive)
-
-                                                             (klondike--stack-pile-pick 5)))
-                            (define-key mode-map (kbd "7") (lambda ()
-                                                             (interactive)
-
-                                                             (klondike--stack-pile-pick 6)))
+                                                  (klondike--stack-pile-pick num))))
+                                  (number-sequence 0 6))
 
                             (define-key mode-map (kbd "C-/")    #'klondike-history-prev)
                             (define-key mode-map (kbd "C-_")    #'klondike-history-prev)

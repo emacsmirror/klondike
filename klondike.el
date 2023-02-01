@@ -50,6 +50,65 @@
 (defconst klondike----top-&-bottom-row-spacing 4
   "")
 
+(defvar klondike----facedown-stack `(() . ())
+  "")
+(defvar klondike----faceup-stack   `(() . ())
+  "")
+
+(defvar klondike----empty-0-stack  `(() . ())
+  "")
+(defvar klondike----empty-1-stack  `(() . ())
+  "")
+(defvar klondike----empty-2-stack  `(() . ())
+  "")
+(defvar klondike----empty-3-stack  `(() . ())
+  "")
+
+(defvar klondike----pile-0-stack  `(() . ())
+  "")
+(defvar klondike----pile-1-stack  `(() . ())
+  "")
+(defvar klondike----pile-2-stack  `(() . ())
+  "")
+(defvar klondike----pile-3-stack  `(() . ())
+  "")
+(defvar klondike----pile-4-stack  `(() . ())
+  "")
+(defvar klondike----pile-5-stack  `(() . ())
+  "")
+(defvar klondike----pile-6-stack  `(() . ())
+  "")
+
+(defmacro klondike--stack-set (stack cards visible-num x y)
+  ""
+
+  `(setq ,stack (cons (cons ,cards ,visible-num) (cons ,x ,y))))
+(defun klondike--stack-get-cards (stack)
+  ""
+
+  (caar stack))
+(defun klondike--stack-set-cards (stack cards)
+  ""
+
+  (setcar (car stack) cards))
+(defun klondike--stack-get-visible (stack)
+  ""
+
+  (cdar stack))
+(defun klondike--stack-set-visible (stack visible-num)
+  ""
+
+  (let ((l (length (klondike--stack-get-cards stack))))
+    (setcdr (car stack) (if (> visible-num l) l visible-num))))
+(defun klondike--stack-get-x (stack)
+  ""
+
+  (cadr stack))
+(defun klondike--stack-get-y (stack)
+  ""
+
+  (cddr stack))
+
 (defvar klondike----history '(() . -1)
   "")
 (defun klondike--history-get-timeline ()
@@ -250,65 +309,6 @@
                                                                    ( "K" "🃎"))
                                                                  'face
                                                                  '(:foreground "red")))))
-
-(defvar klondike----facedown-stack `(() . ())
-  "")
-(defvar klondike----faceup-stack   `(() . ())
-  "")
-
-(defvar klondike----empty-0-stack  `(() . ())
-  "")
-(defvar klondike----empty-1-stack  `(() . ())
-  "")
-(defvar klondike----empty-2-stack  `(() . ())
-  "")
-(defvar klondike----empty-3-stack  `(() . ())
-  "")
-
-(defvar klondike----pile-0-stack  `(() . ())
-  "")
-(defvar klondike----pile-1-stack  `(() . ())
-  "")
-(defvar klondike----pile-2-stack  `(() . ())
-  "")
-(defvar klondike----pile-3-stack  `(() . ())
-  "")
-(defvar klondike----pile-4-stack  `(() . ())
-  "")
-(defvar klondike----pile-5-stack  `(() . ())
-  "")
-(defvar klondike----pile-6-stack  `(() . ())
-  "")
-
-(defmacro klondike--stack-set (stack cards visible-num x y)
-  ""
-
-  `(setq ,stack (cons (cons ,cards ,visible-num) (cons ,x ,y))))
-(defun klondike--stack-get-cards (stack)
-  ""
-
-  (caar stack))
-(defun klondike--stack-set-cards (stack cards)
-  ""
-
-  (setcar (car stack) cards))
-(defun klondike--stack-get-visible (stack)
-  ""
-
-  (cdar stack))
-(defun klondike--stack-set-visible (stack visible-num)
-  ""
-
-  (let ((l (length (klondike--stack-get-cards stack))))
-    (setcdr (car stack) (if (> visible-num l) l visible-num))))
-(defun klondike--stack-get-x (stack)
-  ""
-
-  (cadr stack))
-(defun klondike--stack-get-y (stack)
-  ""
-
-  (cddr stack))
 
 
 

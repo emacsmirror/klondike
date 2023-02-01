@@ -966,32 +966,7 @@
                             mode-map)
   "Keymap for `klondike-mode'.")
 (define-derived-mode klondike-mode fundamental-mode "Klondike"
-  "Major mode for the Klondike solitaire game for Emacs."
-
-  (toggle-truncate-lines t)
-  (read-only-mode        0)
-  (erase-buffer)
-
-  (klondike--initialize-cards)
-
-  (let ((1card+padding (+ klondike----card-width
-                          klondike----window-padding))
-        (topBotPadding (1- klondike----window-padding)))
-    (dotimes (lineNum (+ topBotPadding
-                         klondike----card-height
-                         klondike----top-&-bottom-row-spacing
-                         klondike----card-height
-                         6
-                         topBotPadding
-                         20))
-      (goto-line (1+ lineNum))
-
-      (insert (make-string (+ klondike----window-padding
-                              (* 7 1card+padding))        ? ) "\n"))
-
-    (klondike--card-insert-all))
-
-  (read-only-mode        t))
+  "Major mode for the Klondike solitaire game for Emacs.")
 
 (defun klondike ()
   ""
@@ -999,7 +974,32 @@
 
   (if-let ((existing (get-buffer klondike----buffer-name)))
       (switch-to-buffer existing)
-    (switch-to-buffer klondike----buffer-name))
+    (switch-to-buffer klondike----buffer-name)
+
+    (toggle-truncate-lines t)
+    (read-only-mode        0)
+    (erase-buffer)
+
+    (klondike--initialize-cards)
+
+    (let ((1card+padding (+ klondike----card-width
+                            klondike----window-padding))
+          (topBotPadding (1- klondike----window-padding)))
+      (dotimes (lineNum (+ topBotPadding
+                           klondike----card-height
+                           klondike----top-&-bottom-row-spacing
+                           klondike----card-height
+                           6
+                           topBotPadding
+                           20))
+        (goto-line (1+ lineNum))
+
+        (insert (make-string (+ klondike----window-padding
+                                (* 7 1card+padding))        ? ) "\n"))
+
+      (klondike--card-insert-all))
+
+    (read-only-mode        t))
 
   (klondike-mode))
 

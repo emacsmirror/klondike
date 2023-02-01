@@ -964,7 +964,7 @@
                             (define-key mode-map (kbd "C-x u")  #'klondike-history-prev)
 
                             mode-map)
-  "Keymap for `klondike-mode-mode'.")
+  "Keymap for `klondike-mode'.")
 (define-derived-mode klondike-mode fundamental-mode "Klondike"
   "Major mode for the Klondike solitaire game for Emacs."
 

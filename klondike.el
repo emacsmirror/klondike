@@ -674,43 +674,7 @@
             (klondike--card-move-faceup 'empty mNum)
           (klondike--card-move 'pile stack-num 1 'empty mNum))
       (message "Ain't any available spot…"))))
-(defun klondike--card-move-faceup (type index)
-  ""
 
-  (let* ((stack      (pcase type
-                       ('pile  (pcase index
-                                 (0 klondike----pile-0-stack)
-                                 (1 klondike----pile-1-stack)
-                                 (2 klondike----pile-2-stack)
-                                 (3 klondike----pile-3-stack)
-                                 (4 klondike----pile-4-stack)
-                                 (5 klondike----pile-5-stack)
-                                 (6 klondike----pile-6-stack)))
-                       ('empty (pcase index
-                                 (0 klondike----empty-0-stack)
-                                 (1 klondike----empty-1-stack)
-                                 (2 klondike----empty-2-stack)
-                                 (3 klondike----empty-3-stack)))))
-         (movingCard (car (klondike--stack-get-cards klondike----faceup-stack)))
-         ( underCard (car (klondike--stack-get-cards stack))))
-    (if (not (klondike--card-next-p movingCard underCard (eq type 'empty)))
-        (message "Can't do that, Jack!")
-      (klondike--stack-set-cards stack                    (cons (car (klondike--stack-get-cards klondike----faceup-stack))
-                                                                (klondike--stack-get-cards stack)))
-      (klondike--stack-set-cards klondike----faceup-stack (cdr (klondike--stack-get-cards klondike----faceup-stack)))
-
-      (klondike--stack-set-visible stack (1+ (klondike--stack-get-visible stack)))
-
-      (klondike--history-save)
-      (klondike--card-insert-all `(:faceup ,(cl-case type
-                                              ('pile  (cl-case index
-                                                        (0 :pile0) (1 :pile1)
-                                                        (2 :pile2) (3 :pile3)
-                                                        (4 :pile4) (5 :pile5)
-                                                        (6 :pile6)))
-                                              ('empty (cl-case index
-                                                        (0 :empty0) (1 :empty1)
-                                                        (2 :empty2) (3 :empty3)))))))))
 (defun klondike--card-move (type1 index1 stack-depth type2 index2)
   ""
 
@@ -739,23 +703,25 @@
 
       (klondike--history-save)
       (klondike--card-insert-all `(,(cl-case type1
-                                      ('pile  (cl-case index1
-                                                (0 :pile0) (1 :pile1)
-                                                (2 :pile2) (3 :pile3)
-                                                (4 :pile4) (5 :pile5)
-                                                (6 :pile6)))
-                                      ('empty (cl-case index1
-                                                (0 :empty0) (1 :empty1)
-                                                (2 :empty2) (3 :empty3))))
+                                      ('faceup :faceup)
+                                      ('pile   (cl-case index1
+                                                 (0 :pile0) (1 :pile1)
+                                                 (2 :pile2) (3 :pile3)
+                                                 (4 :pile4) (5 :pile5)
+                                                 (6 :pile6)))
+                                      ('empty  (cl-case index1
+                                                 (0 :empty0) (1 :empty1)
+                                                 (2 :empty2) (3 :empty3))))
                                    ,(cl-case type2
-                                      ('pile  (cl-case index2
-                                                (0 :pile0) (1 :pile1)
-                                                (2 :pile2) (3 :pile3)
-                                                (4 :pile4) (5 :pile5)
-                                                (6 :pile6)))
-                                      ('empty (cl-case index2
-                                                (0 :empty0) (1 :empty1)
-                                                (2 :empty2) (3 :empty3)))))))))
+                                      ('faceup :faceup)
+                                      ('pile   (cl-case index2
+                                                 (0 :pile0) (1 :pile1)
+                                                 (2 :pile2) (3 :pile3)
+                                                 (4 :pile4) (5 :pile5)
+                                                 (6 :pile6)))
+                                      ('empty  (cl-case index2
+                                                 (0 :empty0) (1 :empty1)
+                                                 (2 :empty2) (3 :empty3)))))))))
 (defun klondike-stack-faceup-pick ()
 (defvar klondike----stack-pile-pick-stack (cons nil -1)
   "")

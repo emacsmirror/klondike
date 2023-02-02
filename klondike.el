@@ -670,9 +670,7 @@
                  ((klondike--card-next-p card (car (klondike--stack-get-cards klondike----empty-3-stack)) t) 3)
                  (t                                                                                          nil))))
     (if mNum
-        (if (eq stack-symbol 'faceup)
-            (klondike--card-move-faceup 'empty mNum)
-          (klondike--card-move 'pile stack-num 1 'empty mNum))
+        (klondike--card-move stack-symbol stack-num 1 'empty mNum)
       (message "Ain't any available spot…"))))
 
 (defun klondike--card-move (type1 index1 stack-depth type2 index2)

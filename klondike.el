@@ -80,6 +80,24 @@
 (defvar klondike----pile-6-stack  `(() . ())
   "")
 
+(defun klondike--stack-get (stack-type stack-num)
+  ""
+
+  (cl-case stack-type
+    ('faceup klondike----faceup-stack)
+    ('pile   (cl-case stack-num
+               (0 klondike----pile-0-stack)
+               (1 klondike----pile-1-stack)
+               (2 klondike----pile-2-stack)
+               (3 klondike----pile-3-stack)
+               (4 klondike----pile-4-stack)
+               (5 klondike----pile-5-stack)
+               (6 klondike----pile-6-stack)))
+    ('empty  (cl-case stack-num
+               (0 klondike----empty-0-stack)
+               (1 klondike----empty-1-stack)
+               (2 klondike----empty-2-stack)
+               (3 klondike----empty-3-stack)))))
 (defmacro klondike--stack-set (stack cards visible-num x y)
   ""
 
@@ -696,23 +714,8 @@
 (defun klondike--card-move (type1 index1 stack-depth type2 index2)
   ""
 
-  (let* ((get        (lambda (type index)
-                       (pcase type
-                         ('pile  (pcase index
-                                   (0 klondike----pile-0-stack)
-                                   (1 klondike----pile-1-stack)
-                                   (2 klondike----pile-2-stack)
-                                   (3 klondike----pile-3-stack)
-                                   (4 klondike----pile-4-stack)
-                                   (5 klondike----pile-5-stack)
-                                   (6 klondike----pile-6-stack)))
-                         ('empty (pcase index
-                                   (0 klondike----empty-0-stack)
-                                   (1 klondike----empty-1-stack)
-                                   (2 klondike----empty-2-stack)
-                                   (3 klondike----empty-3-stack))))))
-         (stack1     (funcall get type1 index1))
-         (stack2     (funcall get type2 index2))
+  (let* ((stack1     (klondike--stack-get type1 index1))
+         (stack2     (klondike--stack-get type2 index2))
          (movingCard (nth (1- stack-depth) (klondike--stack-get-cards stack1)))
          ( underCard (car (klondike--stack-get-cards stack2))))
     (if (or (> stack-depth (klondike--stack-get-visible stack1))
@@ -785,11 +788,7 @@
 (defun klondike--stack-empty-pick (stack-num)
   ""
 
-  (let ((stack (pcase stack-num
-                 (0 klondike----empty-0-stack)
-                 (1 klondike----empty-1-stack)
-                 (2 klondike----empty-2-stack)
-                 (3 klondike----empty-3-stack))))
+  (let ((stack (klondike--stack-get stack-type stack-num)))
     (if (not (klondike--stack-get-cards stack))
         (message "That spot there's empty, pardner…")
       (let ((try (lambda (self repeat-p)

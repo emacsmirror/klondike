@@ -250,64 +250,64 @@
 
   (pcase (klondike--card-get-suit card)
     ('nil                                            "🂠")
-    ((pred (string= klondike----suits-icon-club))    (pcase (klondike--card-get-value card)
-                                                       ( "A" "🃑")
-                                                       ( "2" "🃒")
-                                                       ( "3" "🃓")
-                                                       ( "4" "🃔")
-                                                       ( "5" "🃕")
-                                                       ( "6" "🃖")
-                                                       ( "7" "🃗")
-                                                       ( "8" "🃘")
-                                                       ( "9" "🃙")
-                                                       ("10" "🃚")
-                                                       ( "J" "🃛")
-                                                       ( "Q" "🃝")
-                                                       ( "K" "🃞")))
-    ((pred (string= klondike----suits-icon-heart))   (propertize (pcase (klondike--card-get-value card)
-                                                                   ( "A" "🂱")
-                                                                   ( "2" "🂲")
-                                                                   ( "3" "🂳")
-                                                                   ( "4" "🂴")
-                                                                   ( "5" "🂵")
-                                                                   ( "6" "🂶")
-                                                                   ( "7" "🂷")
-                                                                   ( "8" "🂸")
-                                                                   ( "9" "🂹")
-                                                                   ("10" "🂺")
-                                                                   ( "J" "🂻")
-                                                                   ( "Q" "🂽")
-                                                                   ( "K" "🂾"))
+    ((pred (string= klondike----suits-icon-club))    (cl-case (intern (klondike--card-get-value card))
+                                                       (  'A "🃑")
+                                                       ( '\2 "🃒")
+                                                       ( '\3 "🃓")
+                                                       ( '\4 "🃔")
+                                                       ( '\5 "🃕")
+                                                       ( '\6 "🃖")
+                                                       ( '\7 "🃗")
+                                                       ( '\8 "🃘")
+                                                       ( '\9 "🃙")
+                                                       ('\10 "🃚")
+                                                       (  'J "🃛")
+                                                       (  'Q "🃝")
+                                                       (  'K "🃞")))
+    ((pred (string= klondike----suits-icon-heart))   (propertize (cl-case (intern (klondike--card-get-value card))
+                                                                   (  'A "🂱")
+                                                                   ( '\2 "🂲")
+                                                                   ( '\3 "🂳")
+                                                                   ( '\4 "🂴")
+                                                                   ( '\5 "🂵")
+                                                                   ( '\6 "🂶")
+                                                                   ( '\7 "🂷")
+                                                                   ( '\8 "🂸")
+                                                                   ( '\9 "🂹")
+                                                                   ('\10 "🂺")
+                                                                   (  'J "🂻")
+                                                                   (  'Q "🂽")
+                                                                   (  'K "🂾"))
                                                                  'face
                                                                  '(:foreground "red")))
-    ((pred (string= klondike----suits-icon-spade))   (pcase (klondike--card-get-value card)
-                                                       ( "A" "🂡")
-                                                       ( "2" "🂢")
-                                                       ( "3" "🂣")
-                                                       ( "4" "🂤")
-                                                       ( "5" "🂥")
-                                                       ( "6" "🂦")
-                                                       ( "7" "🂧")
-                                                       ( "8" "🂨")
-                                                       ( "9" "🂩")
-                                                       ("10" "🂪")
-                                                       ( "J" "🂫")
-                                                       ( "Q" "🂭")
-                                                       ( "K" "🂮")))
-    ((pred (string= klondike----suits-icon-diamond)) (propertize (pcase (klondike--card-get-value card)
-                                                                   ( "A" "🃁")
-                                                                   ( "2" "🃂")
-                                                                   ( "3" "🃃")
-                                                                   ( "4" "🃄")
-                                                                   ( "5" "🃅")
-                                                                   ( "6" "🃆")
-                                                                   ( "7" "🃇")
-                                                                   ( "8" "🃈")
-                                                                   ( "9" "🃉")
-                                                                   ("10" "🃊")
-                                                                   ( "J" "🃋")
-                                                                   ( "Q" "🃍")
-                                                                   ( "K" "🃎"))
+    ((pred (string= klondike----suits-icon-spade))   (cl-case (intern (klondike--card-get-value card))
+                                                       (  'A "🂡")
+                                                       ( '\2 "🂢")
+                                                       ( '\3 "🂣")
+                                                       ( '\4 "🂤")
+                                                       ( '\5 "🂥")
+                                                       ( '\6 "🂦")
+                                                       ( '\7 "🂧")
+                                                       ( '\8 "🂨")
+                                                       ( '\9 "🂩")
+                                                       ('\10 "🂪")
+                                                       (  'J "🂫")
+                                                       (  'Q "🂭")
+                                                       (  'K "🂮")))
+    ((pred (string= klondike----suits-icon-diamond)) (propertize (cl-case (intern (klondike--card-get-value card))
+                                                                   (  'A "🃁")
+                                                                   ( '\2 "🃂")
+                                                                   ( '\3 "🃃")
+                                                                   ( '\4 "🃄")
+                                                                   ( '\5 "🃅")
+                                                                   ( '\6 "🃆")
+                                                                   ( '\7 "🃇")
+                                                                   ( '\8 "🃈")
+                                                                   ( '\9 "🃉")
+                                                                   ('\10 "🃊")
+                                                                   (  'J "🃋")
+                                                                   (  'Q "🃍")
+                                                                   (  'K "🃎"))
                                                                  'face
                                                                  '(:foreground "red")))))
 
@@ -455,7 +455,7 @@
   (let ((current (klondike--history-get-timeline-current)))
     (mapc (lambda (toPrintSymbol)
             (let ((stack (alist-get toPrintSymbol current)))
-              (pcase toPrintSymbol
+              (cl-case toPrintSymbol
                 (:facedown (klondike--card-insert (klondike--stack-get-x stack)
                                                   (klondike--stack-get-y stack)
                                                   (zerop (length (klondike--stack-get-cards stack)))
@@ -466,7 +466,7 @@
                                                   nil
                                                   (length (klondike--stack-get-cards stack))
                                                   (klondike--stack-get-cards stack)))
-                (_         (klondike--card-insert (klondike--stack-get-x stack)
+                (t         (klondike--card-insert (klondike--stack-get-x stack)
                                                   (klondike--stack-get-y stack)
                                                   (zerop (length (klondike--stack-get-cards stack)))
                                                   nil
@@ -634,9 +634,9 @@
 (defun klondike--card-find-available-empty (stack-symbol &optional stack-num)
   ""
 
-  (let* ((stack (pcase stack-symbol
+  (let* ((stack (cl-case stack-symbol
                   ('faceup klondike----faceup-stack)
-                  ('pile   (pcase stack-num
+                  ('pile   (cl-case stack-num
                              (0 klondike----pile-0-stack)
                              (1 klondike----pile-1-stack)
                              (2 klondike----pile-2-stack)
@@ -684,13 +684,13 @@
       (klondike--stack-set-visible stack (1+ (klondike--stack-get-visible stack)))
 
       (klondike--history-save)
-      (klondike--card-insert-all `(:faceup ,(pcase type
-                                              ('pile  (pcase index
+      (klondike--card-insert-all `(:faceup ,(cl-case type
+                                              ('pile  (cl-case index
                                                         (0 :pile0) (1 :pile1)
                                                         (2 :pile2) (3 :pile3)
                                                         (4 :pile4) (5 :pile5)
                                                         (6 :pile6)))
-                                              ('empty (pcase index
+                                              ('empty (cl-case index
                                                         (0 :empty0) (1 :empty1)
                                                         (2 :empty2) (3 :empty3)))))))))
 (defun klondike--card-move (type1 index1 stack-depth type2 index2)
@@ -735,22 +735,22 @@
                                             (+ (klondike--stack-get-visible stack2) stack-depth)))
 
       (klondike--history-save)
-      (klondike--card-insert-all `(,(pcase type1
-                                      ('pile  (pcase index1
+      (klondike--card-insert-all `(,(cl-case type1
+                                      ('pile  (cl-case index1
                                                 (0 :pile0) (1 :pile1)
                                                 (2 :pile2) (3 :pile3)
                                                 (4 :pile4) (5 :pile5)
                                                 (6 :pile6)))
-                                      ('empty (pcase index1
+                                      ('empty (cl-case index1
                                                 (0 :empty0) (1 :empty1)
                                                 (2 :empty2) (3 :empty3))))
-                                   ,(pcase type2
-                                      ('pile  (pcase index2
+                                   ,(cl-case type2
+                                      ('pile  (cl-case index2
                                                 (0 :pile0) (1 :pile1)
                                                 (2 :pile2) (3 :pile3)
                                                 (4 :pile4) (5 :pile5)
                                                 (6 :pile6)))
-                                      ('empty (pcase index2
+                                      ('empty (cl-case index2
                                                 (0 :empty0) (1 :empty1)
                                                 (2 :empty2) (3 :empty3)))))))))
 (defun klondike-stack-faceup-pick ()

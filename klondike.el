@@ -757,6 +757,10 @@
                                                 (0 :empty0) (1 :empty1)
                                                 (2 :empty2) (3 :empty3)))))))))
 (defun klondike-stack-faceup-pick ()
+(defvar klondike----stack-pile-pick-stack (cons nil -1)
+  "")
+(defvar klondike----stack-pile-pick-num -1
+  "")
   ""
   (interactive)
 
@@ -965,7 +969,45 @@
                             mode-map)
   "Keymap for `klondike-mode'.")
 (define-derived-mode klondike-mode fundamental-mode "Klondike"
-  "Major mode for the Klondike solitaire game for Emacs.")
+  "Major mode for the Klondike solitaire game for Emacs."
+
+  (when-let ((stack-type (car klondike----stack-pile-pick-stack)))
+    (klondike--stack-clear-selects
+      (klondike--stack-get stack-type (cdr klondike----stack-pile-pick-stack))
+      (not (eq stack-type 'pile))))
+
+  (setq klondike----stack-pile-pick-stack (cons nil -1))
+  (setq klondike----stack-pile-pick-num   -1))
+
+(defvar klondike-picker-mode-map (let ((mode-map (make-sparse-keymap)))
+                                   mode-map)
+  "Keymap for `klondike-picker-mode'.")
+(define-derived-mode klondike-picker-mode fundamental-mode "Klondike Picker"
+  "Major mode for picking an upward-facing card from a stack in the Klondike
+solitaire game for Emacs."
+
+  (klondike--stack-number
+    (klondike--stack-get (car klondike----stack-pile-pick-stack)
+                         (cdr klondike----stack-pile-pick-stack)))
+
+  (message "Move which card in the stack?"))
+
+(defvar klondike-select-mode-map (let ((mode-map (make-sparse-keymap)))
+                                   mode-map)
+  "Keymap for `klondike-select-mode'.")
+(define-derived-mode klondike-select-mode fundamental-mode "Klondike Select"
+  "Major mode for selecting a stack to move an upward-facing card to in the
+Klondike solitaire game for Emacs."
+
+  (klondike--stack-number-select
+    (klondike--stack-get (car klondike----stack-pile-pick-stack)
+                         (cdr klondike----stack-pile-pick-stack))
+    klondike----stack-pile-pick-num
+    (not (eq (car klondike----stack-pile-pick-stack) 'pile)))
+
+  (message (concat "Move the cards to which stack "
+                   "(use Shift to move to one of "
+                   "the 4 stacks on the top-right)?")))
 
 (defun klondike ()
   ""

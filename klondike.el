@@ -720,157 +720,38 @@
                                       ('empty  (cl-case index2
                                                  (0 :empty0) (1 :empty1)
                                                  (2 :empty2) (3 :empty3)))))))))
-(defun klondike-stack-faceup-pick ()
+
 (defvar klondike----stack-pile-pick-stack (cons nil -1)
   "")
 (defvar klondike----stack-pile-pick-num -1
   "")
+(defun klondike--stack-pick-or-select (stack-type &optional stack-num)
   ""
-  (interactive)
 
-  (if (not (klondike--stack-get-cards klondike----faceup-stack))
-      (message "That spot there's empty, pardner…")
-    (let ((try (lambda (self repeat-p)
-                 (klondike--stack-pile-number-select klondike----faceup-stack 1 t)
-
-                 (let ((key (read-key (concat (if repeat-p
-                                                  "Mmmm…that's not an option. "
-                                                "")
-                                              "Move the cards to which stack "
-                                              "(use Shift to move to one of "
-                                              "the 4 stacks on the top-right)?"))))
-                   (klondike--stack-pile-clear-selects klondike----faceup-stack t)
-
-                   (pcase key
-                     (?\t                      (klondike--card-find-available-empty 'faceup))
-                     (?!                       (klondike--card-move-faceup 'empty 0))
-                     (?@                       (klondike--card-move-faceup 'empty 1))
-                     (?#                       (klondike--card-move-faceup 'empty 2))
-                     (?$                       (klondike--card-move-faceup 'empty 3))
-                     (?\C-g                    t)
-                     ((guard (and (> key ?0)
-                                  (< key ?8))) (klondike--card-move-faceup 'pile  (1- (string-to-number
-                                                                                        (char-to-string key)))))
-                     (_                        (funcall self self t)))))))
-      (funcall try try nil))))
-(defun klondike--stack-empty-pick (stack-num)
-  ""
+  (setq klondike----stack-pile-pick-stack `(,stack-type . ,stack-num))
 
   (let ((stack (klondike--stack-get stack-type stack-num)))
     (if (not (klondike--stack-get-cards stack))
         (message "That spot there's empty, pardner…")
-      (let ((try (lambda (self repeat-p)
-                   (klondike--stack-pile-number-select stack 1 t)
+      (if (= (klondike--stack-get-visible stack) 1)
+          (progn
+            (setq klondike----stack-pile-pick-num 1)
 
-                   (let ((key (read-key (concat (if repeat-p
-                                                    "Mmmm…that's not an option. "
-                                                  "")
-                                                "Move the cards to which stack "
-                                                "(use Shift to move to one of "
-                                                "the 4 stacks on the top-right)?"))))
-                     (klondike--stack-pile-clear-selects stack t)
-
-                     (pcase key
-                       (?!                       (klondike--card-move 'empty stack-num 1 'empty 0))
-                       (?@                       (klondike--card-move 'empty stack-num 1 'empty 1))
-                       (?#                       (klondike--card-move 'empty stack-num 1 'empty 2))
-                       (?$                       (klondike--card-move 'empty stack-num 1 'empty 3))
-                       (?\C-g                    t)
-                       ((guard (and (> key ?0)
-                                    (< key ?8))) (klondike--card-move 'empty stack-num 1 'pile  (1- (string-to-number
-                                                                                                      (char-to-string key)))))
-                       (_                        (funcall self self t)))))))
-        (funcall try try nil)))))
-(defun klondike--stack-pile-pick (stack-num)
+            (klondike-select-mode))
+        (klondike-picker-mode)))))
+(defun klondike--stack-pick-or-select-quit ()
   ""
+  (interactive)
 
-  (let ((stack (pcase stack-num
-                 (0 klondike----pile-0-stack)
-                 (1 klondike----pile-1-stack)
-                 (2 klondike----pile-2-stack)
-                 (3 klondike----pile-3-stack)
-                 (4 klondike----pile-4-stack)
-                 (5 klondike----pile-5-stack)
-                 (6 klondike----pile-6-stack))))
-    (if (not (klondike--stack-get-cards stack))
-        (message "That spot there's empty, pardner…")
-      (let* ((try  (lambda (self funct2 funct3 retrying-p)
-                     (klondike--stack-pile-number stack)
-
-                     (let ((n (pcase (klondike--stack-get-visible stack)
-                                (1 'f1)
-                                (_ (funcall funct2 funct2 nil)))))
-                       (if (or (eq n ?\C-g)
-                               (and (= (klondike--stack-get-visible stack) 1)
-                                    retrying-p))
-                           (klondike--stack-pile-clear-selects stack)
-                         (funcall funct3 n self funct2 funct3 nil)))))
-             (try2 (lambda (self repeat-p)
-                     (let ((key (read-key (concat (if repeat-p
-                                                      "Mmmm…that's not an option. "
-                                                    "")
-                                                  "Move which card in the stack?"))))
-                       (if (or (and (symbolp key)
-                                    (not (member key
-                                                 (mapcar (lambda (elem)
-                                                           (intern (concat "f" (number-to-string
-                                                                                 elem))))
-                                                         (number-sequence 1 (klondike--stack-get-visible
-                                                                              stack))))))
-                               (and (numberp key)
-                                    (not (= key ?\C-g))
-                                    (not (= key ?\t))
-                                    (not (= key ?!))
-                                    (not (= key ?@))
-                                    (not (= key ?#))
-                                    (not (= key ?$))
-                                    (or (< key ?1) (> key ?7))))
-                           (funcall self self t)
-                         key))))
-             (try3 (lambda (card-num funct funct2 self repeat-p)
-                     (let ((num (pcase card-num
-                                  ('f1    1) ('f2    2) ('f3    3)
-                                  ('f4    4) ('f5    5) ('f6    6)
-                                  ('f7    7) ('f8    8) ('f9    9)
-                                  ('f10  10) ('f11  11) ('f12  12) (_ nil))))
-                       (when num (klondike--stack-pile-number-select stack num))
-
-                       (let ((key (if num
-                                      (read-key (concat (if repeat-p
-                                                            "Mmmm…that's not an option. "
-                                                          "")
-                                                        "Move the cards to which stack "
-                                                        "(use Shift to move to one of "
-                                                        "the 4 stacks on the top-right)?"))
-                                    card-num)))
-                         (klondike--stack-pile-clear-selects stack)
-
-                         (pcase key
-                           (?\t                      (if (and num (> (klondike--stack-get-visible stack) 1))
-                                                         (progn
-                                                           (klondike--stack-pile-number stack)
-
-                                                           (funcall self card-num funct funct2 self t))
-                                                       (klondike--card-find-available-empty 'pile stack-num)))
-                           (?!                       (klondike--card-move 'pile stack-num (if num num 1) 'empty 0))
-                           (?@                       (klondike--card-move 'pile stack-num (if num num 1) 'empty 1))
-                           (?#                       (klondike--card-move 'pile stack-num (if num num 1) 'empty 2))
-                           (?$                       (klondike--card-move 'pile stack-num (if num num 1) 'empty 3))
-                           (?\C-g                    (funcall funct funct funct2 self t))
-                           ((guard (and (> key ?0)
-                                        (< key ?8))) (klondike--card-move 'pile stack-num
-                                                                          (if num
-                                                                              num
-                                                                            (klondike--stack-get-visible stack))
-                                                                          'pile  (1- (string-to-number
-                                                                                       (char-to-string key)))))
-                           (_                        (if num
-                                                         (progn
-                                                           (klondike--stack-pile-number stack)
-
-                                                           (funcall self card-num funct funct2 self t))
-                                                       (funcall funct funct funct2 self t)))))))))
-        (funcall try try try2 try3 nil)))))
+  (let* ((stack-symbol      (car klondike----stack-pile-pick-stack))
+         (stack-num         (cdr klondike----stack-pile-pick-stack))
+         (stack        (klondike--stack-get stack-symbol stack-num)))
+    (if (or (eq major-mode 'klondike-picker-mode)
+            (and (eq major-mode 'klondike-select-mode)
+                 (and (= klondike----stack-pile-pick-num     1)
+                      (= (klondike--stack-get-visible stack) 1))))
+        (klondike-mode)
+      (klondike-picker-mode))))
 
 (defun klondike-card-deck-next ()
   ""
@@ -897,24 +778,31 @@
 (defvar klondike-mode-map (let ((mode-map (make-sparse-keymap)))
                             (define-key mode-map (kbd "SPC") #'klondike-card-deck-next)
 
-                            (define-key mode-map (kbd "0") #'klondike-stack-faceup-pick)
+                            (define-key mode-map (kbd "0") (lambda ()
+                                                             (interactive)
+
+                                                             (klondike--stack-pick-or-select 'faceup)))
 
                             (define-key mode-map (kbd "!") (lambda ()
                                                              (interactive)
 
-                                                             (klondike--stack-empty-pick 0)))
+                                                             (klondike--stack-pick-or-select 'empty
+                                                                                             0)))
                             (define-key mode-map (kbd "@") (lambda ()
                                                              (interactive)
 
-                                                             (klondike--stack-empty-pick 1)))
+                                                             (klondike--stack-pick-or-select 'empty
+                                                                                             1)))
                             (define-key mode-map (kbd "#") (lambda ()
                                                              (interactive)
 
-                                                             (klondike--stack-empty-pick 2)))
+                                                             (klondike--stack-pick-or-select 'empty
+                                                                                             2)))
                             (define-key mode-map (kbd "$") (lambda ()
                                                              (interactive)
 
-                                                             (klondike--stack-empty-pick 3)))
+                                                             (klondike--stack-pick-or-select 'empty
+                                                                                             3)))
 
                             (mapc (lambda (num)
                                     (define-key mode-map
@@ -922,7 +810,8 @@
                                                 (lambda ()
                                                   (interactive)
 
-                                                  (klondike--stack-pile-pick num))))
+                                                  (klondike--stack-pick-or-select 'pile
+                                                                                  num))))
                                   (number-sequence 0 6))
 
                             (define-key mode-map (kbd "C-/")    #'klondike-history-prev)

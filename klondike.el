@@ -752,6 +752,20 @@
                       (= (klondike--stack-get-visible stack) 1))))
         (klondike-mode)
       (klondike-picker-mode))))
+(defun klondike--stack-find-available-empty ()
+  ""
+  (interactive)
+
+  (let* ((stack-symbol      (car klondike----stack-pile-pick-stack))
+         (stack-num         (cdr klondike----stack-pile-pick-stack))
+         (stack        (klondike--stack-get stack-symbol stack-num)))
+    (if (and (eq major-mode 'klondike-select-mode)
+             (not (and (= klondike----stack-pile-pick-num     1)
+                       (= (klondike--stack-get-visible stack) 1))))
+        (message "Not allowed…")
+      (klondike--card-find-available-empty stack-symbol stack-num)
+
+      (klondike-mode))))
 
 (defun klondike-card-deck-next ()
   ""
@@ -833,6 +847,8 @@
   (setq klondike----stack-pile-pick-num   -1))
 
 (defvar klondike-picker-mode-map (let ((mode-map (make-sparse-keymap)))
+                                   (define-key mode-map (kbd "TAB") #'klondike--stack-find-available-empty)
+
                                    (define-key mode-map (kbd "C-g") #'klondike--stack-pick-or-select-quit)
 
                                    mode-map)
@@ -848,6 +864,8 @@ solitaire game for Emacs."
   (message "Move which card in the stack?"))
 
 (defvar klondike-select-mode-map (let ((mode-map (make-sparse-keymap)))
+                                   (define-key mode-map (kbd "TAB") #'klondike--stack-find-available-empty)
+
                                    (define-key mode-map (kbd "C-g") #'klondike--stack-pick-or-select-quit)
 
                                    mode-map)

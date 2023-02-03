@@ -766,6 +766,16 @@
       (klondike--card-find-available-empty stack-symbol stack-num)
 
       (klondike-mode))))
+(defun klondike--stack-pick (card-num)
+  ""
+
+  (let ((stack (klondike--stack-get (car klondike----stack-pile-pick-stack)
+                                    (cdr klondike----stack-pile-pick-stack))))
+    (if (> card-num (klondike--stack-get-visible stack))
+        (message "Mmmm…that's not an option; move which card in the stack?")
+      (setq klondike----stack-pile-pick-num card-num)
+
+      (klondike-select-mode))))
 
 (defun klondike-card-deck-next ()
   ""
@@ -848,6 +858,17 @@
 
 (defvar klondike-picker-mode-map (let ((mode-map (make-sparse-keymap)))
                                    (define-key mode-map (kbd "TAB") #'klondike--stack-find-available-empty)
+
+                                   (mapc (lambda (num)
+                                           (define-key mode-map
+                                                       (kbd (concat "<f"
+                                                                    (number-to-string num)
+                                                                    ">"))
+                                                       (lambda ()
+                                                         (interactive)
+
+                                                         (klondike--stack-pick num))))
+                                         (number-sequence 1 12))
 
                                    (define-key mode-map (kbd "C-g") #'klondike--stack-pick-or-select-quit)
 

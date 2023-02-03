@@ -33,6 +33,8 @@
 (require 'pcase)
 ;; if-let*
 (require 'subr-x)
+;; run-at-time
+(require 'timer)
 
 (defconst klondike----buffer-name "Klondike"
   "The name of the buffer the Klondike solitaire game always runs in.")
@@ -671,7 +673,7 @@
                  (t                                                                                          nil))))
     (if mNum
         (klondike--card-move stack-symbol stack-num 1 'empty mNum)
-      (message "Ain't any available spot…"))))
+      (run-at-time 0.1 nil (lambda () (message "Ain't any available spot…"))))))
 
 (defun klondike--card-move (type1 index1 stack-depth type2 index2)
   ""
@@ -682,7 +684,7 @@
          ( underCard (car (klondike--stack-get-cards stack2))))
     (if (or (> stack-depth (klondike--stack-get-visible stack1))
             (not (klondike--card-next-p movingCard underCard (eq type2 'empty))))
-        (message "Can't do that, Jack!")
+        (run-at-time 0.1 nil (lambda () (message "Can't do that, Jack!")))
       (klondike--stack-set-cards stack2 (append (butlast (klondike--stack-get-cards stack1)
                                                          (- (length (klondike--stack-get-cards stack1))
                                                             stack-depth))

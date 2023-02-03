@@ -833,6 +833,8 @@
   (setq klondike----stack-pile-pick-num   -1))
 
 (defvar klondike-picker-mode-map (let ((mode-map (make-sparse-keymap)))
+                                   (define-key mode-map (kbd "C-g") #'klondike--stack-pick-or-select-quit)
+
                                    mode-map)
   "Keymap for `klondike-picker-mode'.")
 (define-derived-mode klondike-picker-mode fundamental-mode "Klondike Picker"
@@ -846,6 +848,8 @@ solitaire game for Emacs."
   (message "Move which card in the stack?"))
 
 (defvar klondike-select-mode-map (let ((mode-map (make-sparse-keymap)))
+                                   (define-key mode-map (kbd "C-g") #'klondike--stack-pick-or-select-quit)
+
                                    mode-map)
   "Keymap for `klondike-select-mode'.")
 (define-derived-mode klondike-select-mode fundamental-mode "Klondike Select"

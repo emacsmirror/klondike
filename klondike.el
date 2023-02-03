@@ -776,6 +776,16 @@
       (setq klondike----stack-pile-pick-num card-num)
 
       (klondike-select-mode))))
+(defun klondike--stack-select (stack-type stack-num)
+  ""
+
+  (klondike--card-move (car klondike----stack-pile-pick-stack)
+                       (cdr klondike----stack-pile-pick-stack)
+                       klondike----stack-pile-pick-num
+                       stack-type
+                       stack-num)
+
+  (klondike-mode))
 
 (defun klondike-card-deck-next ()
   ""
@@ -870,6 +880,24 @@
                                                          (klondike--stack-pick num))))
                                          (number-sequence 1 12))
 
+                                   (mapc (lambda (num)
+                                           (define-key mode-map
+                                                       (kbd (number-to-string (1+ num)))
+                                                       (lambda ()
+                                                         (interactive)
+
+                                                         (let ((sType (car klondike----stack-pile-pick-stack))
+                                                               (sNum  (cdr klondike----stack-pile-pick-stack)))
+                                                           (setq klondike----stack-pile-pick-num
+                                                                 (if (eq sType 'empty)
+                                                                     1
+                                                                   (klondike--stack-get-visible
+                                                                     (klondike--stack-get sType sNum)))))
+
+                                                         (klondike--stack-select 'pile
+                                                                                 num))))
+                                         (number-sequence 0 6))
+
                                    (define-key mode-map (kbd "C-g") #'klondike--stack-pick-or-select-quit)
 
                                    mode-map)
@@ -886,6 +914,32 @@ solitaire game for Emacs."
 
 (defvar klondike-select-mode-map (let ((mode-map (make-sparse-keymap)))
                                    (define-key mode-map (kbd "TAB") #'klondike--stack-find-available-empty)
+
+                                   (define-key mode-map (kbd "!") (lambda ()
+                                                                    (interactive)
+
+                                                                    (klondike--stack-select 'empty 0)))
+                                   (define-key mode-map (kbd "@") (lambda ()
+                                                                    (interactive)
+
+                                                                    (klondike--stack-select 'empty 1)))
+                                   (define-key mode-map (kbd "#") (lambda ()
+                                                                    (interactive)
+
+                                                                    (klondike--stack-select 'empty 2)))
+                                   (define-key mode-map (kbd "$") (lambda ()
+                                                                    (interactive)
+
+                                                                    (klondike--stack-select 'empty 3)))
+
+                                   (mapc (lambda (num)
+                                           (define-key mode-map
+                                                       (kbd (number-to-string (1+ num)))
+                                                       (lambda ()
+                                                         (interactive)
+
+                                                         (klondike--stack-select 'pile num))))
+                                         (number-sequence 0 6))
 
                                    (define-key mode-map (kbd "C-g") #'klondike--stack-pick-or-select-quit)
 

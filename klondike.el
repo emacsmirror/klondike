@@ -498,7 +498,7 @@
                                                     (string= "pile"
                                                              (substring str 1 (1- (length str))))))))))
           (if stacks-to-print stacks-to-print (mapcar 'car current)))))
-(defun klondike--stack-pile-number (stack)
+(defun klondike--stack-number (stack)
   ""
 
   (read-only-mode 0)
@@ -520,7 +520,7 @@
   (read-only-mode t)
   (goto-line      0)
   (move-to-column 1))
-(defun klondike--stack-pile-number-select (stack selected-num &optional hide-stack-p)
+(defun klondike--stack-number-select (stack selected-num &optional hide-stack-p)
   ""
 
   (read-only-mode 0)
@@ -547,7 +547,7 @@
   (read-only-mode t)
   (goto-line      0)
   (move-to-column 1))
-(defun klondike--stack-pile-clear-selects (stack &optional hide-stack-p)
+(defun klondike--stack-clear-selects (stack &optional hide-stack-p)
   ""
 
   (read-only-mode 0)

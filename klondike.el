@@ -373,7 +373,11 @@
                                                     (length faceups)) 0)))
       (dotimes (i numOfFacedownCards)
         (funcall move-to x (+ y 1 (1+ i)))
-        (insert "|\\ \\ \\ \\ \\|"))
+        (insert "|"
+                (mapconcat (lambda (num)
+                             (if (cl-evenp num) " " "\\"))
+                           (number-sequence 1 (- klondike----card-width 2)))
+                "|"))
 
 
 

@@ -42,16 +42,24 @@
 (defvar klondike----mode-line-status ""
   "")
 
-(defconst klondike----window-padding 2
-  "")
+(defcustom klondike----window-padding 2
+  ""
+  :type  'natnum
+  :group 'klondike)
 
-(defconst klondike----card-width  11
-  "")
-(defconst klondike----card-height 11
-  "")
+(defcustom klondike----card-width  11
+  ""
+  :type  'natnum
+  :group 'klondike)
+(defcustom klondike----card-height 11
+  ""
+  :type  'natnum
+  :group 'klondike)
 
-(defconst klondike----top-&-bottom-row-spacing 4
-  "")
+(defcustom klondike----top-&-bottom-row-spacing 4
+  ""
+  :type  'natnum
+  :group 'klondike)
 
 (defvar klondike----facedown-stack `(() . ())
   "")

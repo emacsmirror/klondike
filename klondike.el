@@ -61,6 +61,13 @@
   :type  'natnum
   :group 'klondike)
 
+(defcustom klondike----card-facedow-graphic (concat " _       \n"
+                                                    "/ `/|// /\n"
+                                                    "_;/ |/_/ ")
+  ""
+  :type  'string
+  :group 'klondike)
+
 (defvar klondike----facedown-stack `(() . ())
   "")
 (defvar klondike----faceup-stack   `(() . ())

@@ -407,31 +407,52 @@
 
 
 
-      (let ((rows (- cardHeightW/oTopBot 2)))
+      (let* ((cols                                       (- klondike----card-width 2))
+             (rows                                       (- cardHeightW/oTopBot    2))
+             (orig               (string-split klondike----card-facedow-graphic "\n"))
+             (oLen                                                      (length orig))
+             (graphic            (mapcar (lambda (line)
+                                           (let* ((len          (length line))
+                                                  (remHalf (/ (- len cols) 2)))
+                                             (if (> len cols)
+                                                 (substring line remHalf (+ remHalf cols))
+                                               line)))
+                                         (if (> oLen rows)
+                                             (let ((f (member (nth (/ (- oLen rows) 2) orig)
+                                                              orig)))
+                                               (butlast f (- (length f) rows)))
+                                           orig)))
+             (heightMinusGraphic (- rows (length graphic)))
+             (hMinusGraphicHalf   (/ heightMinusGraphic 2))
+             (graphicWidth          (length (car graphic)))
+             ( widthMinusGraphic (- cols     graphicWidth))
+             (wMinusGraphicHalf   (/  widthMinusGraphic 2)))
         (dotimes (offset rows)
           (funcall move-to x (+ y
                                 1
                                 numOfFacedownCards
                                 (if faceups (length faceups) 1)
                                 (1+ offset)))
-          (let ((top (= offset (1- (/ rows 2))))
-                (mid (= offset     (/ rows 2)))
-                (bot (= offset (1+ (/ rows 2)))))
-            (if (and (not empty-p) facedown-p (or top mid bot))
-                (insert (cond
-                         (top "| _       |")
-                         (mid "|/ `/|// /|")
-                         (bot "|_;/ |/_/ |")))
-              (let* ((widthMinus (- klondike----card-width 2))
-                     (widthHalf  (/ widthMinus 2))
-                     (widthRest  (- widthMinus widthHalf 1)))
-                (insert (if (and empty-p (cl-evenp offset)) " " "|")
-                        (make-string widthRest ? )
-                        (if (and faceups (= offset (/ rows 2)))
-                            (klondike--card-get-suit (car faceups))
-                          " ")
-                        (make-string widthHalf ? )
-                        (if (and empty-p (cl-evenp offset)) " " "|"))))))
+          (if (and (not empty-p)
+                   facedown-p
+                   (and (>= offset                                 hMinusGraphicHalf)
+                        (<  offset (- rows (- heightMinusGraphic hMinusGraphicHalf)))))
+              (insert "|"
+                      (make-string wMinusGraphicHalf                       ?\ )
+                      (nth (- offset hMinusGraphicHalf) graphic)
+                      (make-string (- cols wMinusGraphicHalf graphicWidth) ?\ )
+                      "|")
+            (insert (if (and empty-p (cl-evenp offset)) " " "|"))
+            (if (and faceups (= offset (/ rows 2)))
+                (let* ((suit           (klondike--card-get-suit (car faceups)))
+                       (suitLen                                  (length suit))
+                       (widthMinusSuit              (- cols           suitLen))
+                       (wMinusSuitHalf              (/ widthMinusSuit       2)))
+                  (insert (make-string wMinusSuitHalf ? )
+                          suit
+                          (make-string (- cols wMinusSuitHalf suitLen) ? )))
+              (insert (make-string cols ? )))
+            (insert (if (and empty-p (cl-evenp offset)) " " "|"))))
 
 
 

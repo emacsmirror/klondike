@@ -469,9 +469,15 @@
                               numOfFacedownCards
                               (if faceups (length faceups) 1)
                               (1+ rows)))
-        (insert (format (concat "|%"
+        (insert (format (concat (if (and empty-p (cl-evenp cardHeightW/oTopBot))
+                                    " "
+                                  "|")
+                                "%"
                                 (number-to-string (- klondike----card-width 4))
-                                "s%2s|")
+                                "s%2s"
+                                (if (and empty-p (cl-evenp cardHeightW/oTopBot))
+                                    " "
+                                  "|"))
                         ""
                         (if faceups
                             (klondike--card-get-value (car faceups))

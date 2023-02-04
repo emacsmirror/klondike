@@ -466,7 +466,7 @@
                                   (1+ rows)
                                   1
                                   (1+ offset)))
-            (insert "           "))))))
+            (insert (make-string klondike----card-width ? )))))))
 
   (read-only-mode t)
   (goto-line      0)

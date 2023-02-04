@@ -220,14 +220,22 @@
       (message "No more redo!")
     (klondike--history-alter (1+ (klondike--history-get-index)))))
 
-(defconst klondike----suits-icon-spade   "♠"
-  "")
-(defconst klondike----suits-icon-heart   "♥"
-  "")
-(defconst klondike----suits-icon-diamond "♦"
-  "")
-(defconst klondike----suits-icon-club    "♣"
-  "")
+(defcustom klondike----suits-icon-spade   "♠"
+  ""
+  :type  'string
+  :group 'klondike)
+(defcustom klondike----suits-icon-heart   "♥" ;♡
+  ""
+  :type  'string
+  :group 'klondike)
+(defcustom klondike----suits-icon-diamond "♦"
+  ""
+  :type  'string
+  :group 'klondike)
+(defcustom klondike----suits-icon-club    "♣" ;♧
+  ""
+  :type  'string
+  :group 'klondike)
 
 (defconst klondike----card-values '("A" "2" "3"  "4" "5" "6"
                                     "7" "8" "9" "10" "J" "Q" "K")

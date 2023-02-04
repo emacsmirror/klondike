@@ -567,11 +567,11 @@
       (delete-region (point) (+ (point) 2))
 
       (let ((result (number-to-string (1+ stackIndex))))
-        (insert (concat (if (= (length result) 1)
-                            (if (= (1+ stackIndex) totalNum) " " "‾")
-                          "")
-                        (propertize result 'face '(:slant      italic
-                                                   :foreground "yellow")))))))
+        (insert (if (= (length result) 1)
+                    (if (= (1+ stackIndex) totalNum) " " "‾")
+                  "")
+                (propertize result 'face '(:slant      italic
+                                           :foreground "yellow"))))))
 
   (read-only-mode t)
   (goto-line      0)
@@ -592,13 +592,13 @@
     (delete-region (point) (+ (point) 2))
 
     (let ((stringNum (number-to-string selected-num)))
-      (insert (concat (if (= (length stringNum) 1)
-                          (if (= selected-num visibleNum totalNum) " " "‾")
-                        "")
-                      (propertize stringNum
-                                  'face '(:slant      italic
-                                          :weight     bold
-                                          :foreground "purple"))))))
+      (insert (if (= (length stringNum) 1)
+                  (if (= selected-num visibleNum totalNum) " " "‾")
+                "")
+              (propertize stringNum
+                          'face '(:slant      italic
+                                  :weight     bold
+                                  :foreground "purple")))))
 
   (read-only-mode t)
   (goto-line      0)

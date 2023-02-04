@@ -356,7 +356,11 @@
 
                        (funcall delete-reg))))
     (funcall move-to x (1+ y))
-    (insert (if empty-p " _ _ _ _ _ " " _________ "))
+    (insert " "
+            (mapconcat (lambda (num)
+                         (if (and (cl-evenp num) empty-p) " " "_"))
+                       (number-sequence 1 (- klondike----card-width 2)))
+            " ")
 
 
 

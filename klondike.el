@@ -449,7 +449,11 @@
                               (if faceups (length faceups) 1)
                               (1+ rows)
                               1))
-        (insert (if empty-p " ‾ ‾ ‾ ‾ ‾ " " ‾‾‾‾‾‾‾‾‾ "))
+        (insert " "
+                (mapconcat (lambda (num)
+                             (if (and (cl-evenp num) empty-p) " " "‾"))
+                           (number-sequence 1 cols))
+                " ")
 
 
 

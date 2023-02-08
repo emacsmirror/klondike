@@ -854,7 +854,7 @@
         (klondike--card-move stack-symbol stack-num 1 'empty mNum)
       (run-at-time 0.1 nil (lambda () (message "Ain't any available spot…"))))))
 
-(defun klondike--card-move (type1 index1 stack-depth type2 index2)
+(defun klondike--card-move (type1 index1 stack-depth type2 index2 &optional no-message-p)
   ""
 
   (let* ((stack1     (klondike--stack-get type1 index1))
@@ -863,7 +863,11 @@
          ( underCard (car (klondike--stack-get-cards stack2))))
     (if (or (> stack-depth (klondike--stack-get-visible stack1))
             (not (klondike--card-next-p movingCard underCard (eq type2 'empty))))
-        (run-at-time 0.1 nil (lambda () (message "Can't do that, Jack!")))
+        (progn
+          (when (not no-message-p)
+            (run-at-time 0.1 nil (lambda () (message "Can't do that, Jack!"))))
+
+          nil)
       (klondike--stack-set-cards stack2 (append (butlast (klondike--stack-get-cards stack1)
                                                          (- (length (klondike--stack-get-cards stack1))
                                                             stack-depth))
@@ -900,7 +904,9 @@
                                                  (6 :pile6)))
                                       ('empty  (cl-case index2
                                                  (0 :empty0) (1 :empty1)
-                                                 (2 :empty2) (3 :empty3)))))))))
+                                                 (2 :empty2) (3 :empty3))))))
+
+      t)))
 
 (defvar klondike----stack-pile-pick-stack (cons nil -1)
   "")

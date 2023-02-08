@@ -42,6 +42,11 @@
 (defvar klondike----mode-line-status ""
   "")
 
+(defcustom klondike----simplified-card-moving-p nil
+  ""
+  :type  'boolean
+  :group 'klondike)
+
 (defcustom klondike----window-padding 2
   ""
   :type  'natnum

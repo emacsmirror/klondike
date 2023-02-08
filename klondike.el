@@ -51,7 +51,7 @@
   ""
   :type  'natnum
   :group 'klondike)
-(defcustom klondike----card-height 11
+(defcustom klondike----card-height 9
   ""
   :type  'natnum
   :group 'klondike)
@@ -362,153 +362,251 @@
 
   (read-only-mode 0)
 
-  (let* ((delete-reg (lambda ()
-                       (delete-region (point) (+ (point)
-                                                 klondike----card-width))))
-         (move-to    (lambda (w z)
-                       (goto-line      z)
-                       (move-to-column w)
+  (let* ((1card+padding       (+ klondike----card-width
+                                 (1- klondike----card-height)))
+         (delete-reg          (lambda (additional)
+                                (delete-region (point) (+ (point)
+                                                          1card+padding
+                                                          additional))))
+         (move-to             (lambda (w z &optional additional)
+                                (goto-line      z)
+                                (move-to-column w)
 
-                       (funcall delete-reg))))
-    (funcall move-to x (1+ y))
-    (insert " "
-            (mapconcat (lambda (num)
-                         (if (and (cl-evenp num) empty-p) " " "_"))
-                       (number-sequence 1 (- klondike----card-width 2)))
-            " ")
-
-
-
-    (let* ((cardHeightW/oTopBot (- klondike----card-height 2))
-           (totalN              (if total-num total-num 0))
-           (faceups             (if (and (not show-stack-p) (> (length faceup-cards) 0))
-                                    (list (car faceup-cards))
-                                  faceup-cards))
-           (numOfFacedownCards  (if show-stack-p (- totalN
-                                                    (length faceups)) 0)))
-      (dotimes (i numOfFacedownCards)
-        (funcall move-to x (+ y 1 (1+ i)))
-        (insert "|"
-                (mapconcat (lambda (num)
-                             (if (cl-evenp num) " " "\\"))
-                           (number-sequence 1 (- klondike----card-width 2)))
-                "|"))
+                                (funcall delete-reg (if additional additional 0))))
+         (cardHeightW/oTopBot (- klondike----card-height 2))
+         (totalN              (if total-num total-num 0))
+         (faceups             (if (and (not show-stack-p) (> (length faceup-cards) 0))
+                                  (list (car faceup-cards))
+                                faceup-cards))
+         (numOfFacedownCards  (if show-stack-p (- totalN (length faceups)) 0)))
+    ;; F A C E   D O W N S
+    (dotimes (i numOfFacedownCards)
+      (funcall move-to x (+ y (1+ i)))
+      (let ((str (concat (make-string i ?│)
+                         "╭"
+                         (make-string (- klondike----card-width 3) ?─)
+                         (if (zerop i) "─" "┴")
+                         "╮")))
+        (insert (concat str
+                        (make-string (- 1card+padding (length str)) ? )))))
 
 
 
-      (if faceups
-          (let ((faceupRev (reverse faceups)))
-            (dotimes (faceupIndex (length faceups))
-              (funcall move-to x (+ y 1 numOfFacedownCards (1+ faceupIndex)))
-              (insert (string-replace " "
-                                      (if (and (zerop numOfFacedownCards) (= faceupIndex 0)) " " "‾")
-                                      (format (concat "|%-2s%"
-                                                      (number-to-string
-                                                        (- klondike----card-width 4))
-                                                      "s|")
-                                              (klondike--card-get-value
-                                                (nth faceupIndex faceupRev))
-                                              "")))))
-        (funcall move-to x (+ y 1 (1+ numOfFacedownCards)))
-        (insert "|" (make-string (- klondike----card-width 2)
-                                 (if (zerop totalN) ?  ?‾))    "|"))
+    ;; F A C E   U P S
+    (let ((faceupRev (reverse (cdr faceups))))
+      (dotimes (faceupIndex (length faceupRev))
+        (let* ((n      (- (+ numOfFacedownCards (1+ faceupIndex))
+                          klondike----card-height))
+               (indent (if (> n 0) n 0))
+               (str    (string-replace " "
+                                       "─"
+                                       (format (concat (if (> n -1) "╰" "")
+                                                       (if (> n -1) "┤" "")
+                                                       (make-string (- (+ numOfFacedownCards
+                                                                          faceupIndex)
+                                                                       indent
+                                                                       (if (> n -1) 2 0))
+                                                                    ?│)
+                                                       "╭%-3s%"
+                                                       (number-to-string
+                                                        (- klondike----card-width 6))
+                                                       "s"
+                                                       (if (and (zerop faceupIndex)
+                                                                (zerop numOfFacedownCards))
+                                                           "─"
+                                                         "┴")
+                                                       "╮")
+                                               (concat (klondike--card-get-suit
+                                                         (nth faceupIndex faceupRev))
+                                                       (klondike--card-get-value
+                                                         (nth faceupIndex faceupRev)))
+                                               ""))))
+          (funcall move-to (+ x indent)
+                           (+ y numOfFacedownCards (1+ faceupIndex)))
+          (insert (concat str
+                          (make-string (- 1card+padding (length str)) ? ))))))
 
 
 
-      (let* ((cols                                       (- klondike----card-width 2))
-             (rows                                       (- cardHeightW/oTopBot    2))
-             (orig               (string-split klondike----card-facedow-graphic "\n"))
-             (oLen                                                      (length orig))
-             (graphic            (mapcar (lambda (line)
-                                           (let* ((len          (length line))
-                                                  (remHalf (/ (- len cols) 2)))
-                                             (if (> len cols)
-                                                 (substring line remHalf (+ remHalf cols))
-                                               line)))
-                                         (if (> oLen rows)
-                                             (let ((f (member (nth (/ (- oLen rows) 2) orig)
-                                                              orig)))
-                                               (butlast f (- (length f) rows)))
-                                           orig)))
-             (heightMinusGraphic (- rows (length graphic)))
-             (hMinusGraphicHalf   (/ heightMinusGraphic 2))
-             (graphicWidth          (length (car graphic)))
-             ( widthMinusGraphic (- cols     graphicWidth))
-             (wMinusGraphicHalf   (/  widthMinusGraphic 2)))
-        (dotimes (offset rows)
-          (funcall move-to x (+ y
-                                1
-                                numOfFacedownCards
-                                (if faceups (length faceups) 1)
-                                (1+ offset)))
+    ;; C A R D   T O P
+    (let* ((n      (- (+ numOfFacedownCards (length faceups))
+                      klondike----card-height))
+           (indent (if (> n 0) n 0))
+           (str    (concat (if (> n -1) "╰" "")
+                           (if (> n -1) "┤" "")
+                           (make-string (- (+ numOfFacedownCards
+                                              (length (cdr faceups)))
+                                           indent
+                                           (if (> n -1) 2 0))
+                                        ?│)
+                           "╭"
+                           (mapconcat (lambda (num)
+                                        (if (and (cl-oddp num) empty-p) " " "─"))
+                                      (number-sequence 1 (- klondike----card-width 3)))
+                           (cond
+                            (empty-p                       " ")
+                            ((or (> numOfFacedownCards 0)
+                                 (> (length faceups)   1)) "┴")
+                            (t                             "─"))
+                           "╮")))
+      (funcall move-to (+ x indent)
+                       (+ y numOfFacedownCards (length (cdr faceups)) 1))
+      (insert (concat str (make-string (- 1card+padding (length str)) ? ))))
+
+
+
+    ;; F I R S T   V A L U E   L I N E
+    (let* ((n      (- (+ numOfFacedownCards (length faceups) 1)
+                      klondike----card-height))
+           (indent (if (> n 0) n 0))
+           (str    (format (concat (if (> n -1) "╰" "")
+                                   (if (and empty-p (cl-oddp cardHeightW/oTopBot))
+                                       " "
+                                     (if (> n -1) "┤" "│"))
+                                   (make-string (- (+ numOfFacedownCards
+                                                      (length (cdr faceups)))
+                                                   indent
+                                                   (if (> n -1) 1 0))
+                                                ?│)
+                                   "%-2s%"
+                                   (number-to-string (- klondike----card-width 4))
+                                   "s"
+                                   (if (and empty-p (cl-oddp cardHeightW/oTopBot))
+                                       " "
+                                     "│"))
+                           (if faceups
+                               (klondike--card-get-value (car faceups))
+                             "")
+                           "")))
+      (funcall move-to (+ x indent)
+                       (+ y numOfFacedownCards (length (cdr faceups)) 2))
+      (insert (concat str (make-string (- 1card+padding (length str)) ? ))))
+
+
+
+    (let* ((cols                                       (- klondike----card-width 2))
+           (rows                                       (- cardHeightW/oTopBot    2))
+           (orig               (string-split klondike----card-facedow-graphic "\n"))
+           (oLen                                                      (length orig))
+           (graphic            (mapcar (lambda (line)
+                                         (let* ((len          (length line))
+                                                (remHalf (/ (- len cols) 2)))
+                                           (if (> len cols)
+                                               (substring line remHalf (+ remHalf cols))
+                                             line)))
+                                       (if (> oLen rows)
+                                           (let ((f (member (nth (/ (- oLen rows) 2) orig)
+                                                            orig)))
+                                             (butlast f (- (length f) rows)))
+                                         orig)))
+           (heightMinusGraphic (- rows (length graphic)))
+           (hMinusGraphicHalf   (/ heightMinusGraphic 2))
+           (graphicWidth          (length (car graphic)))
+           ( widthMinusGraphic (- cols     graphicWidth))
+           (wMinusGraphicHalf   (/  widthMinusGraphic 2)))
+      (dotimes (offset rows)
+        (let* ((n      (- (+ numOfFacedownCards (length faceups) 1 (1+ offset))
+                          klondike----card-height))
+               (indent (if (> n 0) n 0)))
+          (funcall move-to (+ x indent)
+                           (+ y
+                              numOfFacedownCards
+                              (length (cdr faceups))
+                              2
+                              (1+ offset)))
           (if (and (not empty-p)
                    facedown-p
                    (and (>= offset                                 hMinusGraphicHalf)
                         (<  offset (- rows (- heightMinusGraphic hMinusGraphicHalf)))))
-              (insert "|"
-                      (make-string wMinusGraphicHalf                       ?\ )
-                      (nth (- offset hMinusGraphicHalf) graphic)
-                      (make-string (- cols wMinusGraphicHalf graphicWidth) ?\ )
-                      "|")
-            (insert (if (and empty-p (cl-evenp offset)) " " "|"))
-            (if (and faceups (= offset (/ rows 2)))
-                (let* ((suit           (klondike--card-get-suit (car faceups)))
-                       (suitLen                                  (length suit))
-                       (widthMinusSuit              (- cols           suitLen))
-                       (wMinusSuitHalf              (/ widthMinusSuit       2)))
-                  (insert (make-string wMinusSuitHalf ? )
-                          suit
-                          (make-string (- cols wMinusSuitHalf suitLen) ? )))
-              (insert (make-string cols ? )))
-            (insert (if (and empty-p (cl-evenp offset)) " " "|"))))
+              (let ((str (concat "│"
+                                 (make-string wMinusGraphicHalf                       ?\ )
+                                 (nth (- offset hMinusGraphicHalf) graphic)
+                                 (make-string (- cols wMinusGraphicHalf graphicWidth) ?\ )
+                                 "│")))
+                (insert (concat str (make-string (- 1card+padding (length str)) ? ))))
+            (let ((str (concat (if (> n -1) "╰┤" "")
+                               (make-string (- (+ numOfFacedownCards (length (cdr faceups)))
+                                               indent
+                                               (if (> n -1) 2 0))
+                                            ?│)
+                               (if (and empty-p (cl-oddp offset)) " " "│")
+                               (if (and faceups (= offset (/ rows 2)))
+                                   (let* ((suit           (klondike--card-get-suit (car faceups)))
+                                          (suitLen                                  (length suit))
+                                          (widthMinusSuit              (- cols           suitLen))
+                                          (wMinusSuitHalf              (/ widthMinusSuit       2)))
+                                     (concat (make-string wMinusSuitHalf ? )
+                                             suit
+                                             (make-string (- cols wMinusSuitHalf suitLen) ? )))
+                                 (make-string cols ? ))
+                               (if (and empty-p (cl-oddp offset)) " " "│"))))
+              (insert (concat str (make-string (- 1card+padding (length str)) ? )))))))
 
 
 
-        (funcall move-to x (+ y
-                              1
-                              numOfFacedownCards
-                              (if faceups (length faceups) 1)
-                              (1+ rows)))
-        (insert (format (concat (if (and empty-p (cl-evenp cardHeightW/oTopBot))
-                                    " "
-                                  "|")
-                                "%"
-                                (number-to-string (- klondike----card-width 4))
-                                "s%2s"
-                                (if (and empty-p (cl-evenp cardHeightW/oTopBot))
-                                    " "
-                                  "|"))
-                        ""
-                        (if faceups
-                            (klondike--card-get-value (car faceups))
-                          "")))
+      ;; S E C O N D   V A L U E   L I N E
+      (let* ((n      (- (+ numOfFacedownCards (length faceups) 1 (1+ rows))
+                        klondike----card-height))
+             (indent (if (> n 0) n 0))
+             (str    (format (concat (if (> n -1) "╰")
+                                     (if (and empty-p (cl-oddp cardHeightW/oTopBot))
+                                         " "
+                                       (if (> n -1) "┤" "│"))
+                                     "%"
+                                     (number-to-string (- klondike----card-width 4))
+                                     "s%2s"
+                                     (if (and empty-p (cl-oddp cardHeightW/oTopBot))
+                                         " "
+                                       "│"))
+                             ""
+                             (if faceups
+                                 (klondike--card-get-value (car faceups))
+                               ""))))
+        (funcall move-to (+ x indent)
+                         (+ y
+                            numOfFacedownCards
+                            (length (cdr faceups))
+                            2
+                            (1+ rows)))
+        (insert (concat str (make-string (- 1card+padding (length str)) ? ))))
 
 
 
-        (funcall move-to x (+ y
-                              1
-                              numOfFacedownCards
-                              (if faceups (length faceups) 1)
-                              (1+ rows)
-                              1))
-        (insert " "
-                (mapconcat (lambda (num)
-                             (if (and (cl-evenp num) empty-p) " " "‾"))
-                           (number-sequence 1 cols))
-                " ")
+      ;; C A R D   B O T T O M
+      (let* ((n      (- (+ numOfFacedownCards (length faceups) 1 (1+ rows) 1)
+                        klondike----card-height))
+             (indent (if (> n 0) n 0))
+             (str    (concat "╰"
+                             (mapconcat (lambda (num)
+                                          (if (and (cl-oddp num) empty-p) " " "─"))
+                                        (number-sequence 1 cols))
+                             "╯")))
+        (funcall move-to (+ x indent)
+                         (+ y
+                            numOfFacedownCards
+                            (length (cdr faceups))
+                            2
+                            (1+ rows)
+                            1))
+        (insert (concat str (make-string (- 1card+padding (length str)) ? ))))
 
 
 
-        (when show-stack-p
-          (dotimes (offset 10)
-            (funcall move-to x (+ y
-                                  1
-                                  numOfFacedownCards
-                                  (if faceups (length faceups) 1)
-                                  (1+ rows)
-                                  1
-                                  (1+ offset)))
-            (insert (make-string klondike----card-width ? )))))))
+      ;; B O T T O M   W H I T E S P A C E
+      (when show-stack-p
+        (dotimes (offset 10)
+          (let* ((n      (- (+ numOfFacedownCards (length faceups) 1 (1+ rows) 1 (1+ offset))
+                            klondike----card-height))
+                 (indent (if (> n 0) n 0)))
+            (funcall move-to (+ x indent)
+                             (+ y
+                                numOfFacedownCards
+                                (length (cdr faceups))
+                                2
+                                (1+ rows)
+                                1
+                                (1+ offset)))
+            (insert (make-string 1card+padding ? )))))))
 
   (read-only-mode t)
   (goto-line      0)
@@ -567,14 +665,19 @@
 
   (let ((totalNum (length (klondike--stack-get-cards stack))))
     (dotimes (stackIndex (klondike--stack-get-visible stack))
-      (goto-line      (+ 1 (klondike--stack-get-y stack) (- totalNum stackIndex)))
-      (move-to-column (+ (klondike--stack-get-x stack) (- klondike----card-width 3)))
+      (goto-line      (+ (if (zerop stackIndex) 1 0)
+                         (klondike--stack-get-y stack)
+                         (- totalNum stackIndex)))
+      (move-to-column (+ (if (zerop stackIndex) 1 0)
+                         (klondike--stack-get-x stack)
+                         (- totalNum               (1+ stackIndex))
+                         (- klondike----card-width 4)))
 
       (delete-region (point) (+ (point) 2))
 
       (let ((result (number-to-string (1+ stackIndex))))
         (insert (if (= (length result) 1)
-                    (if (= (1+ stackIndex) totalNum) " " "‾")
+                    (if (zerop stackIndex) " " "─")
                   "")
                 (propertize result 'face '(:slant      italic
                                            :foreground "yellow"))))))
@@ -589,17 +692,21 @@
 
   (let ((  totalNum (if hide-stack-p 1 (length (klondike--stack-get-cards stack))))
         (visibleNum (klondike--stack-get-visible stack)))
-    (goto-line      (+ 1
+    (goto-line      (+ (if (= selected-num 1) 1 0)
                        (klondike--stack-get-y stack)
-                       (- totalNum        visibleNum)
+                       (- totalNum        visibleNum) ; facedowns
                        (- (1+ visibleNum) selected-num)))
-    (move-to-column (+ (klondike--stack-get-x stack) (- klondike----card-width 3)))
+    (move-to-column (+ (if (= selected-num 1) 1 0)
+                       (klondike--stack-get-x stack)
+                       (- totalNum                 visibleNum)
+                       (- visibleNum        selected-num)
+                       (- klondike----card-width 4)))
 
     (delete-region (point) (+ (point) 2))
 
     (let ((stringNum (number-to-string selected-num)))
       (insert (if (= (length stringNum) 1)
-                  (if (= selected-num visibleNum totalNum) " " "‾")
+                  (if (= selected-num 1) " " "─")
                 "")
               (propertize stringNum
                           'face '(:slant      italic
@@ -616,13 +723,18 @@
 
   (let ((totalNum (if hide-stack-p 1 (length (klondike--stack-get-cards stack)))))
     (dotimes (stackIndex (klondike--stack-get-visible stack))
-      (goto-line      (+ 1 (klondike--stack-get-y stack) (- totalNum stackIndex)))
-      (move-to-column (+ (klondike--stack-get-x stack) (- klondike----card-width 3)))
+      (goto-line      (+ (if (zerop stackIndex) 1 0)
+                         (klondike--stack-get-y stack)
+                         (- totalNum stackIndex)))
+      (move-to-column (+ (if (zerop stackIndex) 1 0)
+                         (klondike--stack-get-x stack)
+                         (- totalNum               (1+ stackIndex))
+                         (- klondike----card-width 4)))
 
       (delete-region (point) (+ (point) 2))
 
       (let ((result (number-to-string (1+ stackIndex))))
-        (insert (if (= (1+ stackIndex) totalNum) "  " "‾‾")))))
+        (insert (if (zerop stackIndex) "  " "──")))))
 
   (read-only-mode t)
   (goto-line      0)
@@ -633,7 +745,7 @@
 (defun klondike--initialize-cards ()
   ""
 
-  (let* ((1card+padding (+ klondike----card-width     klondike----window-padding))
+  (let* ((1card+padding (+ klondike----card-width     (1- klondike----card-height)))
          (topBotPadding (/ klondike----window-padding 2))
          (cardPack      (let ((suits  '(club heart spade diamond))
                               (result '()))
@@ -706,7 +818,7 @@
     (klondike--stack-set klondike----faceup-stack
                          '()
                          0
-                         (+ klondike----window-padding (1- 1card+padding))
+                         (+ klondike----window-padding klondike----card-width 1)
                          topBotPadding))
 
   (klondike--history-save))
@@ -1038,7 +1150,7 @@ Klondike solitaire game for Emacs."
     (klondike--initialize-cards)
 
     (let ((1card+padding (+ klondike----card-width
-                            klondike----window-padding))
+                            (1- klondike----card-height)))
           (topBotPadding (1- klondike----window-padding)))
       (dotimes (lineNum (+ topBotPadding
                            klondike----card-height
@@ -1050,7 +1162,7 @@ Klondike solitaire game for Emacs."
         (goto-line (1+ lineNum))
 
         (insert (make-string (+ klondike----window-padding
-                                (* 7 1card+padding))        ? ) "\n"))
+                                (* 8 1card+padding))        ? ) "\n"))
 
       (klondike--card-insert-all))
 

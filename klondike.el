@@ -225,6 +225,10 @@
       (message "No more redo!")
     (klondike--history-alter (1+ (klondike--history-get-index)))))
 
+(defface klondike---heart-diamond-color
+  '((t :foreground "red"))
+  "Face for cards which belong to the heart or diamond suit."
+  :group 'klondike)
 (defcustom klondike---suits-icon-spade   "♠"
   ""
   :type  'string
@@ -256,11 +260,11 @@
                                                     ('heart   klondike---suits-icon-heart)
                                                     ('diamond klondike---suits-icon-diamond))
                                                   'face
-                                                  '(:foreground "red")))))
+                                                  'klondike---heart-diamond-color))))
     (:value . ,(let ((v (if (numberp value) (number-to-string value) value)))
                  (pcase suit-symbol
                    ((or 'spade 'club)    v)
-                   ((or 'heart 'diamond) (propertize v 'face '(:foreground "red"))))))))
+                   ((or 'heart 'diamond) (propertize v 'face 'klondike---heart-diamond-color)))))))
 (defun klondike--card-get-suit (card)
   ""
 
@@ -327,7 +331,7 @@
                                                                   (  'Q "🂽")
                                                                   (  'K "🂾"))
                                                                 'face
-                                                                '(:foreground "red")))
+                                                                'klondike---heart-diamond-color))
     ((pred (string= klondike---suits-icon-spade))   (cl-case (intern (klondike--card-get-value card))
                                                       (  'A "🂡")
                                                       ( '\2 "🂢")
@@ -357,7 +361,7 @@
                                                                   (  'Q "🃍")
                                                                   (  'K "🃎"))
                                                                 'face
-                                                                '(:foreground "red")))))
+                                                                'klondike---heart-diamond-color))))
 
 
 

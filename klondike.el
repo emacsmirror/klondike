@@ -47,6 +47,11 @@
   "Face for numbering the visible cards in a stack for the user
 to select one of the cards."
   :group 'klondike)
+(defface klondike---stack-selecting
+  '((t :slant italic :weight bold :foreground "purple"))
+  "Face for highlighting which visible cards in a stack has
+been selected by a user."
+  :group 'klondike)
 
 (defcustom klondike----simplified-card-moving-p nil
   ""
@@ -722,10 +727,7 @@ to select one of the cards."
       (insert (if (= (length stringNum) 1)
                   (if (= selected-num 1) " " "─")
                 "")
-              (propertize stringNum
-                          'face '(:slant      italic
-                                  :weight     bold
-                                  :foreground "purple")))))
+              (propertize stringNum 'face 'klondike---stack-selecting))))
 
   (read-only-mode t)
   (goto-line      0)

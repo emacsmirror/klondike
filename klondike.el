@@ -973,6 +973,18 @@
                        stack-num)
 
   (klondike-mode))
+(defun klondike--stack-select-else-pick (stack-type stack-num)
+  ""
+
+  (if (and (< stack-num 7)
+           (klondike--card-move (car klondike----stack-pile-pick-stack)
+                                (cdr klondike----stack-pile-pick-stack)
+                                klondike----stack-pile-pick-num
+                                stack-type
+                                stack-num
+                                t))
+      (klondike-mode)
+    (klondike--stack-pick (1+ stack-num))))
 
 (defun klondike-card-deck-next ()
   ""

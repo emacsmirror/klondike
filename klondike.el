@@ -1068,34 +1068,52 @@
 (defvar klondike-picker-mode-map (let ((mode-map (make-sparse-keymap)))
                                    (define-key mode-map (kbd "TAB") #'klondike--stack-find-available-empty)
 
-                                   (mapc (lambda (num)
-                                           (define-key mode-map
-                                                       (kbd (concat "<f"
-                                                                    (number-to-string num)
-                                                                    ">"))
-                                                       (lambda ()
-                                                         (interactive)
+                                   (if klondike----simplified-card-moving-p
+                                       (mapc (lambda (num)
+                                               (define-key mode-map
+                                                           (kbd (number-to-string (1+ num)))
+                                                           (lambda ()
+                                                             (interactive)
 
-                                                         (klondike--stack-pick num))))
-                                         (number-sequence 1 12))
+                                                             (let ((sType (car klondike----stack-pile-pick-stack))
+                                                                   (sNum  (cdr klondike----stack-pile-pick-stack)))
+                                                               (setq klondike----stack-pile-pick-num
+                                                                     (if (eq sType 'empty)
+                                                                         1
+                                                                       (klondike--stack-get-visible
+                                                                        (klondike--stack-get sType sNum)))))
 
-                                   (mapc (lambda (num)
-                                           (define-key mode-map
-                                                       (kbd (number-to-string (1+ num)))
-                                                       (lambda ()
-                                                         (interactive)
+                                                             (klondike--stack-select-else-pick 'pile
+                                                                                               num))))
+                                             (number-sequence 0 8))
+                                     (mapc (lambda (num)
+                                             (define-key mode-map
+                                                         (kbd (concat "<f"
+                                                                      (number-to-string num)
+                                                                      ">"))
+                                                         (lambda ()
+                                                           (interactive)
 
-                                                         (let ((sType (car klondike----stack-pile-pick-stack))
-                                                               (sNum  (cdr klondike----stack-pile-pick-stack)))
-                                                           (setq klondike----stack-pile-pick-num
-                                                                 (if (eq sType 'empty)
-                                                                     1
-                                                                   (klondike--stack-get-visible
-                                                                     (klondike--stack-get sType sNum)))))
+                                                           (klondike--stack-pick num))))
+                                           (number-sequence 1 12))
 
-                                                         (klondike--stack-select 'pile
-                                                                                 num))))
-                                         (number-sequence 0 6))
+                                     (mapc (lambda (num)
+                                             (define-key mode-map
+                                                         (kbd (number-to-string (1+ num)))
+                                                         (lambda ()
+                                                           (interactive)
+
+                                                           (let ((sType (car klondike----stack-pile-pick-stack))
+                                                                 (sNum  (cdr klondike----stack-pile-pick-stack)))
+                                                             (setq klondike----stack-pile-pick-num
+                                                                   (if (eq sType 'empty)
+                                                                       1
+                                                                     (klondike--stack-get-visible
+                                                                      (klondike--stack-get sType sNum)))))
+
+                                                           (klondike--stack-select 'pile
+                                                                                   num))))
+                                           (number-sequence 0 6)))
 
                                    (define-key mode-map (kbd "C-g") #'klondike--stack-pick-or-select-quit)
 

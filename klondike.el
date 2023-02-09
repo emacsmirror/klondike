@@ -1176,6 +1176,7 @@ Klondike solitaire game for Emacs."
                    "(use Shift to move to one of "
                    "the 4 stacks on the top-right)?")))
 
+;;;###autoload
 (defun klondike ()
   ""
   (interactive)

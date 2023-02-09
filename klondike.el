@@ -42,6 +42,12 @@
 (defvar klondike----mode-line-status ""
   "")
 
+(defface klondike---stack-numbering
+  '((t :slant italic :foreground "yellow"))
+  "Face for numbering the visible cards in a stack for the user
+to select one of the cards."
+  :group 'klondike)
+
 (defcustom klondike----simplified-card-moving-p nil
   ""
   :type  'boolean
@@ -688,8 +694,7 @@
         (insert (if (= (length result) 1)
                     (if (zerop stackIndex) " " "─")
                   "")
-                (propertize result 'face '(:slant      italic
-                                           :foreground "yellow"))))))
+                (propertize result 'face 'klondike---stack-numbering)))))
 
   (read-only-mode t)
   (goto-line      0)

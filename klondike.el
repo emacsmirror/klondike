@@ -478,7 +478,29 @@ This is primarily used to generate the `klondike----mode-line-status' string."
 
 (defun klondike--card-insert (x y empty-p &optional facedown-p   total-num
                                                     faceup-cards show-stack-p)
-  ""
+  "Handles inserting a stack into the `klondike-mode' buffer.
+
+This function is designed to put the entire stack – from facedown cards to
+faceup cards and the top card – into the buffer.
+
+X and Y tell where the first card of the stack ought to go in the buffer.
+
+EMPTY-P says whether the stack is empty or not; if empty, the outline of a card
+with a dotted line will be placed.
+
+FACEDOWN-P says whether the stack is facedown or not; if facedown,
+`klondike---card-facedow-graphic' will be used to fill in the inner contents
+(inside of the drawn border) of the shown stack.
+
+TOTAL-NUM says how many total cards are in the stack; this value is irrelevant
+if the stack is empty (as defined by EMPTY-P).
+
+FACEUP-CARDS is a list of which cards are faceup, in the stack; details about
+cards which are facedown aren't inserted so info. about the cards which are
+facedown is unneeded.
+
+SHOW-STACK-P determines whether any cards outside of the top card is shown or
+made visible."
 
   (read-only-mode 0)
 
@@ -752,7 +774,13 @@ This is primarily used to generate the `klondike----mode-line-status' string."
                                                       klondike----empty-3-stack)))
                                              "  ")))
 (defun klondike--card-insert-all (&optional stacks-to-print)
-  ""
+  "Insert all stacks into the `klondike-mode' buffer which are in
+STACKS-TO-PRINT.
+
+If STACKS-TO-PRINT is 'nil', insert all possible stacks.
+
+Inverting overwrites any characters in the location of where a stack is meant
+to be."
 
   (let ((current (klondike--history-get-timeline-current)))
     (mapc (lambda (toPrintSymbol)
@@ -781,7 +809,10 @@ This is primarily used to generate the `klondike----mode-line-status' string."
                                                              (substring str 1 (1- (length str))))))))))
           (if stacks-to-print stacks-to-print (mapcar 'car current)))))
 (defun klondike--stack-number (stack)
-  ""
+  "Numbers the visible faceup cards of STACK.
+
+The face `klondike---stack-numbering' is used to format the numbers given to
+each card."
 
   (read-only-mode 0)
 
@@ -807,7 +838,13 @@ This is primarily used to generate the `klondike----mode-line-status' string."
   (goto-line      0)
   (move-to-column 1))
 (defun klondike--stack-number-select (stack selected-num &optional hide-stack-p)
-  ""
+  "Highlghts the SELECTED-NUM of the visible faceup cards in STACK.
+
+If HIDE-STACK-P is 't', the total number of cards considered available to select
+in the stack is 1.
+
+The face `klondike---stack-selecting' is used to format the number given by
+SELECTED-NUM."
 
   (read-only-mode 0)
 
@@ -835,7 +872,10 @@ This is primarily used to generate the `klondike----mode-line-status' string."
   (goto-line      0)
   (move-to-column 1))
 (defun klondike--stack-clear-selects (stack &optional hide-stack-p)
-  ""
+  "Wipe out all numbering of the visible faceup cards of STACK.
+
+If HIDE-STACK-P is 't', the total number of cards considered available to select
+in the stack is 1."
 
   (read-only-mode 0)
 
@@ -861,7 +901,7 @@ This is primarily used to generate the `klondike----mode-line-status' string."
 
 
 (defun klondike--initialize-cards ()
-  ""
+  "Setup the stack variables for the start of a game."
 
   (let* ((1card+padding (+ klondike---card-width     (1- klondike---card-height)))
          (topBotPadding (/ klondike---window-padding 2))
@@ -944,7 +984,14 @@ This is primarily used to generate the `klondike----mode-line-status' string."
 
 
 (defun klondike--card-find-available-empty (stack-symbol &optional stack-num)
-  ""
+  "Find if any available stack of the 4 top-right in the first row can take the
+top card of another stack.
+
+STACK-SYMBOL can be 'faceup or 'pile and indicates the type of stack where the
+top card should be taken from.
+
+STACK-NUM indicates which 'pile stack to use; it is ignored if STACK-SYMBOL is
+'faceup."
 
   (let* ((stack (cl-case stack-symbol
                   ('faceup klondike----faceup-stack)
@@ -968,7 +1015,18 @@ This is primarily used to generate the `klondike----mode-line-status' string."
       (run-at-time 0.1 nil (lambda () (message "Ain't any available spot…"))))))
 
 (defun klondike--card-move (type1 index1 stack-depth type2 index2 &optional no-message-p)
-  ""
+  "Move any number of cards from one stack to another.
+
+The type (TYPE1 and TYPE2) specify the type of the stack: 'faceup, 'pile, or 'empty.
+
+The index (INDEX1 and INDEX2) specifies which version of a stack type to use; if
+the type is 'faceup, the index is disregarded (within `klondike--stack-get').
+
+STACK-DEPTH specifies how many cards from the top of a stack ought to be moved
+to the second stack.
+
+If NO-MESSAGE-P is 't', no `message' is given, to alert users, if the cards
+specified cannot be moved from the first stack to the second stack."
 
   (let* ((stack1     (klondike--stack-get type1 index1))
          (stack2     (klondike--stack-get type2 index2))

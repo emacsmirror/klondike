@@ -325,25 +325,26 @@ action cannot be performed."
   "Face for cards which belong to the heart or diamond suit."
   :group 'klondike)
 (defcustom klondike---suits-icon-spade   "♠"
-  ""
+  "The string to use to represent the spade suit."
   :type  'string
   :group 'klondike)
 (defcustom klondike---suits-icon-heart   "♥" ;♡
-  ""
+  "The string to use to represent the heart suit."
   :type  'string
   :group 'klondike)
 (defcustom klondike---suits-icon-diamond "♦"
-  ""
+  "The string to use to represent the diamond suit."
   :type  'string
   :group 'klondike)
 (defcustom klondike---suits-icon-club    "♣" ;♧
-  ""
+  "The string to use to represent the club suit."
   :type  'string
   :group 'klondike)
 
 (defconst klondike----card-values '("A" "2" "3"  "4" "5" "6"
                                     "7" "8" "9" "10" "J" "Q" "K")
-  "")
+  "All possible values able to be used in a Klondike Solitaire playing card
+game.")
 (defun klondike--card-create (suit-symbol value)
   ""
 

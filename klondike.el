@@ -40,7 +40,8 @@
   "The name of the buffer the Klondike solitaire game always runs in.")
 
 (defvar klondike----mode-line-status ""
-  "")
+  "The string used to show, in the modeline, the current progress of the current
+Klondike game.")
 
 (defface klondike---stack-numbering
   '((t :slant italic :foreground "yellow"))
@@ -59,59 +60,108 @@ been selected by a user."
   :group 'klondike)
 
 (defcustom klondike---window-padding 2
-  ""
+  "The number of characters to use as padding for the left-side of the buffer;
+the top of the buffer uses half of this value."
   :type  'natnum
   :group 'klondike)
 
 (defcustom klondike---card-width  11
-  ""
+  "The width, in characters, to make each card."
   :type  'natnum
   :group 'klondike)
 (defcustom klondike---card-height 9
-  ""
+  "The height, in characters, to make each card."
   :type  'natnum
   :group 'klondike)
 
 (defcustom klondike---top-&-bottom-row-spacing 4
-  ""
+  "The rows, in characters, to space the top row of
+cards from the bottom row of cards."
   :type  'natnum
   :group 'klondike)
 
 (defcustom klondike---card-facedow-graphic (concat " _       \n"
                                                    "/ `/|// /\n"
                                                    "_;/ |/_/ ")
-  ""
+  "What to put on the back of facedown cards.
+
+Use newline characters to designate what should appear on different rows and
+have the number of characters between each newline be the same in every case.
+
+Lines too long, between each newline delimiter, for the card width will get
+truncated and lines shorter than the delimiter will get centered.
+
+Likewise, – if the number of delimeters exceed the height of the cards – rows
+from the top and bottom will be shed to make the string properly fit within the
+card; less rows than the height of the cards will mean centering."
   :type  'string
   :group 'klondike)
 
 (defvar klondike----facedown-stack `(() . ())
-  "")
+  "A variable to store the current state of the stack of facedown cards.
+
+Users should /never/ touch nor modify this.")
 (defvar klondike----faceup-stack   `(() . ())
-  "")
+  "A variable to store the current state of the stack of faceup cards.
+
+Users should /never/ touch nor modify this.")
 
 (defvar klondike----empty-0-stack  `(() . ())
-  "")
+  "A variable to store the current state of the first empty (at the start of the
+game) stack of cards.
+
+Users should /never/ touch nor modify this.")
 (defvar klondike----empty-1-stack  `(() . ())
-  "")
+  "A variable to store the current state of the second empty (at the start of
+the game) stack of cards.
+
+Users should /never/ touch nor modify this.")
 (defvar klondike----empty-2-stack  `(() . ())
-  "")
+  "A variable to store the current state of the third empty (at the start of the
+game) stack of cards.
+
+Users should /never/ touch nor modify this.")
 (defvar klondike----empty-3-stack  `(() . ())
-  "")
+  "A variable to store the current state of the fourth empty (at the start of
+the game) stack of cards.
+
+Users should /never/ touch nor modify this.")
 
 (defvar klondike----pile-0-stack  `(() . ())
-  "")
+  "A variable to store the current state of the first stack of the bottom card
+stacks.
+
+Users should /never/ touch nor modify this.")
 (defvar klondike----pile-1-stack  `(() . ())
-  "")
+  "A variable to store the current state of the second stack of the bottom card
+stacks.
+
+Users should /never/ touch nor modify this.")
 (defvar klondike----pile-2-stack  `(() . ())
-  "")
+  "A variable to store the current state of the third stack of the bottom card
+stacks.
+
+Users should /never/ touch nor modify this.")
 (defvar klondike----pile-3-stack  `(() . ())
-  "")
+  "A variable to store the current state of the fourth stack of the bottom card
+stacks.
+
+Users should /never/ touch nor modify this.")
 (defvar klondike----pile-4-stack  `(() . ())
-  "")
+  "A variable to store the current state of the fifth stack of the bottom card
+stacks.
+
+Users should /never/ touch nor modify this.")
 (defvar klondike----pile-5-stack  `(() . ())
-  "")
+  "A variable to store the current state of the sixth stack of the bottom card
+stacks.
+
+Users should /never/ touch nor modify this.")
 (defvar klondike----pile-6-stack  `(() . ())
-  "")
+  "A variable to store the current state of the seventh stack of the bottom card
+stacks.
+
+Users should /never/ touch nor modify this.")
 
 (defun klondike--stack-get (stack-type stack-num)
   ""

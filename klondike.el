@@ -1039,7 +1039,7 @@ This is primarily used to generate the `klondike----mode-line-status' string."
 
             (klondike-select-mode))
         (klondike-picker-mode)))))
-(defun klondike--stack-pick-or-select-quit ()
+(defun klondike-stack-pick-or-select-quit ()
   ""
   (interactive)
 
@@ -1052,7 +1052,7 @@ This is primarily used to generate the `klondike----mode-line-status' string."
                       (= (klondike--stack-get-visible stack) 1))))
         (klondike-mode)
       (klondike-picker-mode))))
-(defun klondike--stack-find-available-empty ()
+(defun klondike-stack-find-available-empty ()
   ""
   (interactive)
 
@@ -1179,7 +1179,7 @@ This is primarily used to generate the `klondike----mode-line-status' string."
   (setq klondike----stack-pile-pick-num   -1))
 
 (defvar klondike-picker-mode-map (let ((mode-map (make-sparse-keymap)))
-                                   (define-key mode-map (kbd "TAB") #'klondike--stack-find-available-empty)
+                                   (define-key mode-map (kbd "TAB") #'klondike-stack-find-available-empty)
 
                                    (if klondike----simplified-card-moving-p
                                        (mapc (lambda (num)
@@ -1228,7 +1228,7 @@ This is primarily used to generate the `klondike----mode-line-status' string."
                                                                                    num))))
                                            (number-sequence 0 6)))
 
-                                   (define-key mode-map (kbd "C-g") #'klondike--stack-pick-or-select-quit)
+                                   (define-key mode-map (kbd "C-g") #'klondike-stack-pick-or-select-quit)
 
                                    mode-map)
   "Keymap for `klondike-picker-mode'.")
@@ -1243,7 +1243,7 @@ solitaire game for Emacs."
   (message "Move which card in the stack?"))
 
 (defvar klondike-select-mode-map (let ((mode-map (make-sparse-keymap)))
-                                   (define-key mode-map (kbd "TAB") #'klondike--stack-find-available-empty)
+                                   (define-key mode-map (kbd "TAB") #'klondike-stack-find-available-empty)
 
                                    (define-key mode-map (kbd "!") (lambda ()
                                                                     (interactive)
@@ -1271,7 +1271,7 @@ solitaire game for Emacs."
                                                          (klondike--stack-select 'pile num))))
                                          (number-sequence 0 6))
 
-                                   (define-key mode-map (kbd "C-g") #'klondike--stack-pick-or-select-quit)
+                                   (define-key mode-map (kbd "C-g") #'klondike-stack-pick-or-select-quit)
 
                                    mode-map)
   "Keymap for `klondike-select-mode'.")

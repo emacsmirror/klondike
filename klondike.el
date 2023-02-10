@@ -346,7 +346,11 @@ action cannot be performed."
   "All possible values able to be used in a Klondike Solitaire playing card
 game.")
 (defun klondike--card-create (suit-symbol value)
-  ""
+  "Creates the representation of card as used by `klondike'.
+
+SUIT-SYMBOL can be 'club, 'heart, 'spade, or 'diamond.
+
+VALUE can be any valid value in `klondike----card-values'."
 
   `((:suit . ,(pcase suit-symbol
                 ((or 'spade 'club)    (cl-case suit-symbol
@@ -362,15 +366,23 @@ game.")
                    ((or 'spade 'club)    v)
                    ((or 'heart 'diamond) (propertize v 'face 'klondike---heart-diamond-color)))))))
 (defun klondike--card-get-suit (card)
-  ""
+  "Gets the suit of the CARD.
+
+See `klondike---suits-icon-club', `klondike---suits-icon-heart',
+`klondike---suits-icon-spade', or `klondike---suits-icon-diamond'."
 
   (alist-get :suit card))
 (defun klondike--card-get-value (card)
-  ""
+  "Gets the value of the CARD.
+
+See `klondike----card-values'."
 
   (alist-get :value card))
 (defun klondike--card-next-p (card1 card2 to-empty-p)
-  ""
+  "Determins if CARD2 is able to be placed upon CARD1.
+
+TO-EMPTY-P designates whether CARD1 resides in one of the top-right stacks on
+the first row; if 'nil', it resides in one of the stacks on the bottom row."
 
   (let ((next (lambda (c ascending-p)
                 (let ((mem (member (klondike--card-get-value c)
@@ -394,7 +406,10 @@ game.")
                         (or (string= (klondike--card-get-suit card1) klondike---suits-icon-heart)
                             (string= (klondike--card-get-suit card1) klondike---suits-icon-diamond)))))))))
 (defun klondike--card-to-unicode (card)
-  ""
+  "Converts CARD to a unicode character to be used to represent the state of
+the top-right 4 stacks in the first row.
+
+This is primarily used to generate the `klondike----mode-line-status' string."
 
   (pcase (klondike--card-get-suit card)
     ('nil                                           "🂠")

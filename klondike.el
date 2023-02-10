@@ -1080,11 +1080,31 @@ specified cannot be moved from the first stack to the second stack."
       t)))
 
 (defvar klondike----stack-pick-stack (cons nil -1)
-  "")
+  "When selecting a stack to move a card or cards from, this variable is used
+to keep track of which stack a user is looking to pick cards from.
+
+The `car' of the pair is the stack type while the `cdr' is the number to
+specify which stack of that type is to be used; if the type is 'faceup, this
+value is irrelevant.")
 (defvar klondike----stack-pick-num -1
-  "")
+  "This variable stores which, of the visible faceup cards in the stack
+specified by `klondike----stack-pick-stack', the user has selected.")
 (defun klondike--stack-pick-or-select (stack-type &optional stack-num)
-  ""
+  "Determine whether to enter a mode to allow the user to pick a card from a
+stack (`klondike-picker-mode') or decide where to move the top card to another
+stack (`klondike-select-mode').
+
+If the only visible faceup cards in a stack is 1, the latter mode is chosen;
+otherwise, the first.
+
+STACK-TYPE can be one of three types: 'faceup, 'pile, or 'empty.
+
+'faceup is `klondike----faceup-stack', 'pile is any of the 7 stacks at the
+bottom half of the screen, and 'empty is one of the 4 stacks at the top-right
+of the screen.
+
+STACK-NUM specifies which stack, of a particular group, to return; in the case
+of 'faceup, STACK-NUM is ignored."
 
   (setq klondike----stack-pick-stack `(,stack-type . ,stack-num))
 
@@ -1098,7 +1118,8 @@ specified cannot be moved from the first stack to the second stack."
             (klondike-select-mode))
         (klondike-picker-mode)))))
 (defun klondike-stack-pick-or-select-quit ()
-  ""
+  "Quits either `klondike-picker-mode' or `klondike-select-mode' and returns
+to `klondike-mode'."
   (interactive)
 
   (let* ((stack-symbol           (car klondike----stack-pick-stack))
@@ -1111,7 +1132,9 @@ specified cannot be moved from the first stack to the second stack."
         (klondike-mode)
       (klondike-picker-mode))))
 (defun klondike-stack-find-available-empty ()
-  ""
+  "Checks whether the card depth specified by `klondike----stack-pick-num' from
+the stack specified by `klondike----stack-pick-stack' can be moved to any of the
+4 top-right stacks in the top row."
   (interactive)
 
   (let* ((stack-symbol           (car klondike----stack-pick-stack))
@@ -1125,7 +1148,8 @@ specified cannot be moved from the first stack to the second stack."
 
       (klondike-mode))))
 (defun klondike--stack-pick (card-num)
-  ""
+  "When in `klondike-picker-mode', selects the card specified by CARD-NUM and
+switches to `klondike-select-mode'."
 
   (let ((stack (klondike--stack-get (car klondike----stack-pick-stack)
                                     (cdr klondike----stack-pick-stack))))
@@ -1135,7 +1159,18 @@ specified cannot be moved from the first stack to the second stack."
 
       (klondike-select-mode))))
 (defun klondike--stack-select (stack-type stack-num)
-  ""
+  "Moves the card depth specified by `klondike----stack-pick-num' from the stack
+specified by `klondike----stack-pick-stack' to the stack specified by STACK-TYPE
+and STACK-NUM.
+
+STACK-TYPE can be one of three types: 'faceup, 'pile, or 'empty.
+
+'faceup is `klondike----faceup-stack', 'pile is any of the 7 stacks at the
+bottom half of the screen, and 'empty is one of the 4 stacks at the top-right
+of the screen.
+
+STACK-NUM specifies which stack, of a particular group, to return; in the case
+of 'faceup, STACK-NUM is ignored."
 
   (klondike--card-move (car klondike----stack-pick-stack)
                        (cdr klondike----stack-pick-stack)
@@ -1145,7 +1180,12 @@ specified cannot be moved from the first stack to the second stack."
 
   (klondike-mode))
 (defun klondike--stack-select-else-pick (stack-type stack-num)
-  ""
+  "Attempt to move all visible faceup cards from the stack specified by
+`klondike----stack-pick-stack' to the stack specified by STACK-TYPE and
+STACK-NUM and return to `klondike-mode'.
+
+If this is not possible, pick the card in the stack by STACK-NUM by calling
+`klondike--stack-pick'."
 
   (if (and (< stack-num 7)
            (klondike--card-move (car klondike----stack-pick-stack)
@@ -1158,7 +1198,10 @@ specified cannot be moved from the first stack to the second stack."
     (klondike--stack-pick (1+ stack-num))))
 
 (defun klondike-card-deck-next ()
-  ""
+  "Flip a card from the facedown stack to being faceup.
+
+If the facedown stack is empty, move all cards which have been flipped up
+to the facedown stack and in the facedown position."
   (interactive)
 
   (if (zerop (length (klondike--stack-get-cards klondike----facedown-stack)))
@@ -1349,7 +1392,8 @@ Klondike solitaire game for Emacs."
 
 ;;;###autoload
 (defun klondike ()
-  ""
+  "Launch a new Klondike game or, if one is already being played, switch to the
+active buffer."
   (interactive)
 
   (if-let ((existing (get-buffer klondike----buffer-name)))

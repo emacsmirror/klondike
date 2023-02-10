@@ -500,32 +500,34 @@ game.")
     ;; F A C E   U P S
     (let ((faceupRev (reverse (cdr faceups))))
       (dotimes (faceupIndex (length faceupRev))
-        (let* ((n      (- (+ numOfFacedownCards (1+ faceupIndex))
-                          klondike---card-height))
-               (indent (if (> n 0) n 0))
-               (str    (string-replace " "
-                                       "─"
-                                       (format (concat (if (> n -1) "╰" "")
-                                                       (if (> n -1) "┤" "")
-                                                       (make-string (- (+ numOfFacedownCards
-                                                                          faceupIndex)
-                                                                       indent
-                                                                       (if (> n -1) 2 0))
-                                                                    ?│)
-                                                       "╭%-3s%"
-                                                       (number-to-string
-                                                         (- klondike---card-width 6))
-                                                       "s"
-                                                       (if (and (zerop faceupIndex)
-                                                                (zerop numOfFacedownCards))
-                                                           "─"
-                                                         "┴")
-                                                       "╮")
-                                               (concat (klondike--card-get-suit
-                                                         (nth faceupIndex faceupRev))
-                                                       (klondike--card-get-value
-                                                         (nth faceupIndex faceupRev)))
-                                               ""))))
+        (let* ((n       (- (+ numOfFacedownCards (1+ faceupIndex))
+                           klondike---card-height))
+               (indent  (if (> n 0) n 0))
+               (suitVal (concat (klondike--card-get-suit  (nth faceupIndex faceupRev))
+                                (klondike--card-get-value (nth faceupIndex faceupRev))))
+               (str     (string-replace " "
+                                        "─"
+                                        (format (concat (if (> n -1) "╰" "")
+                                                        (if (> n -1) "┤" "")
+                                                        (make-string (- (+ numOfFacedownCards
+                                                                           faceupIndex)
+                                                                        indent
+                                                                        (if (> n -1) 2 0))
+                                                                     ?│)
+                                                        "╭%-"
+                                                        (number-to-string (length suitVal))
+                                                        "s%"
+                                                        (number-to-string (- klondike---card-width
+                                                                             3  ; ╭, ─/┴, and ╮
+                                                                             (length suitVal)))
+                                                        "s"
+                                                        (if (and (zerop faceupIndex)
+                                                                 (zerop numOfFacedownCards))
+                                                            "─"
+                                                          "┴")
+                                                        "╮")
+                                                suitVal
+                                                ""))))
           (funcall move-to (+ x indent)
                            (+ y numOfFacedownCards (1+ faceupIndex)))
           (insert (concat str

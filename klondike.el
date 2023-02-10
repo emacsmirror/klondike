@@ -1079,21 +1079,21 @@ specified cannot be moved from the first stack to the second stack."
 
       t)))
 
-(defvar klondike----stack-pile-pick-stack (cons nil -1)
+(defvar klondike----stack-pick-stack (cons nil -1)
   "")
-(defvar klondike----stack-pile-pick-num -1
+(defvar klondike----stack-pick-num -1
   "")
 (defun klondike--stack-pick-or-select (stack-type &optional stack-num)
   ""
 
-  (setq klondike----stack-pile-pick-stack `(,stack-type . ,stack-num))
+  (setq klondike----stack-pick-stack `(,stack-type . ,stack-num))
 
   (let ((stack (klondike--stack-get stack-type stack-num)))
     (if (not (klondike--stack-get-cards stack))
         (message "That spot there's empty, pardner…")
       (if (= (klondike--stack-get-visible stack) 1)
           (progn
-            (setq klondike----stack-pile-pick-num 1)
+            (setq klondike----stack-pick-num 1)
 
             (klondike-select-mode))
         (klondike-picker-mode)))))
@@ -1101,12 +1101,12 @@ specified cannot be moved from the first stack to the second stack."
   ""
   (interactive)
 
-  (let* ((stack-symbol      (car klondike----stack-pile-pick-stack))
-         (stack-num         (cdr klondike----stack-pile-pick-stack))
+  (let* ((stack-symbol           (car klondike----stack-pick-stack))
+         (stack-num              (cdr klondike----stack-pick-stack))
          (stack        (klondike--stack-get stack-symbol stack-num)))
     (if (or (eq major-mode 'klondike-picker-mode)
             (and (eq major-mode 'klondike-select-mode)
-                 (and (= klondike----stack-pile-pick-num     1)
+                 (and (= klondike----stack-pick-num          1)
                       (= (klondike--stack-get-visible stack) 1))))
         (klondike-mode)
       (klondike-picker-mode))))
@@ -1114,11 +1114,11 @@ specified cannot be moved from the first stack to the second stack."
   ""
   (interactive)
 
-  (let* ((stack-symbol      (car klondike----stack-pile-pick-stack))
-         (stack-num         (cdr klondike----stack-pile-pick-stack))
+  (let* ((stack-symbol           (car klondike----stack-pick-stack))
+         (stack-num              (cdr klondike----stack-pick-stack))
          (stack        (klondike--stack-get stack-symbol stack-num)))
     (if (and (eq major-mode 'klondike-select-mode)
-             (not (and (= klondike----stack-pile-pick-num     1)
+             (not (and (= klondike----stack-pick-num          1)
                        (= (klondike--stack-get-visible stack) 1))))
         (message "Not allowed…")
       (klondike--card-find-available-empty stack-symbol stack-num)
@@ -1127,19 +1127,19 @@ specified cannot be moved from the first stack to the second stack."
 (defun klondike--stack-pick (card-num)
   ""
 
-  (let ((stack (klondike--stack-get (car klondike----stack-pile-pick-stack)
-                                    (cdr klondike----stack-pile-pick-stack))))
+  (let ((stack (klondike--stack-get (car klondike----stack-pick-stack)
+                                    (cdr klondike----stack-pick-stack))))
     (if (> card-num (klondike--stack-get-visible stack))
         (message "Mmmm…that's not an option; move which card in the stack?")
-      (setq klondike----stack-pile-pick-num card-num)
+      (setq klondike----stack-pick-num card-num)
 
       (klondike-select-mode))))
 (defun klondike--stack-select (stack-type stack-num)
   ""
 
-  (klondike--card-move (car klondike----stack-pile-pick-stack)
-                       (cdr klondike----stack-pile-pick-stack)
-                       klondike----stack-pile-pick-num
+  (klondike--card-move (car klondike----stack-pick-stack)
+                       (cdr klondike----stack-pick-stack)
+                       klondike----stack-pick-num
                        stack-type
                        stack-num)
 
@@ -1148,9 +1148,9 @@ specified cannot be moved from the first stack to the second stack."
   ""
 
   (if (and (< stack-num 7)
-           (klondike--card-move (car klondike----stack-pile-pick-stack)
-                                (cdr klondike----stack-pile-pick-stack)
-                                klondike----stack-pile-pick-num
+           (klondike--card-move (car klondike----stack-pick-stack)
+                                (cdr klondike----stack-pick-stack)
+                                klondike----stack-pick-num
                                 stack-type
                                 stack-num
                                 t))
@@ -1228,13 +1228,13 @@ specified cannot be moved from the first stack to the second stack."
 (define-derived-mode klondike-mode fundamental-mode "Klondike"
   "Major mode for the Klondike solitaire game for Emacs."
 
-  (when-let ((stack-type (car klondike----stack-pile-pick-stack)))
+  (when-let ((stack-type (car klondike----stack-pick-stack)))
     (klondike--stack-clear-selects
-      (klondike--stack-get stack-type (cdr klondike----stack-pile-pick-stack))
+      (klondike--stack-get stack-type (cdr klondike----stack-pick-stack))
       (not (eq stack-type 'pile))))
 
-  (setq klondike----stack-pile-pick-stack (cons nil -1))
-  (setq klondike----stack-pile-pick-num   -1))
+  (setq klondike----stack-pick-stack (cons nil -1))
+  (setq klondike----stack-pick-num   -1))
 
 (defvar klondike-picker-mode-map (let ((mode-map (make-sparse-keymap)))
                                    (define-key mode-map (kbd "TAB") #'klondike-stack-find-available-empty)
@@ -1246,9 +1246,9 @@ specified cannot be moved from the first stack to the second stack."
                                                            (lambda ()
                                                              (interactive)
 
-                                                             (let ((sType (car klondike----stack-pile-pick-stack))
-                                                                   (sNum  (cdr klondike----stack-pile-pick-stack)))
-                                                               (setq klondike----stack-pile-pick-num
+                                                             (let ((sType (car klondike----stack-pick-stack))
+                                                                   (sNum  (cdr klondike----stack-pick-stack)))
+                                                               (setq klondike----stack-pick-num
                                                                      (if (eq sType 'empty)
                                                                          1
                                                                        (klondike--stack-get-visible
@@ -1274,9 +1274,9 @@ specified cannot be moved from the first stack to the second stack."
                                                          (lambda ()
                                                            (interactive)
 
-                                                           (let ((sType (car klondike----stack-pile-pick-stack))
-                                                                 (sNum  (cdr klondike----stack-pile-pick-stack)))
-                                                             (setq klondike----stack-pile-pick-num
+                                                           (let ((sType (car klondike----stack-pick-stack))
+                                                                 (sNum  (cdr klondike----stack-pick-stack)))
+                                                             (setq klondike----stack-pick-num
                                                                    (if (eq sType 'empty)
                                                                        1
                                                                      (klondike--stack-get-visible
@@ -1295,8 +1295,8 @@ specified cannot be moved from the first stack to the second stack."
 solitaire game for Emacs."
 
   (klondike--stack-number
-    (klondike--stack-get (car klondike----stack-pile-pick-stack)
-                         (cdr klondike----stack-pile-pick-stack)))
+    (klondike--stack-get (car klondike----stack-pick-stack)
+                         (cdr klondike----stack-pick-stack)))
 
   (message "Move which card in the stack?"))
 
@@ -1338,10 +1338,10 @@ solitaire game for Emacs."
 Klondike solitaire game for Emacs."
 
   (klondike--stack-number-select
-    (klondike--stack-get (car klondike----stack-pile-pick-stack)
-                         (cdr klondike----stack-pile-pick-stack))
-    klondike----stack-pile-pick-num
-    (not (eq (car klondike----stack-pile-pick-stack) 'pile)))
+    (klondike--stack-get (car klondike----stack-pick-stack)
+                         (cdr klondike----stack-pick-stack))
+    klondike----stack-pick-num
+    (not (eq (car klondike----stack-pick-stack) 'pile)))
 
   (message (concat "Move the cards to which stack "
                    "(use Shift to move to one of "

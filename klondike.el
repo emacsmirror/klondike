@@ -164,7 +164,16 @@ stacks.
 Users should /never/ touch nor modify this.")
 
 (defun klondike--stack-get (stack-type stack-num)
-  ""
+  "Retrieve a particular stack, in the game, by STACK-TYPE and STACK-NUM.
+
+STACK-TYPE can be one of three types: 'faceup, 'pile, or 'empty.
+
+'faceup is `klondike----faceup-stack', 'pile is any of the 7 stacks at the
+bottom half of the screen, and 'empty is one of the 4 stacks at the top-right
+of the screen.
+
+STACK-NUM specifies which stack, of a particular group, to return; in the case
+of 'faceup, STACK-NUM is ignored."
 
   (cl-case stack-type
     ('faceup klondike----faceup-stack)
@@ -182,55 +191,68 @@ Users should /never/ touch nor modify this.")
                (2 klondike----empty-2-stack)
                (3 klondike----empty-3-stack)))))
 (defmacro klondike--stack-set (stack cards visible-num x y)
-  ""
+  "Updates the variable STACK with the new state of the stack.
+
+The variable is set to a `cons' of a CARDS and VISIBLE-NUM pair for the `car'
+and a X and Y pair for the `cdr'."
 
   `(setq ,stack (cons (cons ,cards ,visible-num) (cons ,x ,y))))
 (defun klondike--stack-get-cards (stack)
-  ""
+  "Retrieves the cards of a STACK."
 
   (caar stack))
 (defun klondike--stack-set-cards (stack cards)
-  ""
+  "Sets the current CARDS of a STACK."
 
   (setcar (car stack) cards))
 (defun klondike--stack-get-visible (stack)
-  ""
+  "Gets how many cards care visible in a STACK."
 
   (cdar stack))
 (defun klondike--stack-set-visible (stack visible-num)
-  ""
+  "Sets the VISIBLE-NUM of cards for a STACK."
 
   (let ((l (length (klondike--stack-get-cards stack))))
     (setcdr (car stack) (if (> visible-num l) l visible-num))))
 (defun klondike--stack-get-x (stack)
-  ""
+  "Gets what the x coordinate of a STACK is in a buffer."
 
   (cadr stack))
 (defun klondike--stack-get-y (stack)
-  ""
+  "Gets what the y coordinate of a STACK is in a buffer."
 
   (cddr stack))
 
 (defvar klondike----history '(() . -1)
-  "")
+  "Stores the current history of a game.
+
+The `car' is a list of the different states in the history of the game while
+the `cdr' is the index, of the list, that is the current point/state of the
+game.")
 (defun klondike--history-get-timeline ()
-  ""
+  "Returns a list of the different states of time of the entire history, thus
+far, in the game."
 
   (car klondike----history))
 (defun klondike--history-get-timeline-current ()
-  ""
+  "Returns the current state, out of the entire history, at the time of the
+game."
 
   (nth (klondike--history-get-index) (klondike--history-get-timeline)))
 (defun klondike--history-get-index ()
-  ""
+  "Returns the index which points to the current state, out of the entire
+history list, at the time of the game."
 
   (cdr klondike----history))
 (defun klondike--history-set-index (index)
-  ""
+  "Sets the index which points to the current state of the game in the history
+list to INDEX."
 
   (setcdr klondike----history index))
 (defun klondike--history-save ()
-  ""
+  "Removes all history states after the current history index from the history
+timeline and saves the current state of all stacks to the end of this new list
+while incrementing the current history index by 1."
 
   (let ((timeline (klondike--history-get-timeline))
         (index    (klondike--history-get-index)))
@@ -250,7 +272,13 @@ Users should /never/ touch nor modify this.")
                                                (:pile6    . ,(copy-tree klondike----pile-6-stack)))))
                                     (1+ index)))))
 (defun klondike--history-alter (index)
-  ""
+  "Changes the index which points to the current state of the game in the
+history list to INDEX and loads the stack states stored in that history point
+into `klondike----facedown-stack', `klondike----faceup-stack',
+`klondike----empty-0-stack' (and 1–3), and `klondike----pile-0-stack' (and 1–6).
+
+Finally, reprints the game buffer to reflext the current state of the various
+stacks."
 
   (klondike--history-set-index index)
 
@@ -271,14 +299,20 @@ Users should /never/ touch nor modify this.")
 
   (klondike--card-insert-all))
 (defun klondike-history-prev ()
-  ""
+  "Rolls the current state of the game to the previous history state.
+
+If already at the first state in the history timeline, `message' that this
+action cannot be performed."
   (interactive)
 
   (if (zerop (klondike--history-get-index))
       (message "No more undo!")
     (klondike--history-alter (1- (klondike--history-get-index)))))
 (defun klondike-history-next ()
-  ""
+  "Rolls the current state of the game to the next history state.
+
+If already at the last state in the history timeline, `message' that this
+action cannot be performed."
   (interactive)
 
   (if (= (klondike--history-get-index)

@@ -47,3 +47,8 @@ You can select a particular number using the function keys; using
 This will move the 4 of spades and any cards which reside on top of
 it. If there is only one card face-up on any stack, that card will be
 selected automatically.
+
+To move the card(s) you've selected, use the same key-bindings
+which're used to pick a stack to select cards from (except for =0=;
+you cannot move cards to this area other than from the face-down
+stack).

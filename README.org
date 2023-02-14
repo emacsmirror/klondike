@@ -52,3 +52,16 @@ To move the card(s) you've selected, use the same key-bindings
 which're used to pick a stack to select cards from (except for =0=;
 you cannot move cards to this area other than from the face-down
 stack).
+
+There are three shortcuts, given their frequency of use: in lieu of
+using the function keys
+- selecting one of the bottom-row stacks (keys =1=–=7=) will attempt
+  to move all visible cards of your picked stack to the new stack
+  you've selected
+- selecting one of the top-right stacks (keys =!=, =@=, =#=, and =$=,
+  from left, to right) will attempt to move the top-most visible card
+  of your picked stack to the top-right stack you've selected
+- =TAB= will check if any of the top-right stacks are able to accept
+  the top-most visible card of your picked stack; if you can move this
+  top-most visible card to any of them, it will get moved
+  automatically, for you

@@ -26,3 +26,11 @@ running, its buffer will be brought to the forefront.
 
 A new game will look like so:
 [[./2023-02-14T16:02:05,946226379-06:00.png]]
+
+To select any of the bottom 7 rows, press any key =1=–=7=.
+
+To select any of the top-right stacks, press =!=, =@=, =#=, or =$=
+(from left, to right).
+
+To select any face-up cards moved from the face-down stack (in the
+top-left corner of the screen), press =0=.

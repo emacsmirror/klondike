@@ -39,3 +39,11 @@ If multiple cards are available to move, the visible portion of the
 stack will be numbered so that you can specify the depth of the stack
 you want to move:
 [[./2023-02-14T16:27:21,058570768-06:00.png]]
+
+You can select a particular number using the function keys; using
+=F2=, we should get:
+[[./2023-02-14T16:35:14,119336525-06:00.png]]
+
+This will move the 4 of spades and any cards which reside on top of
+it. If there is only one card face-up on any stack, that card will be
+selected automatically.

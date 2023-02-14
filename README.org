@@ -65,3 +65,6 @@ using the function keys
   the top-most visible card of your picked stack; if you can move this
   top-most visible card to any of them, it will get moved
   automatically, for you
+
+/Finally/, – to flip a card from the face-down stack to face-up – use
+=SPC=.

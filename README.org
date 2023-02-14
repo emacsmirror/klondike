@@ -17,5 +17,12 @@ don't have the repository added – yet –, you can find instructions for
 how to add it at the [[https://github.com/melpa/melpa#usage][Melpa
 Github page]].
 
-If you don't want to use either Melpa or Emacs's package manager… [add
-this info., later…]
+** How to Use
+   :PROPERTIES:
+     :CUSTOM_ID: how-to-use
+   :END:
+You can launch a game by running =M-x klondike=; if a game is already
+running, its buffer will be brought to the forefront.
+
+A new game will look like so:
+[[./2023-02-14T16:02:05,946226379-06:00.png]]

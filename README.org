@@ -34,3 +34,8 @@ To select any of the top-right stacks, press =!=, =@=, =#=, or =$=
 
 To select any face-up cards moved from the face-down stack (in the
 top-left corner of the screen), press =0=.
+
+If multiple cards are available to move, the visible portion of the
+stack will be numbered so that you can specify the depth of the stack
+you want to move:
+[[./2023-02-14T16:27:21,058570768-06:00.png]]

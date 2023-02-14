@@ -1,3 +1,5 @@
+#+STARTUP: inlineimages
+
 * Emacs Klondike
   :PROPERTIES:
     :CUSTOM_ID: emacs-klondike

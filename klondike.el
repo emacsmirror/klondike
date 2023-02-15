@@ -519,8 +519,8 @@ made visible."
                                                           1card+padding
                                                           additional))))
          (move-to             (lambda (w z &optional additional)
-                                (goto-line      z)
-                                (move-to-column w)
+                                (funcall-interactively #'goto-line z)
+                                (move-to-column                    w)
 
                                 (funcall delete-reg (if additional additional 0))))
          (cardHeightW/oTopBot (- klondike---card-height 2))
@@ -760,9 +760,9 @@ made visible."
                                 (1+ offset)))
             (insert (make-string 1card+padding ? )))))))
 
-  (read-only-mode t)
-  (goto-line      0)
-  (move-to-column 1)
+  (read-only-mode                    t)
+  (funcall-interactively #'goto-line 0)
+  (move-to-column                    1)
 
   (setq klondike----mode-line-status (concat " "
                                              (klondike--card-to-unicode
@@ -826,13 +826,13 @@ each card."
 
   (let ((totalNum (length (klondike--stack-get-cards stack))))
     (dotimes (stackIndex (klondike--stack-get-visible stack))
-      (goto-line      (+ (if (zerop stackIndex) 1 0)
-                         (klondike--stack-get-y stack)
-                         (- totalNum stackIndex)))
-      (move-to-column (+ (if (zerop stackIndex) 1 0)
-                         (klondike--stack-get-x stack)
-                         (- totalNum              (1+ stackIndex))
-                         (- klondike---card-width 4)))
+      (funcall-interactively #'goto-line (+ (if (zerop stackIndex) 1 0)
+                                            (klondike--stack-get-y stack)
+                                            (- totalNum stackIndex)))
+      (move-to-column                    (+ (if (zerop stackIndex) 1 0)
+                                            (klondike--stack-get-x stack)
+                                            (- totalNum              (1+ stackIndex))
+                                            (- klondike---card-width 4)))
 
       (delete-region (point) (+ (point) 2))
 
@@ -842,9 +842,9 @@ each card."
                   "")
                 (propertize result 'face 'klondike---stack-numbering)))))
 
-  (read-only-mode t)
-  (goto-line      0)
-  (move-to-column 1))
+  (read-only-mode                    t)
+  (funcall-interactively #'goto-line 0)
+  (move-to-column                    1))
 (defun klondike--stack-number-select (stack selected-num &optional hide-stack-p)
   "Highlght the SELECTED-NUM of the visible faceup cards in STACK.
 
@@ -858,15 +858,15 @@ SELECTED-NUM."
 
   (let ((  totalNum (if hide-stack-p 1 (length (klondike--stack-get-cards stack))))
         (visibleNum (klondike--stack-get-visible stack)))
-    (goto-line      (+ (if (= selected-num 1) 1 0)
-                       (klondike--stack-get-y stack)
-                       (- totalNum        visibleNum) ; facedowns
-                       (- (1+ visibleNum) selected-num)))
-    (move-to-column (+ (if (= selected-num 1) 1 0)
-                       (klondike--stack-get-x stack)
-                       (-   totalNum              visibleNum)
-                       (- visibleNum            selected-num)
-                       (- klondike---card-width            4)))
+    (funcall-interactively #'goto-line (+ (if (= selected-num 1) 1 0)
+                                          (klondike--stack-get-y stack)
+                                          (- totalNum        visibleNum)  ; facedowns
+                                          (- (1+ visibleNum) selected-num)))
+    (move-to-column                    (+ (if (= selected-num 1) 1 0)
+                                          (klondike--stack-get-x stack)
+                                          (-   totalNum              visibleNum)
+                                          (- visibleNum            selected-num)
+                                          (- klondike---card-width            4)))
 
     (delete-region (point) (+ (point) 2))
 
@@ -876,9 +876,9 @@ SELECTED-NUM."
                 "")
               (propertize stringNum 'face 'klondike---stack-selecting))))
 
-  (read-only-mode t)
-  (goto-line      0)
-  (move-to-column 1))
+  (read-only-mode                    t)
+  (funcall-interactively #'goto-line 0)
+  (move-to-column                    1))
 (defun klondike--stack-clear-selects (stack &optional hide-stack-p)
   "Wipe out all numbering of the visible faceup cards of STACK.
 
@@ -889,21 +889,21 @@ select in the stack is 1."
 
   (let ((totalNum (if hide-stack-p 1 (length (klondike--stack-get-cards stack)))))
     (dotimes (stackIndex (klondike--stack-get-visible stack))
-      (goto-line      (+ (if (zerop stackIndex) 1 0)
-                         (klondike--stack-get-y stack)
-                         (- totalNum stackIndex)))
-      (move-to-column (+ (if (zerop stackIndex) 1 0)
-                         (klondike--stack-get-x stack)
-                         (- totalNum               (1+ stackIndex))
-                         (- klondike---card-width 4)))
+      (funcall-interactively #'goto-line (+ (if (zerop stackIndex) 1 0)
+                                            (klondike--stack-get-y stack)
+                                            (- totalNum stackIndex)))
+      (move-to-column                    (+ (if (zerop stackIndex) 1 0)
+                                            (klondike--stack-get-x stack)
+                                            (- totalNum               (1+ stackIndex))
+                                            (- klondike---card-width 4)))
 
       (delete-region (point) (+ (point) 2))
 
       (insert (if (zerop stackIndex) "  " "──"))))
 
-  (read-only-mode t)
-  (goto-line      0)
-  (move-to-column 1))
+  (read-only-mode                    t)
+  (funcall-interactively #'goto-line 0)
+  (move-to-column                    1))
 
 
 
@@ -1424,7 +1424,7 @@ active buffer."
                            6
                            topBotPadding
                            20))
-        (goto-line (1+ lineNum))
+        (funcall-interactively #'goto-line (1+ lineNum))
 
         (insert (make-string (+ klondike---window-padding
                                 (* 8 1card+padding))       ? ) "\n"))

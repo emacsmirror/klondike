@@ -131,3 +131,23 @@ and the function/~lambda~ specified by the tables, below.
 | =F11= | ~(lambda () (interactive) (klondike--stack-pick 11))~ |
 | =F12= | ~(lambda () (interactive) (klondike--stack-pick 12))~ |
 | =C-g= | ~#'klondike-stack-pick-or-select-quit~                |
+
+**** Klondike Select Mode
+     :PROPERTIES:
+       :CUSTOM_ID: klondike-select-mode
+     :END:
+| Key   | Function                                                      |
+|-------+---------------------------------------------------------------|
+| =TAB= | ~#'klondike-stack-find-available-empty~                       |
+| =!=   | ~(lambda () (interactive) (klondike--stack-select 'empty 0))~ |
+| =@=   | ~(lambda () (interactive) (klondike--stack-select 'empty 1))~ |
+| =#=   | ~(lambda () (interactive) (klondike--stack-select 'empty 2))~ |
+| =$=   | ~(lambda () (interactive) (klondike--stack-select 'empty 3))~ |
+| =1=   | ~(lambda () (interactive) (klondike--stack-select 'pile  0))~ |
+| =2=   | ~(lambda () (interactive) (klondike--stack-select 'pile  1))~ |
+| =3=   | ~(lambda () (interactive) (klondike--stack-select 'pile  2))~ |
+| =4=   | ~(lambda () (interactive) (klondike--stack-select 'pile  3))~ |
+| =5=   | ~(lambda () (interactive) (klondike--stack-select 'pile  4))~ |
+| =6=   | ~(lambda () (interactive) (klondike--stack-select 'pile  5))~ |
+| =7=   | ~(lambda () (interactive) (klondike--stack-select 'pile  6))~ |
+| =C-g= | ~#'klondike-stack-pick-or-select-quit~                        |

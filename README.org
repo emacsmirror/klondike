@@ -110,3 +110,24 @@ and the function/~lambda~ specified by the tables, below.
 | =C-_=    | ~#'klondike-history-prev~                                              |
 | =<undo>= | ~#'klondike-history-prev~                                              |
 | =C-x u=  | ~#'klondike-history-prev~                                              |
+
+**** Klondike Picker Mode
+     :PROPERTIES:
+       :CUSTOM_ID: klondike-picker-mode
+     :END:
+| Key   | Function                                              |
+|-------+-------------------------------------------------------|
+| =TAB= | ~#'klondike-stack-find-available-empty~               |
+| =F1=  | ~(lambda () (interactive) (klondike--stack-pick  1))~ |
+| =F2=  | ~(lambda () (interactive) (klondike--stack-pick  2))~ |
+| =F3=  | ~(lambda () (interactive) (klondike--stack-pick  3))~ |
+| =F4=  | ~(lambda () (interactive) (klondike--stack-pick  4))~ |
+| =F5=  | ~(lambda () (interactive) (klondike--stack-pick  5))~ |
+| =F6=  | ~(lambda () (interactive) (klondike--stack-pick  6))~ |
+| =F7=  | ~(lambda () (interactive) (klondike--stack-pick  7))~ |
+| =F8=  | ~(lambda () (interactive) (klondike--stack-pick  8))~ |
+| =F9=  | ~(lambda () (interactive) (klondike--stack-pick  9))~ |
+| =F10= | ~(lambda () (interactive) (klondike--stack-pick 10))~ |
+| =F11= | ~(lambda () (interactive) (klondike--stack-pick 11))~ |
+| =F12= | ~(lambda () (interactive) (klondike--stack-pick 12))~ |
+| =C-g= | ~#'klondike-stack-pick-or-select-quit~                |

@@ -55,7 +55,14 @@ been selected by a user."
   :group 'klondike)
 
 (defcustom klondike----simplified-card-moving-p nil
-  ""
+  "Set to \\='t\\=' to use simplified key bindings.
+
+Rather than using distinct key bindings between picking a face-up card and
+selecting a pile to move a part of the stack automatically to, check if the
+number key pressed is a stack all visible cards can be moved to.
+
+If not, try to pick the visible card that corresponds to the number key
+pressed."
   :type  'boolean
   :group 'klondike)
 

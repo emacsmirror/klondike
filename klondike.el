@@ -54,7 +54,7 @@ to select one of the cards."
 been selected by a user."
   :group 'klondike)
 
-(defcustom klondike----simplified-card-moving-p nil
+(defcustom klondike---simplified-card-moving-p nil
   "Set to \\='t\\=' to use simplified key bindings.
 
 Rather than using distinct key bindings between picking a face-up card and
@@ -1291,7 +1291,7 @@ to the facedown stack and in the facedown position."
 (defvar klondike-picker-mode-map (let ((mode-map (make-sparse-keymap)))
                                    (define-key mode-map (kbd "TAB") #'klondike-stack-find-available-empty)
 
-                                   (if klondike----simplified-card-moving-p
+                                   (if klondike---simplified-card-moving-p
                                        (mapc (lambda (num)
                                                (define-key mode-map
                                                            (kbd (number-to-string (1+ num)))

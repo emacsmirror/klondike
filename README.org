@@ -86,3 +86,27 @@ covered (informally) above:
 Their bindings are laid out, below, for each mode; to redefine any
 key-binding, use ~define-key~ and the mode-map of the respective mode
 and the function/~lambda~ specified by the tables, below.
+
+**** Klondike Mode
+     :PROPERTIES:
+       :CUSTOM_ID: klondike-mode
+     :END:
+| Key      | Function                                                               |
+|----------+------------------------------------------------------------------------|
+| =SPC=    | ~#'klondike-card-deck-next~                                            |
+| =0=      | ~(lambda () (interactive) (klondike--stack-pick-or-select 'faceup))~   |
+| =!=      | ~(lambda () (interactive) (klondike--stack-pick-or-select 'empty  0))~ |
+| =@=      | ~(lambda () (interactive) (klondike--stack-pick-or-select 'empty  1))~ |
+| =#=      | ~(lambda () (interactive) (klondike--stack-pick-or-select 'empty  2))~ |
+| =$=      | ~(lambda () (interactive) (klondike--stack-pick-or-select 'empty  3))~ |
+| =1=      | ~(lambda () (interactive) (klondike--stack-pick-or-select 'pile   0))~ |
+| =2=      | ~(lambda () (interactive) (klondike--stack-pick-or-select 'pile   1))~ |
+| =3=      | ~(lambda () (interactive) (klondike--stack-pick-or-select 'pile   2))~ |
+| =4=      | ~(lambda () (interactive) (klondike--stack-pick-or-select 'pile   3))~ |
+| =5=      | ~(lambda () (interactive) (klondike--stack-pick-or-select 'pile   4))~ |
+| =6=      | ~(lambda () (interactive) (klondike--stack-pick-or-select 'pile   5))~ |
+| =7=      | ~(lambda () (interactive) (klondike--stack-pick-or-select 'pile   6))~ |
+| =C-/=    | ~#'klondike-history-prev~                                              |
+| =C-_=    | ~#'klondike-history-prev~                                              |
+| =<undo>= | ~#'klondike-history-prev~                                              |
+| =C-x u=  | ~#'klondike-history-prev~                                              |

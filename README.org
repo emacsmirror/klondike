@@ -68,3 +68,21 @@ using the function keys
 
 /Finally/, – to flip a card from the face-down stack to face-up – use
 =SPC=.
+
+*** Reassigning Key-bindings
+    :PROPERTIES:
+      :CUSTOM_ID: reassigning-key–bindings
+    :END:
+There are, essentially, three major modes that Klondike can exist in,
+covered (informally) above:
+- [[file:klondike.el::1271][klondike-mode]] (the initial mode you
+  enter upon any Klondike game)
+- [[file:klondike.el::1336][klondike-picker-mode]] (the mode the game
+  uses when picking a card depth from the visible cards of a
+  particular stack)
+- [[file:klondike.el::1379][klondike-select-mode]] (the mode the game
+  uses when you are selecting a stack to move your picked cards to)
+
+Their bindings are laid out, below, for each mode; to redefine any
+key-binding, use ~define-key~ and the mode-map of the respective mode
+and the function/~lambda~ specified by the tables, below.

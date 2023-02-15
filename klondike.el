@@ -6,7 +6,7 @@
 ;; URL: https://codeberg.org/tomenzgg/Emacs-Klondike
 ;; Package-Requires: ((emacs "28.1"))
 ;; Version: 1.0
-;; Keywords: game, cards, solitaire, klondike
+;; Keywords: games, cards, solitaire, klondike
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU Affero General Public License as published

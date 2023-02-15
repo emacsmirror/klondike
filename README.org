@@ -27,7 +27,7 @@ running, its buffer will be brought to the forefront.
 A new game will look like so:
 [[https://codeberg.org/tomenzgg/Emacs-Klondike/raw/branch/primary/2023-02-14T16:02:05,946226379-06:00.png]]
 
-To select any of the bottom 7 rows, press any key =1=–=7=.
+To select any of the bottom 7 rows, press any key =1= through =7=.
 
 To select any of the top-right stacks, press =!=, =@=, =#=, or =$=
 (from left, to right).
@@ -55,9 +55,9 @@ stack).
 
 There are three shortcuts, given their frequency of use: in lieu of
 using the function keys
-- selecting one of the bottom-row stacks (keys =1=–=7=) will attempt
-  to move all visible cards of your picked stack to the new stack
-  you've selected
+- selecting one of the bottom-row stacks (keys =1= through =7=) will
+  attempt to move all visible cards of your picked stack to the new
+  stack you've selected
 - selecting one of the top-right stacks (keys =!=, =@=, =#=, and =$=,
   from left, to right) will attempt to move the top-most visible card
   of your picked stack to the top-right stack you've selected

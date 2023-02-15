@@ -925,7 +925,7 @@ select in the stack is 1."
                           result))
          (fill-stack    (lambda (num)
                           (let ((result '()))
-                            (dotimes (n num)
+                            (dotimes (_ num)
                               (let* ((r    (random (length cardPack)))
                                      (tail (nthcdr r cardPack)))
                                 (setq cardPack (append (butlast cardPack

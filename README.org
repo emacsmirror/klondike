@@ -25,7 +25,7 @@ You can launch a game by running =M-x klondike=; if a game is already
 running, its buffer will be brought to the forefront.
 
 A new game will look like so:
-[[file:./2023-02-14T16:02:05,946226379-06:00.png]]
+[[file:2023-02-14T16:02:05,946226379-06:00.png]]
 
 To select any of the bottom 7 rows, press any key =1=–=7=.
 

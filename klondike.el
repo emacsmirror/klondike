@@ -166,14 +166,14 @@ Users should /never/ touch nor modify this.")
 (defun klondike--stack-get (stack-type stack-num)
   "Retrieve a particular stack, in the game, by STACK-TYPE and STACK-NUM.
 
-STACK-TYPE can be one of three types: 'faceup, 'pile, or 'empty.
+STACK-TYPE can be one of three types: \\='faceup, \\='pile, or \\='empty.
 
-'faceup is `klondike----faceup-stack', 'pile is any of the 7 stacks at the
-bottom half of the screen, and 'empty is one of the 4 stacks at the top-right
+\\='faceup is `klondike----faceup-stack', \\='pile is any of the 7 stacks at the
+bottom half of the screen, and \\='empty is one of the 4 stacks at the top-right
 of the screen.
 
 STACK-NUM specifies which stack, of a particular group, to return; in the case
-of 'faceup, STACK-NUM is ignored."
+of \\='faceup, STACK-NUM is ignored."
 
   (cl-case stack-type
     ('faceup klondike----faceup-stack)
@@ -348,7 +348,7 @@ game.")
 (defun klondike--card-create (suit-symbol value)
   "Creates the representation of card as used by `klondike'.
 
-SUIT-SYMBOL can be 'club, 'heart, 'spade, or 'diamond.
+SUIT-SYMBOL can be \\='club, \\='heart, \\='spade, or \\='diamond.
 
 VALUE can be any valid value in `klondike----card-values'."
 
@@ -382,7 +382,8 @@ See `klondike----card-values'."
   "Determins if CARD2 is able to be placed upon CARD1.
 
 TO-EMPTY-P designates whether CARD1 resides in one of the top-right stacks on
-the first row; if 'nil', it resides in one of the stacks on the bottom row."
+the first row; if \\='nil\\=', it resides in one of the stacks on the bottom
+row."
 
   (let ((next (lambda (c ascending-p)
                 (let ((mem (member (klondike--card-get-value c)
@@ -777,7 +778,7 @@ made visible."
   "Insert all stacks into the `klondike-mode' buffer which are in
 STACKS-TO-PRINT.
 
-If STACKS-TO-PRINT is 'nil', insert all possible stacks.
+If STACKS-TO-PRINT is \\='nil\\=', insert all possible stacks.
 
 Inverting overwrites any characters in the location of where a stack is meant
 to be."
@@ -840,8 +841,8 @@ each card."
 (defun klondike--stack-number-select (stack selected-num &optional hide-stack-p)
   "Highlghts the SELECTED-NUM of the visible faceup cards in STACK.
 
-If HIDE-STACK-P is 't', the total number of cards considered available to select
-in the stack is 1.
+If HIDE-STACK-P is \\='t\\=', the total number of cards considered available to
+select in the stack is 1.
 
 The face `klondike---stack-selecting' is used to format the number given by
 SELECTED-NUM."
@@ -874,8 +875,8 @@ SELECTED-NUM."
 (defun klondike--stack-clear-selects (stack &optional hide-stack-p)
   "Wipe out all numbering of the visible faceup cards of STACK.
 
-If HIDE-STACK-P is 't', the total number of cards considered available to select
-in the stack is 1."
+If HIDE-STACK-P is \\='t\\=', the total number of cards considered available to
+select in the stack is 1."
 
   (read-only-mode 0)
 
@@ -987,11 +988,11 @@ in the stack is 1."
   "Find if any available stack of the 4 top-right in the first row can take the
 top card of another stack.
 
-STACK-SYMBOL can be 'faceup or 'pile and indicates the type of stack where the
-top card should be taken from.
+STACK-SYMBOL can be \\='faceup or \\='pile and indicates the type of stack
+where the top card should be taken from.
 
-STACK-NUM indicates which 'pile stack to use; it is ignored if STACK-SYMBOL is
-'faceup."
+STACK-NUM indicates which \\='pile stack to use; it is ignored if STACK-SYMBOL
+is \\='faceup."
 
   (let* ((stack (cl-case stack-symbol
                   ('faceup klondike----faceup-stack)
@@ -1017,16 +1018,17 @@ STACK-NUM indicates which 'pile stack to use; it is ignored if STACK-SYMBOL is
 (defun klondike--card-move (type1 index1 stack-depth type2 index2 &optional no-message-p)
   "Move any number of cards from one stack to another.
 
-The type (TYPE1 and TYPE2) specify the type of the stack: 'faceup, 'pile, or 'empty.
+The type (TYPE1 and TYPE2) specify the type of the stack: \\='faceup, \\='pile,
+or \\='empty.
 
 The index (INDEX1 and INDEX2) specifies which version of a stack type to use; if
-the type is 'faceup, the index is disregarded (within `klondike--stack-get').
+the type is \\='faceup, the index is disregarded (within `klondike--stack-get').
 
 STACK-DEPTH specifies how many cards from the top of a stack ought to be moved
 to the second stack.
 
-If NO-MESSAGE-P is 't', no `message' is given, to alert users, if the cards
-specified cannot be moved from the first stack to the second stack."
+If NO-MESSAGE-P is \\='t\\=', no `message' is given, to alert users, if the
+cards specified cannot be moved from the first stack to the second stack."
 
   (let* ((stack1     (klondike--stack-get type1 index1))
          (stack2     (klondike--stack-get type2 index2))
@@ -1084,7 +1086,7 @@ specified cannot be moved from the first stack to the second stack."
 to keep track of which stack a user is looking to pick cards from.
 
 The `car' of the pair is the stack type while the `cdr' is the number to
-specify which stack of that type is to be used; if the type is 'faceup, this
+specify which stack of that type is to be used; if the type is \\='faceup, this
 value is irrelevant.")
 (defvar klondike----stack-pick-num -1
   "This variable stores which, of the visible faceup cards in the stack
@@ -1097,14 +1099,14 @@ stack (`klondike-select-mode').
 If the only visible faceup cards in a stack is 1, the latter mode is chosen;
 otherwise, the first.
 
-STACK-TYPE can be one of three types: 'faceup, 'pile, or 'empty.
+STACK-TYPE can be one of three types: \\='faceup, \\='pile, or \\='empty.
 
-'faceup is `klondike----faceup-stack', 'pile is any of the 7 stacks at the
-bottom half of the screen, and 'empty is one of the 4 stacks at the top-right
+\\='faceup is `klondike----faceup-stack', \\='pile is any of the 7 stacks at the
+bottom half of the screen, and \\='empty is one of the 4 stacks at the top-right
 of the screen.
 
 STACK-NUM specifies which stack, of a particular group, to return; in the case
-of 'faceup, STACK-NUM is ignored."
+of \\='faceup, STACK-NUM is ignored."
 
   (setq klondike----stack-pick-stack `(,stack-type . ,stack-num))
 
@@ -1163,14 +1165,14 @@ switches to `klondike-select-mode'."
 specified by `klondike----stack-pick-stack' to the stack specified by STACK-TYPE
 and STACK-NUM.
 
-STACK-TYPE can be one of three types: 'faceup, 'pile, or 'empty.
+STACK-TYPE can be one of three types: \\='faceup, \\='pile, or \\='empty.
 
-'faceup is `klondike----faceup-stack', 'pile is any of the 7 stacks at the
-bottom half of the screen, and 'empty is one of the 4 stacks at the top-right
+\\='faceup is `klondike----faceup-stack', \\='pile is any of the 7 stacks at the
+bottom half of the screen, and \\='empty is one of the 4 stacks at the top-right
 of the screen.
 
 STACK-NUM specifies which stack, of a particular group, to return; in the case
-of 'faceup, STACK-NUM is ignored."
+of \\='faceup, STACK-NUM is ignored."
 
   (klondike--card-move (car klondike----stack-pick-stack)
                        (cdr klondike----stack-pick-stack)

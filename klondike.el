@@ -899,8 +899,7 @@ select in the stack is 1."
 
       (delete-region (point) (+ (point) 2))
 
-      (let ((result (number-to-string (1+ stackIndex))))
-        (insert (if (zerop stackIndex) "  " "──")))))
+      (insert (if (zerop stackIndex) "  " "──"))))
 
   (read-only-mode t)
   (goto-line      0)

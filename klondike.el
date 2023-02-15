@@ -498,7 +498,7 @@ with a dotted line will be placed.
 
 FACEDOWN-P says whether the stack is facedown or not; if facedown,
 `klondike---card-facedow-graphic' will be used to fill in the inner contents
-(inside of the drawn border) of the shown stack.
+\(inside of the drawn border) of the shown stack.
 
 TOTAL-NUM says how many total cards are in the stack; this value is irrelevant
 if the stack is empty (as defined by EMPTY-P).

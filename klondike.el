@@ -191,66 +191,66 @@ of \\='faceup, STACK-NUM is ignored."
                (2 klondike----empty-2-stack)
                (3 klondike----empty-3-stack)))))
 (defmacro klondike--stack-set (stack cards visible-num x y)
-  "Updates the variable STACK with the new state of the stack.
+  "Update the variable STACK with the new state of the stack.
 
 The variable is set to a `cons' of a CARDS and VISIBLE-NUM pair for the `car'
 and a X and Y pair for the `cdr'."
 
   `(setq ,stack (cons (cons ,cards ,visible-num) (cons ,x ,y))))
 (defun klondike--stack-get-cards (stack)
-  "Retrieves the cards of a STACK."
+  "Retrieve the cards of a STACK."
 
   (caar stack))
 (defun klondike--stack-set-cards (stack cards)
-  "Sets the current CARDS of a STACK."
+  "Set the current CARDS of a STACK."
 
   (setcar (car stack) cards))
 (defun klondike--stack-get-visible (stack)
-  "Gets how many cards care visible in a STACK."
+  "Get how many cards care visible in a STACK."
 
   (cdar stack))
 (defun klondike--stack-set-visible (stack visible-num)
-  "Sets the VISIBLE-NUM of cards for a STACK."
+  "Set the VISIBLE-NUM of cards for a STACK."
 
   (let ((l (length (klondike--stack-get-cards stack))))
     (setcdr (car stack) (if (> visible-num l) l visible-num))))
 (defun klondike--stack-get-x (stack)
-  "Gets what the x coordinate of a STACK is in a buffer."
+  "Get what the x coordinate of a STACK is in a buffer."
 
   (cadr stack))
 (defun klondike--stack-get-y (stack)
-  "Gets what the y coordinate of a STACK is in a buffer."
+  "Get what the y coordinate of a STACK is in a buffer."
 
   (cddr stack))
 
 (defvar klondike----history '(() . -1)
-  "Stores the current history of a game.
+  "Store the current history of a game.
 
 The `car' is a list of the different states in the history of the game while
 the `cdr' is the index, of the list, that is the current point/state of the
 game.")
 (defun klondike--history-get-timeline ()
-  "Returns a list of the different states of time of the entire history, thus
+  "Return a list of the different states of time of the entire history, thus
 far, in the game."
 
   (car klondike----history))
 (defun klondike--history-get-timeline-current ()
-  "Returns the current state, out of the entire history, at the time of the
+  "Return the current state, out of the entire history, at the time of the
 game."
 
   (nth (klondike--history-get-index) (klondike--history-get-timeline)))
 (defun klondike--history-get-index ()
-  "Returns the index which points to the current state, out of the entire
+  "Return the index which points to the current state, out of the entire
 history list, at the time of the game."
 
   (cdr klondike----history))
 (defun klondike--history-set-index (index)
-  "Sets the index which points to the current state of the game in the history
+  "Set the index which points to the current state of the game in the history
 list to INDEX."
 
   (setcdr klondike----history index))
 (defun klondike--history-save ()
-  "Removes all history states after the current history index from the history
+  "Remove all history states after the current history index from the history
 timeline and saves the current state of all stacks to the end of this new list
 while incrementing the current history index by 1."
 
@@ -272,7 +272,7 @@ while incrementing the current history index by 1."
                                                (:pile6    . ,(copy-tree klondike----pile-6-stack)))))
                                     (1+ index)))))
 (defun klondike--history-alter (index)
-  "Changes the index which points to the current state of the game in the
+  "Change the index which points to the current state of the game in the
 history list to INDEX and loads the stack states stored in that history point
 into `klondike----facedown-stack', `klondike----faceup-stack',
 `klondike----empty-0-stack' (and 1–3), and `klondike----pile-0-stack' (and 1–6).
@@ -299,7 +299,7 @@ stacks."
 
   (klondike--card-insert-all))
 (defun klondike-history-prev ()
-  "Rolls the current state of the game to the previous history state.
+  "Roll the current state of the game to the previous history state.
 
 If already at the first state in the history timeline, `message' that this
 action cannot be performed."
@@ -309,7 +309,7 @@ action cannot be performed."
       (message "No more undo!")
     (klondike--history-alter (1- (klondike--history-get-index)))))
 (defun klondike-history-next ()
-  "Rolls the current state of the game to the next history state.
+  "Roll the current state of the game to the next history state.
 
 If already at the last state in the history timeline, `message' that this
 action cannot be performed."
@@ -346,7 +346,7 @@ action cannot be performed."
   "All possible values able to be used in a Klondike Solitaire playing card
 game.")
 (defun klondike--card-create (suit-symbol value)
-  "Creates the representation of card as used by `klondike'.
+  "Create the representation of card as used by `klondike'.
 
 SUIT-SYMBOL can be \\='club, \\='heart, \\='spade, or \\='diamond.
 
@@ -366,20 +366,20 @@ VALUE can be any valid value in `klondike----card-values'."
                    ((or 'spade 'club)    v)
                    ((or 'heart 'diamond) (propertize v 'face 'klondike---heart-diamond-color)))))))
 (defun klondike--card-get-suit (card)
-  "Gets the suit of the CARD.
+  "Get the suit of the CARD.
 
 See `klondike---suits-icon-club', `klondike---suits-icon-heart',
 `klondike---suits-icon-spade', or `klondike---suits-icon-diamond'."
 
   (alist-get :suit card))
 (defun klondike--card-get-value (card)
-  "Gets the value of the CARD.
+  "Get the value of the CARD.
 
 See `klondike----card-values'."
 
   (alist-get :value card))
 (defun klondike--card-next-p (card1 card2 to-empty-p)
-  "Determins if CARD2 is able to be placed upon CARD1.
+  "Determin if CARD2 is able to be placed upon CARD1.
 
 TO-EMPTY-P designates whether CARD1 resides in one of the top-right stacks on
 the first row; if \\='nil\\=', it resides in one of the stacks on the bottom
@@ -407,7 +407,7 @@ row."
                         (or (string= (klondike--card-get-suit card1) klondike---suits-icon-heart)
                             (string= (klondike--card-get-suit card1) klondike---suits-icon-diamond)))))))))
 (defun klondike--card-to-unicode (card)
-  "Converts CARD to a unicode character to be used to represent the state of
+  "Convert CARD to a unicode character to be used to represent the state of
 the top-right 4 stacks in the first row.
 
 This is primarily used to generate the `klondike----mode-line-status' string."
@@ -479,7 +479,7 @@ This is primarily used to generate the `klondike----mode-line-status' string."
 
 (defun klondike--card-insert (x y empty-p &optional facedown-p   total-num
                                                     faceup-cards show-stack-p)
-  "Handles inserting a stack into the `klondike-mode' buffer.
+  "Handle inserting a stack into the `klondike-mode' buffer.
 
 This function is designed to put the entire stack – from facedown cards to
 faceup cards and the top card – into the buffer.
@@ -810,7 +810,7 @@ to be."
                                                              (substring str 1 (1- (length str))))))))))
           (if stacks-to-print stacks-to-print (mapcar 'car current)))))
 (defun klondike--stack-number (stack)
-  "Numbers the visible faceup cards of STACK.
+  "Number the visible faceup cards of STACK.
 
 The face `klondike---stack-numbering' is used to format the numbers given to
 each card."
@@ -839,7 +839,7 @@ each card."
   (goto-line      0)
   (move-to-column 1))
 (defun klondike--stack-number-select (stack selected-num &optional hide-stack-p)
-  "Highlghts the SELECTED-NUM of the visible faceup cards in STACK.
+  "Highlght the SELECTED-NUM of the visible faceup cards in STACK.
 
 If HIDE-STACK-P is \\='t\\=', the total number of cards considered available to
 select in the stack is 1.
@@ -1120,7 +1120,7 @@ of \\='faceup, STACK-NUM is ignored."
             (klondike-select-mode))
         (klondike-picker-mode)))))
 (defun klondike-stack-pick-or-select-quit ()
-  "Quits either `klondike-picker-mode' or `klondike-select-mode' and returns
+  "Quit either `klondike-picker-mode' or `klondike-select-mode' and return
 to `klondike-mode'."
   (interactive)
 
@@ -1134,7 +1134,7 @@ to `klondike-mode'."
         (klondike-mode)
       (klondike-picker-mode))))
 (defun klondike-stack-find-available-empty ()
-  "Checks whether the card depth specified by `klondike----stack-pick-num' from
+  "Check whether the card depth specified by `klondike----stack-pick-num' from
 the stack specified by `klondike----stack-pick-stack' can be moved to any of the
 4 top-right stacks in the top row."
   (interactive)
@@ -1161,7 +1161,7 @@ switches to `klondike-select-mode'."
 
       (klondike-select-mode))))
 (defun klondike--stack-select (stack-type stack-num)
-  "Moves the card depth specified by `klondike----stack-pick-num' from the stack
+  "Move the card depth specified by `klondike----stack-pick-num' from the stack
 specified by `klondike----stack-pick-stack' to the stack specified by STACK-TYPE
 and STACK-NUM.
 

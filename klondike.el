@@ -42,16 +42,16 @@
 (defvar klondike----mode-line-status ""
   "The string to show, in the modeline, the current progress of the Klondike game.")
 
-(defface klondike---stack-numbering
+(defface klondike-stack-numbering
   '((t :slant italic :foreground "yellow"))
   "Face for numbering the visible cards in a stack for the user to select one."
   :group 'klondike)
-(defface klondike---stack-selecting
+(defface klondike-stack-selecting
   '((t :slant italic :weight bold :foreground "purple"))
   "Face for highlighting which visible cards in a stack was selected by a user."
   :group 'klondike)
 
-(defcustom klondike---simplified-card-moving-p nil
+(defcustom klondike-simplified-card-moving-p nil
   "Set to \\='t\\=' to use simplified key bindings.
 
 Rather than using distinct key bindings between picking a faceup card and
@@ -63,27 +63,27 @@ pressed."
   :type  'boolean
   :group 'klondike)
 
-(defcustom klondike---window-padding 2
+(defcustom klondike-window-padding 2
   "The number of characters to use as padding for the left-side of the buffer;
 the top of the buffer uses half of this value."
   :type  'natnum
   :group 'klondike)
 
-(defcustom klondike---card-width  11
+(defcustom klondike-card-width  11
   "The width, in characters, to make each card."
   :type  'natnum
   :group 'klondike)
-(defcustom klondike---card-height 9
+(defcustom klondike-card-height 9
   "The height, in characters, to make each card."
   :type  'natnum
   :group 'klondike)
 
-(defcustom klondike---top-&-bottom-row-spacing 4
+(defcustom klondike-top-&-bottom-row-spacing 4
   "The rows, in characters, to space the top row from the bottom row, of cards."
   :type  'natnum
   :group 'klondike)
 
-(defcustom klondike---card-facedow-graphic (concat " _       \n"
+(defcustom klondike-card-facedow-graphic (concat " _       \n"
                                                    "/ `/|// /\n"
                                                    "_;/ |/_/ ")
   "What to put on the back of facedown cards.
@@ -310,23 +310,23 @@ action cannot be performed."
       (message "No more redo!")
     (klondike--history-alter (1+ (klondike--history-get-index)))))
 
-(defface klondike---heart-diamond-color
+(defface klondike-heart-diamond-color
   '((t :foreground "red"))
   "Face for cards which belong to the heart or diamond suit."
   :group 'klondike)
-(defcustom klondike---suits-icon-spade   "♠"
+(defcustom klondike-suits-icon-spade   "♠"
   "The string to use to represent the spade suit."
   :type  'string
   :group 'klondike)
-(defcustom klondike---suits-icon-heart   "♥" ;♡
+(defcustom klondike-suits-icon-heart   "♥" ;♡
   "The string to use to represent the heart suit."
   :type  'string
   :group 'klondike)
-(defcustom klondike---suits-icon-diamond "♦"
+(defcustom klondike-suits-icon-diamond "♦"
   "The string to use to represent the diamond suit."
   :type  'string
   :group 'klondike)
-(defcustom klondike---suits-icon-club    "♣" ;♧
+(defcustom klondike-suits-icon-club    "♣" ;♧
   "The string to use to represent the club suit."
   :type  'string
   :group 'klondike)
@@ -343,22 +343,22 @@ VALUE can be any valid value in `klondike----card-values'."
 
   `((:suit . ,(pcase suit-symbol
                 ((or 'spade 'club)    (cl-case suit-symbol
-                                        ((spade quote) klondike---suits-icon-spade)
-                                        ((club  quote) klondike---suits-icon-club)))
+                                        ((spade quote) klondike-suits-icon-spade)
+                                        ((club  quote) klondike-suits-icon-club)))
                 ((or 'heart 'diamond) (propertize (cl-case suit-symbol
-                                                    ((heart   quote) klondike---suits-icon-heart)
-                                                    ((diamond quote) klondike---suits-icon-diamond))
+                                                    ((heart   quote) klondike-suits-icon-heart)
+                                                    ((diamond quote) klondike-suits-icon-diamond))
                                                   'face
-                                                  'klondike---heart-diamond-color))))
+                                                  'klondike-heart-diamond-color))))
     (:value . ,(let ((v (if (numberp value) (number-to-string value) value)))
                  (pcase suit-symbol
                    ((or 'spade 'club)    v)
-                   ((or 'heart 'diamond) (propertize v 'face 'klondike---heart-diamond-color)))))))
+                   ((or 'heart 'diamond) (propertize v 'face 'klondike-heart-diamond-color)))))))
 (defun klondike--card-get-suit (card)
   "Get the suit of the CARD.
 
-See `klondike---suits-icon-club', `klondike---suits-icon-heart',
-`klondike---suits-icon-spade', or `klondike---suits-icon-diamond'."
+See `klondike-suits-icon-club', `klondike-suits-icon-heart',
+`klondike-suits-icon-spade', or `klondike-suits-icon-diamond'."
 
   (alist-get :suit card))
 (defun klondike--card-get-value (card)
@@ -387,14 +387,14 @@ row."
         (and (string= (klondike--card-get-value card2) (funcall next card1 (not to-empty-p)))
              (if to-empty-p
                  (string= (klondike--card-get-suit  card1) (klondike--card-get-suit card2))
-               (or (and (or (string= (klondike--card-get-suit card1) klondike---suits-icon-club)
-                            (string= (klondike--card-get-suit card1) klondike---suits-icon-spade))
-                        (or (string= (klondike--card-get-suit card2) klondike---suits-icon-heart)
-                            (string= (klondike--card-get-suit card2) klondike---suits-icon-diamond)))
-                   (and (or (string= (klondike--card-get-suit card2) klondike---suits-icon-club)
-                            (string= (klondike--card-get-suit card2) klondike---suits-icon-spade))
-                        (or (string= (klondike--card-get-suit card1) klondike---suits-icon-heart)
-                            (string= (klondike--card-get-suit card1) klondike---suits-icon-diamond)))))))))
+               (or (and (or (string= (klondike--card-get-suit card1) klondike-suits-icon-club)
+                            (string= (klondike--card-get-suit card1) klondike-suits-icon-spade))
+                        (or (string= (klondike--card-get-suit card2) klondike-suits-icon-heart)
+                            (string= (klondike--card-get-suit card2) klondike-suits-icon-diamond)))
+                   (and (or (string= (klondike--card-get-suit card2) klondike-suits-icon-club)
+                            (string= (klondike--card-get-suit card2) klondike-suits-icon-spade))
+                        (or (string= (klondike--card-get-suit card1) klondike-suits-icon-heart)
+                            (string= (klondike--card-get-suit card1) klondike-suits-icon-diamond)))))))))
 (defun klondike--card-to-unicode (card)
   "Convert CARD to a unicode character to represent the current state of the game.
 
@@ -404,67 +404,67 @@ row.
 This is primarily used to generate the `klondike----mode-line-status' string."
 
   (pcase (klondike--card-get-suit card)
-    ('nil                                           "🂠")
-    ((pred (string= klondike---suits-icon-club))    (cl-case (intern (klondike--card-get-value card))
-                                                      ((  A quote) "🃑")
-                                                      (( \2 quote) "🃒")
-                                                      (( \3 quote) "🃓")
-                                                      (( \4 quote) "🃔")
-                                                      (( \5 quote) "🃕")
-                                                      (( \6 quote) "🃖")
-                                                      (( \7 quote) "🃗")
-                                                      (( \8 quote) "🃘")
-                                                      (( \9 quote) "🃙")
-                                                      ((\10 quote) "🃚")
-                                                      ((  J quote) "🃛")
-                                                      ((  Q quote) "🃝")
-                                                      ((  K quote) "🃞")))
-    ((pred (string= klondike---suits-icon-heart))   (propertize (cl-case (intern (klondike--card-get-value card))
-                                                                  ((  A quote) "🂱")
-                                                                  (( \2 quote) "🂲")
-                                                                  (( \3 quote) "🂳")
-                                                                  (( \4 quote) "🂴")
-                                                                  (( \5 quote) "🂵")
-                                                                  (( \6 quote) "🂶")
-                                                                  (( \7 quote) "🂷")
-                                                                  (( \8 quote) "🂸")
-                                                                  (( \9 quote) "🂹")
-                                                                  ((\10 quote) "🂺")
-                                                                  ((  J quote) "🂻")
-                                                                  ((  Q quote) "🂽")
-                                                                  ((  K quote) "🂾"))
-                                                                'face
-                                                                'klondike---heart-diamond-color))
-    ((pred (string= klondike---suits-icon-spade))   (cl-case (intern (klondike--card-get-value card))
-                                                      ((  A quote) "🂡")
-                                                      (( \2 quote) "🂢")
-                                                      (( \3 quote) "🂣")
-                                                      (( \4 quote) "🂤")
-                                                      (( \5 quote) "🂥")
-                                                      (( \6 quote) "🂦")
-                                                      (( \7 quote) "🂧")
-                                                      (( \8 quote) "🂨")
-                                                      (( \9 quote) "🂩")
-                                                      ((\10 quote) "🂪")
-                                                      ((  J quote) "🂫")
-                                                      ((  Q quote) "🂭")
-                                                      ((  K quote) "🂮")))
-    ((pred (string= klondike---suits-icon-diamond)) (propertize (cl-case (intern (klondike--card-get-value card))
-                                                                  ((  A quote) "🃁")
-                                                                  (( \2 quote) "🃂")
-                                                                  (( \3 quote) "🃃")
-                                                                  (( \4 quote) "🃄")
-                                                                  (( \5 quote) "🃅")
-                                                                  (( \6 quote) "🃆")
-                                                                  (( \7 quote) "🃇")
-                                                                  (( \8 quote) "🃈")
-                                                                  (( \9 quote) "🃉")
-                                                                  ((\10 quote) "🃊")
-                                                                  ((  J quote) "🃋")
-                                                                  ((  Q quote) "🃍")
-                                                                  ((  K quote) "🃎"))
-                                                                'face
-                                                                'klondike---heart-diamond-color))))
+    ('nil                                         "🂠")
+    ((pred (string= klondike-suits-icon-club))    (cl-case (intern (klondike--card-get-value card))
+                                                    ((  A quote) "🃑")
+                                                    (( \2 quote) "🃒")
+                                                    (( \3 quote) "🃓")
+                                                    (( \4 quote) "🃔")
+                                                    (( \5 quote) "🃕")
+                                                    (( \6 quote) "🃖")
+                                                    (( \7 quote) "🃗")
+                                                    (( \8 quote) "🃘")
+                                                    (( \9 quote) "🃙")
+                                                    ((\10 quote) "🃚")
+                                                    ((  J quote) "🃛")
+                                                    ((  Q quote) "🃝")
+                                                    ((  K quote) "🃞")))
+    ((pred (string= klondike-suits-icon-heart))   (propertize (cl-case (intern (klondike--card-get-value card))
+                                                                ((  A quote) "🂱")
+                                                                (( \2 quote) "🂲")
+                                                                (( \3 quote) "🂳")
+                                                                (( \4 quote) "🂴")
+                                                                (( \5 quote) "🂵")
+                                                                (( \6 quote) "🂶")
+                                                                (( \7 quote) "🂷")
+                                                                (( \8 quote) "🂸")
+                                                                (( \9 quote) "🂹")
+                                                                ((\10 quote) "🂺")
+                                                                ((  J quote) "🂻")
+                                                                ((  Q quote) "🂽")
+                                                                ((  K quote) "🂾"))
+                                                              'face
+                                                              'klondike-heart-diamond-color))
+    ((pred (string= klondike-suits-icon-spade))   (cl-case (intern (klondike--card-get-value card))
+                                                    ((  A quote) "🂡")
+                                                    (( \2 quote) "🂢")
+                                                    (( \3 quote) "🂣")
+                                                    (( \4 quote) "🂤")
+                                                    (( \5 quote) "🂥")
+                                                    (( \6 quote) "🂦")
+                                                    (( \7 quote) "🂧")
+                                                    (( \8 quote) "🂨")
+                                                    (( \9 quote) "🂩")
+                                                    ((\10 quote) "🂪")
+                                                    ((  J quote) "🂫")
+                                                    ((  Q quote) "🂭")
+                                                    ((  K quote) "🂮")))
+    ((pred (string= klondike-suits-icon-diamond)) (propertize (cl-case (intern (klondike--card-get-value card))
+                                                                ((  A quote) "🃁")
+                                                                (( \2 quote) "🃂")
+                                                                (( \3 quote) "🃃")
+                                                                (( \4 quote) "🃄")
+                                                                (( \5 quote) "🃅")
+                                                                (( \6 quote) "🃆")
+                                                                (( \7 quote) "🃇")
+                                                                (( \8 quote) "🃈")
+                                                                (( \9 quote) "🃉")
+                                                                ((\10 quote) "🃊")
+                                                                ((  J quote) "🃋")
+                                                                ((  Q quote) "🃍")
+                                                                ((  K quote) "🃎"))
+                                                              'face
+                                                              'klondike-heart-diamond-color))))
 
 
 
@@ -481,7 +481,7 @@ EMPTY-P says whether the stack is empty or not; if empty, the outline of a card
 with a dotted line will be placed.
 
 FACEDOWN-P says whether the stack is facedown or not; if facedown,
-`klondike---card-facedow-graphic' will be used to fill in the inner contents
+`klondike-card-facedow-graphic' will be used to fill in the inner contents
 \(inside of the drawn border) of the shown stack.
 
 TOTAL-NUM says how many total cards are in the stack; this value is irrelevant
@@ -496,8 +496,8 @@ made visible."
 
   (read-only-mode 0)
 
-  (let* ((1card+padding       (+ klondike---card-width
-                                 (1- klondike---card-height)))
+  (let* ((1card+padding       (+ klondike-card-width
+                                 (1- klondike-card-height)))
          (delete-reg          (lambda (additional)
                                 (delete-region (point) (+ (point)
                                                           1card+padding
@@ -507,7 +507,7 @@ made visible."
                                 (move-to-column                    w)
 
                                 (funcall delete-reg (if additional additional 0))))
-         (cardHeightW/oTopBot (- klondike---card-height 2))
+         (cardHeightW/oTopBot (- klondike-card-height 2))
          (totalN              (if total-num total-num 0))
          (faceups             (if (and (not show-stack-p) (> (length faceup-cards) 0))
                                   (list (car faceup-cards))
@@ -518,7 +518,7 @@ made visible."
       (funcall move-to x (+ y (1+ i)))
       (let ((str (concat (make-string i ?│)
                          "╭"
-                         (make-string (- klondike---card-width 3) ?─)
+                         (make-string (- klondike-card-width 3) ?─)
                          (if (zerop i) "─" "┴")
                          "╮")))
         (insert (concat str
@@ -530,7 +530,7 @@ made visible."
     (let ((faceupRev (reverse (cdr faceups))))
       (dotimes (faceupIndex (length faceupRev))
         (let* ((n       (- (+ numOfFacedownCards (1+ faceupIndex))
-                           klondike---card-height))
+                           klondike-card-height))
                (indent  (if (> n 0) n 0))
                (suitVal (concat (klondike--card-get-suit  (nth faceupIndex faceupRev))
                                 (klondike--card-get-value (nth faceupIndex faceupRev))))
@@ -546,7 +546,7 @@ made visible."
                                                         "╭%-"
                                                         (number-to-string (length suitVal))
                                                         "s%"
-                                                        (number-to-string (- klondike---card-width
+                                                        (number-to-string (- klondike-card-width
                                                                              3  ; ╭, ─/┴, and ╮
                                                                              (length suitVal)))
                                                         "s"
@@ -566,7 +566,7 @@ made visible."
 
     ;; C A R D   T O P
     (let* ((n      (- (+ numOfFacedownCards (length faceups))
-                      klondike---card-height))
+                      klondike-card-height))
            (indent (if (> n 0) n 0))
            (str    (concat (if (> n -1) "╰" "")
                            (if (> n -1) "┤" "")
@@ -578,7 +578,7 @@ made visible."
                            "╭"
                            (mapconcat (lambda (num)
                                         (if (and (cl-oddp num) empty-p) " " "─"))
-                                      (number-sequence 1 (- klondike---card-width 3)))
+                                      (number-sequence 1 (- klondike-card-width 3)))
                            (cond
                             (empty-p                       " ")
                             ((or (> numOfFacedownCards 0)
@@ -593,7 +593,7 @@ made visible."
 
     ;; F I R S T   V A L U E   L I N E
     (let* ((n      (- (+ numOfFacedownCards (length faceups) 1)
-                      klondike---card-height))
+                      klondike-card-height))
            (indent (if (> n 0) n 0))
            (str    (format (concat (if (> n -1) "╰" "")
                                    (if (and empty-p (cl-oddp cardHeightW/oTopBot))
@@ -605,7 +605,7 @@ made visible."
                                                    (if (> n -1) 1 0))
                                                 ?│)
                                    "%-2s%"
-                                   (number-to-string (- klondike---card-width 4))
+                                   (number-to-string (- klondike-card-width 4))
                                    "s"
                                    (if (and empty-p (cl-oddp cardHeightW/oTopBot))
                                        " "
@@ -620,10 +620,10 @@ made visible."
 
 
 
-    (let* ((cols                                       (- klondike---card-width 2))
-           (rows                                       (- cardHeightW/oTopBot   2))
-           (orig               (string-split klondike---card-facedow-graphic "\n"))
-           (oLen                                                     (length orig))
+    (let* ((cols                                       (- klondike-card-width 2))
+           (rows                                       (- cardHeightW/oTopBot 2))
+           (orig               (string-split klondike-card-facedow-graphic "\n"))
+           (oLen                                                   (length orig))
            (graphic            (mapcar (lambda (line)
                                          (let* ((len          (length line))
                                                 (remHalf (/ (- len cols) 2)))
@@ -642,7 +642,7 @@ made visible."
            (wMinusGraphicHalf   (/  widthMinusGraphic 2)))
       (dotimes (offset rows)
         (let* ((n      (- (+ numOfFacedownCards (length faceups) 1 (1+ offset))
-                          klondike---card-height))
+                          klondike-card-height))
                (indent (if (> n 0) n 0)))
           (funcall move-to (+ x indent)
                            (+ y
@@ -682,14 +682,14 @@ made visible."
 
       ;; S E C O N D   V A L U E   L I N E
       (let* ((n      (- (+ numOfFacedownCards (length faceups) 1 (1+ rows))
-                        klondike---card-height))
+                        klondike-card-height))
              (indent (if (> n 0) n 0))
              (str    (format (concat (if (> n -1) "╰")
                                      (if (and empty-p (cl-oddp cardHeightW/oTopBot))
                                          " "
                                        (if (> n -1) "┤" "│"))
                                      "%"
-                                     (number-to-string (- klondike---card-width 4))
+                                     (number-to-string (- klondike-card-width 4))
                                      "s%2s"
                                      (if (and empty-p (cl-oddp cardHeightW/oTopBot))
                                          " "
@@ -710,7 +710,7 @@ made visible."
 
       ;; C A R D   B O T T O M
       (let* ((n      (- (+ numOfFacedownCards (length faceups) 1 (1+ rows) 1)
-                        klondike---card-height))
+                        klondike-card-height))
              (indent (if (> n 0) n 0))
              (str    (concat "╰"
                              (mapconcat (lambda (num)
@@ -732,7 +732,7 @@ made visible."
       (when show-stack-p
         (dotimes (offset 10)
           (let* ((n      (- (+ numOfFacedownCards (length faceups) 1 (1+ rows) 1 (1+ offset))
-                            klondike---card-height))
+                            klondike-card-height))
                  (indent (if (> n 0) n 0)))
             (funcall move-to (+ x indent)
                              (+ y
@@ -802,7 +802,7 @@ to be."
 (defun klondike--stack-number (stack)
   "Number the visible faceup cards of STACK.
 
-The face `klondike---stack-numbering' is used to format the numbers given to
+The face `klondike-stack-numbering' is used to format the numbers given to
 each card."
 
   (read-only-mode 0)
@@ -814,8 +814,8 @@ each card."
                                             (- totalNum stackIndex)))
       (move-to-column                    (+ (if (zerop stackIndex) 1 0)
                                             (klondike--stack-get-x stack)
-                                            (- totalNum              (1+ stackIndex))
-                                            (- klondike---card-width 4)))
+                                            (- totalNum            (1+ stackIndex))
+                                            (- klondike-card-width 4)))
 
       (delete-region (point) (+ (point) 2))
 
@@ -823,7 +823,7 @@ each card."
         (insert (if (= (length result) 1)
                     (if (zerop stackIndex) " " "─")
                   "")
-                (propertize result 'face 'klondike---stack-numbering)))))
+                (propertize result 'face 'klondike-stack-numbering)))))
 
   (read-only-mode                    t)
   (funcall-interactively #'goto-line 0)
@@ -834,7 +834,7 @@ each card."
 If HIDE-STACK-P is \\='t\\=', the total number of cards considered available to
 select in the stack is 1.
 
-The face `klondike---stack-selecting' is used to format the number given by
+The face `klondike-stack-selecting' is used to format the number given by
 SELECTED-NUM."
 
   (read-only-mode 0)
@@ -847,9 +847,9 @@ SELECTED-NUM."
                                           (- (1+ visibleNum) selected-num)))
     (move-to-column                    (+ (if (= selected-num 1) 1 0)
                                           (klondike--stack-get-x stack)
-                                          (-   totalNum              visibleNum)
-                                          (- visibleNum            selected-num)
-                                          (- klondike---card-width            4)))
+                                          (-   totalNum            visibleNum)
+                                          (- visibleNum          selected-num)
+                                          (- klondike-card-width            4)))
 
     (delete-region (point) (+ (point) 2))
 
@@ -857,7 +857,7 @@ SELECTED-NUM."
       (insert (if (= (length stringNum) 1)
                   (if (= selected-num 1) " " "─")
                 "")
-              (propertize stringNum 'face 'klondike---stack-selecting))))
+              (propertize stringNum 'face 'klondike-stack-selecting))))
 
   (read-only-mode                    t)
   (funcall-interactively #'goto-line 0)
@@ -877,8 +877,8 @@ select in the stack is 1."
                                             (- totalNum stackIndex)))
       (move-to-column                    (+ (if (zerop stackIndex) 1 0)
                                             (klondike--stack-get-x stack)
-                                            (- totalNum               (1+ stackIndex))
-                                            (- klondike---card-width 4)))
+                                            (- totalNum            (1+ stackIndex))
+                                            (- klondike-card-width 4)))
 
       (delete-region (point) (+ (point) 2))
 
@@ -893,8 +893,8 @@ select in the stack is 1."
 (defun klondike--initialize-cards ()
   "Setup the stack variables for the start of a game."
 
-  (let* ((1card+padding (+ klondike---card-width     (1- klondike---card-height)))
-         (topBotPadding (/ klondike---window-padding 2))
+  (let* ((1card+padding (+ klondike-card-width     (1- klondike-card-height)))
+         (topBotPadding (/ klondike-window-padding 2))
          (cardPack      (let ((suits  '(club heart spade diamond))
                               (result '()))
                           (dotimes (index 4)
@@ -920,29 +920,29 @@ select in the stack is 1."
     (klondike--stack-set klondike----empty-0-stack
                          '()
                          0
-                         (+ klondike---window-padding (* (+ 0 3) 1card+padding))
+                         (+ klondike-window-padding (* (+ 0 3) 1card+padding))
                          topBotPadding)
     (klondike--stack-set klondike----empty-1-stack
                          '()
                          0
-                         (+ klondike---window-padding (* (+ 1 3) 1card+padding))
+                         (+ klondike-window-padding (* (+ 1 3) 1card+padding))
                          topBotPadding)
     (klondike--stack-set klondike----empty-2-stack
                          '()
                          0
-                         (+ klondike---window-padding (* (+ 2 3) 1card+padding))
+                         (+ klondike-window-padding (* (+ 2 3) 1card+padding))
                          topBotPadding)
     (klondike--stack-set klondike----empty-3-stack
                          '()
                          0
-                         (+ klondike---window-padding (* (+ 3 3) 1card+padding))
+                         (+ klondike-window-padding (* (+ 3 3) 1card+padding))
                          topBotPadding)
 
     (let ((y (+ topBotPadding
-                klondike---card-height
-                klondike---top-&-bottom-row-spacing))
+                klondike-card-height
+                klondike-top-&-bottom-row-spacing))
           (x (lambda (cardIndex)
-               (+ klondike---window-padding (* cardIndex 1card+padding)))))
+               (+ klondike-window-padding (* cardIndex 1card+padding)))))
       (klondike--stack-set klondike----pile-0-stack (funcall fill-stack 1) 1
                                                     (funcall x 0)          y)
       (klondike--stack-set klondike----pile-1-stack (funcall fill-stack 2) 1
@@ -961,12 +961,12 @@ select in the stack is 1."
     (klondike--stack-set klondike----facedown-stack
                          (funcall fill-stack 24)
                          0
-                         klondike---window-padding
+                         klondike-window-padding
                          topBotPadding)
     (klondike--stack-set klondike----faceup-stack
                          '()
                          0
-                         (+ klondike---window-padding klondike---card-width 1)
+                         (+ klondike-window-padding klondike-card-width 1)
                          topBotPadding))
 
   (klondike--history-save))
@@ -1283,7 +1283,7 @@ to the facedown stack and in the facedown position."
 (defvar klondike-picker-mode-map (let ((mode-map (make-sparse-keymap)))
                                    (define-key mode-map (kbd "TAB") #'klondike-stack-find-available-empty)
 
-                                   (if klondike---simplified-card-moving-p
+                                   (if klondike-simplified-card-moving-p
                                        (mapc (lambda (num)
                                                (define-key mode-map
                                                            (kbd (number-to-string (1+ num)))
@@ -1406,20 +1406,20 @@ If one is already being played, switch to the active buffer."
 
     (klondike--initialize-cards)
 
-    (let ((1card+padding (+ klondike---card-width
-                            (1- klondike---card-height)))
-          (topBotPadding (1- klondike---window-padding)))
+    (let ((1card+padding (+ klondike-card-width
+                            (1- klondike-card-height)))
+          (topBotPadding (1- klondike-window-padding)))
       (dotimes (lineNum (+ topBotPadding
-                           klondike---card-height
-                           klondike---top-&-bottom-row-spacing
-                           klondike---card-height
+                           klondike-card-height
+                           klondike-top-&-bottom-row-spacing
+                           klondike-card-height
                            6
                            topBotPadding
                            20))
         (funcall-interactively #'goto-line (1+ lineNum))
 
-        (insert (make-string (+ klondike---window-padding
-                                (* 8 1card+padding))       ? ) "\n"))
+        (insert (make-string (+ klondike-window-padding
+                                (* 8 1card+padding))     ? ) "\n"))
 
       (klondike--card-insert-all))
 

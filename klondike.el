@@ -330,7 +330,15 @@ action cannot be performed."
   "The string to use to represent the club suit."
   :type  'string
   :group 'klondike)
-
+(defconst klondike---card-suits `(,klondike-suits-icon-spade
+                                  ,(propertize klondike-suits-icon-heart
+                                               'face
+                                               'klondike-heart-diamond-color)
+                                  ,(propertize klondike-suits-icon-diamond
+                                               'face
+                                               'klondike-heart-diamond-color)
+                                  ,klondike-suits-icon-club)
+  "All possible suits able to be used in a Klondike Solitaire playing-card game.")
 (defconst klondike---card-values '("A" "2" "3"  "4" "5" "6"
                                    "7" "8" "9" "10" "J" "Q" "K")
   "All possible values able to be used in a Klondike Solitaire playing card game.")

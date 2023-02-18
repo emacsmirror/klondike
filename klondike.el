@@ -377,6 +377,19 @@ See `klondike-suits-icon-club', `klondike-suits-icon-heart',
 See `klondike---card-values'."
 
   (alist-get :value card))
+(defun klondike--card-to-nat-num (card)
+  "Convert CARD to a natural number representation.
+
+That number is below the `length' of `klondike---card-suits' multiplied by the
+`length' of `klondike---card-values'.
+
+This function is, effectively, the opposite of `klondike--card-from-nat-num'."
+
+  (let ((calc (lambda (func lst)
+                (- (length lst) (length (member (funcall func card) lst))))))
+    (+ (* (length klondike---card-values)
+          (funcall calc #'klondike--card-get-suit klondike---card-suits))
+       (funcall calc #'klondike--card-get-value klondike---card-values))))
 (defun klondike--card-next-p (card1 card2 to-empty-p)
   "Determin if CARD2 is able to be placed upon CARD1.
 

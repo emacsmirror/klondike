@@ -343,6 +343,14 @@ action cannot be performed."
                                    "7" "8" "9" "10" "J" "Q" "K")
   "All possible values able to be used in a Klondike Solitaire playing card game.")
 (defun klondike--card-create (suit-symbol value)
+(defun klondike--card-compute-suit (n)
+  "Determine (and return) which suit belongs to the card represented by number N."
+
+  (nth (/   n (length klondike---card-values)) klondike---card-suits))
+(defun klondike--card-compute-value (n)
+  "Determine (and return) which value belongs to the card represented by number N."
+
+  (nth (mod n (length klondike---card-values)) klondike---card-values))
   "Create the representation of card as used by `klondike'.
 
 SUIT-SYMBOL can be \\='club, \\='heart, \\='spade, or \\='diamond.

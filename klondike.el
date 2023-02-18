@@ -397,27 +397,18 @@ TO-EMPTY-P designates whether CARD1 resides in one of the top-right stacks on
 the first row; if \\='nil\\=', it resides in one of the stacks on the bottom
 row."
 
-  (let ((next (lambda (c ascending-p)
-                (let ((mem (member (klondike--card-get-value c)
-                                   klondike---card-values)))
-                  (if ascending-p
-                      (if-let ((c (cadr mem))) c (car klondike---card-values))
-                    (let* ((len (length klondike---card-values))
-                           (n   (- len (length mem))))
-                      (nth (1- (if (zerop n) len n)) klondike---card-values)))))))
-    (or (and to-empty-p       (not card2) (string= (klondike--card-get-value card1) "A"))
-        (and (not to-empty-p) (not card2) (string= (klondike--card-get-value card1) "K"))
-        (and (string= (klondike--card-get-value card2) (funcall next card1 (not to-empty-p)))
-             (if to-empty-p
-                 (string= (klondike--card-get-suit  card1) (klondike--card-get-suit card2))
-               (or (and (or (string= (klondike--card-get-suit card1) klondike-suits-icon-club)
-                            (string= (klondike--card-get-suit card1) klondike-suits-icon-spade))
-                        (or (string= (klondike--card-get-suit card2) klondike-suits-icon-heart)
-                            (string= (klondike--card-get-suit card2) klondike-suits-icon-diamond)))
-                   (and (or (string= (klondike--card-get-suit card2) klondike-suits-icon-club)
-                            (string= (klondike--card-get-suit card2) klondike-suits-icon-spade))
-                        (or (string= (klondike--card-get-suit card1) klondike-suits-icon-heart)
-                            (string= (klondike--card-get-suit card1) klondike-suits-icon-diamond)))))))))
+  (let* ((  valuesCount                          (length klondike---card-values))
+         (3xValuesCount (1- (* valuesCount (1- (length klondike---card-suits)))))
+         (num1                                 (klondike--card-to-nat-num card1))
+         (num2                                 (klondike--card-to-nat-num card2))
+         (card1valueAsNum                                 (mod num1 valuesCount)))
+    (or (and to-empty-p       (not card2) (= card1valueAsNum 0))
+        (and (not to-empty-p) (not card2) (= card1valueAsNum (1- valuesCount)))
+        (and (funcall (if to-empty-p #'identity #'not)
+                      (eq (<= valuesCount num1 3xValuesCount)  ; suits list = ♠[♥♦]♣
+                          (<= valuesCount num2 3xValuesCount)))  ; 13 [13 13] 13
+             (= card1valueAsNum (funcall (if to-empty-p #'1+ #'1-)
+                                         (mod num2 valuesCount)))))))
 (defun klondike--card-to-unicode (card)
   "Convert CARD to a unicode character to represent the current state of the game.
 

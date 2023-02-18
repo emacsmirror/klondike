@@ -358,19 +358,12 @@ by the `length' of `klondike---card-values'.
 
 The suit and value can be computed by the number N, alone."
 
-  `((:suit . ,(pcase suit-symbol
-                ((or 'spade 'club)    (cl-case suit-symbol
-                                        ((spade quote) klondike-suits-icon-spade)
-                                        ((club  quote) klondike-suits-icon-club)))
-                ((or 'heart 'diamond) (propertize (cl-case suit-symbol
-                                                    ((heart   quote) klondike-suits-icon-heart)
-                                                    ((diamond quote) klondike-suits-icon-diamond))
-                                                  'face
-                                                  'klondike-heart-diamond-color))))
-    (:value . ,(let ((v (if (numberp value) (number-to-string value) value)))
-                 (pcase suit-symbol
-                   ((or 'spade 'club)    v)
-                   ((or 'heart 'diamond) (propertize v 'face 'klondike-heart-diamond-color)))))))
+  (if (< -1 n (* (length klondike---card-suits) (length klondike---card-values)))
+      (let ((suit (klondike--card-compute-suit n)))
+        `((:suit  . ,suit)
+          (:value . ,(propertize (klondike--card-compute-value n)
+                                 'face (get-text-property 0 'face suit)))))
+    (error "Card out of range: %d" n)))
 (defun klondike--card-get-suit (card)
   "Get the suit of the CARD.
 

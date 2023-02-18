@@ -341,7 +341,7 @@ action cannot be performed."
   "All possible suits able to be used in a Klondike Solitaire playing-card game.")
 (defconst klondike---card-values '("A" "2" "3"  "4" "5" "6"
                                    "7" "8" "9" "10" "J" "Q" "K")
-  "All possible values able to be used in a Klondike Solitaire playing card game.")
+  "All possible values able to be used in a Klondike Solitaire playing-card game.")
 (defun klondike--card-compute-suit (n)
   "Determine (and return) which suit belongs to the card represented by number N."
 

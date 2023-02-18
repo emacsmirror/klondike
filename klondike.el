@@ -342,7 +342,6 @@ action cannot be performed."
 (defconst klondike---card-values '("A" "2" "3"  "4" "5" "6"
                                    "7" "8" "9" "10" "J" "Q" "K")
   "All possible values able to be used in a Klondike Solitaire playing card game.")
-(defun klondike--card-create (suit-symbol value)
 (defun klondike--card-compute-suit (n)
   "Determine (and return) which suit belongs to the card represented by number N."
 
@@ -351,11 +350,13 @@ action cannot be performed."
   "Determine (and return) which value belongs to the card represented by number N."
 
   (nth (mod n (length klondike---card-values)) klondike---card-values))
-  "Create the representation of card as used by `klondike'.
+(defun klondike--card-from-nat-num (n)
+  "Create the representation of a card as used by `klondike'.
 
-SUIT-SYMBOL can be \\='club, \\='heart, \\='spade, or \\='diamond.
+N is any natural number below the `length' of `klondike---card-suits' multiplied
+by the `length' of `klondike---card-values'.
 
-VALUE can be any valid value in `klondike---card-values'."
+The suit and value can be computed by the number N, alone."
 
   `((:suit . ,(pcase suit-symbol
                 ((or 'spade 'club)    (cl-case suit-symbol
@@ -911,17 +912,10 @@ select in the stack is 1."
 
   (let* ((1card+padding (+ klondike-card-width     (1- klondike-card-height)))
          (topBotPadding (/ klondike-window-padding 2))
-         (cardPack      (let ((suits  '(club heart spade diamond))
-                              (result '()))
-                          (dotimes (index 4)
-                            (setq result (append result
-                                                 (mapcar (lambda (value)
-                                                           (klondike--card-create (nth index
-                                                                                       suits)
-                                                                                  value))
-                                                         klondike---card-values))))
-
-                          result))
+         (cardPack      (mapcar #'klondike--card-from-nat-num
+                                (number-sequence 0
+                                                 (1- (* (length klondike---card-suits)
+                                                        (length klondike---card-values))))))
          (fill-stack    (lambda (num)
                           (let ((result '()))
                             (dotimes (_ num)

@@ -542,7 +542,8 @@ made visible."
                            "╭"
                            (mapconcat (lambda (num)
                                         (if (and (cl-oddp num) empty-p) " " "─"))
-                                      (number-sequence 1 (- klondike-card-width 3)))
+                                      (number-sequence 1 (- klondike-card-width 3))
+				      "")
                            (cond
                             (empty-p                       " ")
                             ((or (> numOfFacedownCards 0)
@@ -678,8 +679,9 @@ made visible."
              (indent (if (> n 0) n 0))
              (str    (concat "╰"
                              (mapconcat (lambda (num)
-                                          (if (and (cl-oddp num) empty-p) " " "─"))
-                                        (number-sequence 1 cols))
+					  (if (and (cl-oddp num) empty-p) " " "─"))
+					(number-sequence 1 cols)
+					"")
                              "╯")))
         (funcall move-to (+ x indent)
                          (+ y

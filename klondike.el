@@ -485,8 +485,7 @@ made visible."
                          (make-string (- klondike-card-width 3) ?─)
                          (if (zerop i) "─" "┴")
                          "╮")))
-        (insert (concat str
-                        (make-string (- 1card+padding (length str)) ? )))))
+        (insert str (make-string (- 1card+padding (length str)) ? ))))
 
 
 
@@ -523,8 +522,7 @@ made visible."
                                                 ""))))
           (funcall move-to (+ x indent)
                            (+ y numOfFacedownCards (1+ faceupIndex)))
-          (insert (concat str
-                          (make-string (- 1card+padding (length str)) ? ))))))
+          (insert str (make-string (- 1card+padding (length str)) ? )))))
 
 
 
@@ -552,7 +550,7 @@ made visible."
                            "╮")))
       (funcall move-to (+ x indent)
                        (+ y numOfFacedownCards (length (cdr faceups)) 1))
-      (insert (concat str (make-string (- 1card+padding (length str)) ? ))))
+      (insert str (make-string (- 1card+padding (length str)) ? )))
 
 
 
@@ -581,7 +579,7 @@ made visible."
                            "")))
       (funcall move-to (+ x indent)
                        (+ y numOfFacedownCards (length (cdr faceups)) 2))
-      (insert (concat str (make-string (- 1card+padding (length str)) ? ))))
+      (insert str (make-string (- 1card+padding (length str)) ? )))
 
 
 
@@ -624,7 +622,7 @@ made visible."
                                  (nth (- offset hMinusGraphicHalf) graphic)
                                  (make-string (- cols wMinusGraphicHalf graphicWidth) ?\ )
                                  "│")))
-                (insert (concat str (make-string (- 1card+padding (length str)) ? ))))
+                (insert str (make-string (- 1card+padding (length str)) ? )))
             (let ((str (concat (if (> n -1) "╰┤" "")
                                (make-string (- (+ numOfFacedownCards (length (cdr faceups)))
                                                indent
@@ -641,7 +639,7 @@ made visible."
                                              (make-string (- cols wMinusSuitHalf suitLen) ? )))
                                  (make-string cols ? ))
                                (if (and empty-p (cl-oddp offset)) " " "│"))))
-              (insert (concat str (make-string (- 1card+padding (length str)) ? )))))))
+              (insert str (make-string (- 1card+padding (length str)) ? ))))))
 
 
 
@@ -669,7 +667,7 @@ made visible."
                             (length (cdr faceups))
                             2
                             (1+ rows)))
-        (insert (concat str (make-string (- 1card+padding (length str)) ? ))))
+        (insert str (make-string (- 1card+padding (length str)) ? )))
 
 
 
@@ -690,7 +688,7 @@ made visible."
                             2
                             (1+ rows)
                             1))
-        (insert (concat str (make-string (- 1card+padding (length str)) ? ))))
+        (insert str (make-string (- 1card+padding (length str)) ? )))
 
 
 

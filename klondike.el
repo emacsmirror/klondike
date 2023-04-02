@@ -762,7 +762,7 @@ to be."
                                                   (let ((str (symbol-name toPrintSymbol)))
                                                     (string= "pile"
                                                              (substring str 1 (1- (length str))))))))))
-          (if stacks-to-print stacks-to-print (mapcar 'car current)))))
+          (if stacks-to-print stacks-to-print (mapcar #'car current)))))
 (defun klondike--stack-number (stack)
   "Number the visible faceup cards of STACK.
 

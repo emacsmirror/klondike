@@ -587,7 +587,7 @@ made visible."
 
     (let* ((cols                                       (- klondike-card-width 2))
            (rows                                       (- cardHeightW/oTopBot 2))
-           (orig               (string-split klondike-card-facedow-graphic "\n"))
+           (orig               (split-string klondike-card-facedow-graphic "\n"))
            (oLen                                                   (length orig))
            (graphic            (mapcar (lambda (line)
                                          (let* ((len          (length line))

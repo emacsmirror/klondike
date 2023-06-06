@@ -1348,6 +1348,16 @@ to the facedown stack and in the facedown position."
                    "(use Shift to move to one of "
                    "the 4 stacks on the top-right)?")))
 
+(defun klondike--window-configuration-change ()
+  "Remove game progress from the modeline if no Klondike buffer is open."
+
+  (unless (get-buffer klondike---buffer-name)
+    (setq global-mode-string (delete 'klondike---mode-line-status
+                                     global-mode-string))
+
+    (remove-hook 'window-configuration-change-hook
+		 #'klondike--window-configuration-change)))
+
 ;;;###autoload
 (defun klondike ()
   "Launch a new Klondike game.
@@ -1363,7 +1373,10 @@ If one is already being played, switch to the active buffer."
                                                          'APPEND))
               ((not global-mode-string)     (list "" 'klondike---mode-line-status))
               ((stringp global-mode-string) (list global-mode-string
-                                                  'klondike---mode-line-status)))))
+                                                  'klondike---mode-line-status))))
+       (add-hook 'window-configuration-change-hook
+		 #'klondike--window-configuration-change))
+
   (if-let ((existing (get-buffer klondike---buffer-name)))
       (switch-to-buffer existing)
     (switch-to-buffer klondike---buffer-name)

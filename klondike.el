@@ -39,9 +39,6 @@
 (defconst klondike---buffer-name "Klondike"
   "The name of the buffer the Klondike solitaire game always runs in.")
 
-(defvar klondike---mode-line-status ""
-  "The string to show, in the modeline, the current progress of the Klondike game.")
-
 (defface klondike-stack-numbering
   '((t :slant italic :foreground "yellow"))
   "Face for numbering the visible cards in a stack for the user to select one."
@@ -448,6 +445,8 @@ This is primarily used to generate the `klondike---mode-line-status' string."
                                             klondike---foundation-3-stack)))
           "  "))
 
+(defvar klondike---mode-line-status (klondike--compute-modeline)
+  "The string to show, in the modeline, the current progress of the Klondike game.")
 
 
 
@@ -731,23 +730,7 @@ made visible."
   (funcall-interactively #'goto-line 0)
   (move-to-column                    1)
 
-  (setq klondike---mode-line-status (concat " "
-                                            (klondike--card-to-unicode
-                                              (car (klondike--stack-get-cards
-                                                     klondike---foundation-0-stack)))
-                                            " "
-                                            (klondike--card-to-unicode
-                                              (car (klondike--stack-get-cards
-                                                     klondike---foundation-1-stack)))
-                                            " "
-                                            (klondike--card-to-unicode
-                                              (car (klondike--stack-get-cards
-                                                     klondike---foundation-2-stack)))
-                                            " "
-                                            (klondike--card-to-unicode
-                                              (car (klondike--stack-get-cards
-                                                     klondike---foundation-3-stack)))
-                                            "  ")))
+  (setq klondike---mode-line-status (klondike--compute-modeline)))
 (defun klondike--card-insert-all (&optional stacks-to-print)
   "Insert all stacks into the `klondike-mode' buffer which are in STACKS-TO-PRINT.
 

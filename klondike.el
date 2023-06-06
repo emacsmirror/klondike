@@ -1355,6 +1355,15 @@ to the facedown stack and in the facedown position."
 If one is already being played, switch to the active buffer."
   (interactive)
 
+  (and (not (memq 'klondike---mode-line-status global-mode-string))
+       (setq global-mode-string
+             (cond
+              ((consp global-mode-string)   (add-to-list 'global-mode-string
+                                                         'klondike---mode-line-status
+                                                         'APPEND))
+              ((not global-mode-string)     (list "" 'klondike---mode-line-status))
+              ((stringp global-mode-string) (list global-mode-string
+                                                  'klondike---mode-line-status)))))
   (if-let ((existing (get-buffer klondike---buffer-name)))
       (switch-to-buffer existing)
     (switch-to-buffer klondike---buffer-name)
@@ -1385,16 +1394,6 @@ If one is already being played, switch to the active buffer."
     (read-only-mode        t))
 
   (klondike-mode))
-
-
-(setq global-mode-string
-      (cond
-       ((consp global-mode-string)   (add-to-list 'global-mode-string
-                                                  'klondike---mode-line-status
-                                                  'APPEND))
-       ((not global-mode-string)     (list "" 'klondike---mode-line-status))
-       ((stringp global-mode-string) (list global-mode-string
-                                           'klondike---mode-line-status))))
 
 
 

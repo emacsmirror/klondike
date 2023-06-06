@@ -351,7 +351,7 @@ action cannot be performed."
 (defun klondike--card-compute-value (n)
   "Determine (and return) which value belongs to the card represented by number N."
 
-  (nth (mod n (length klondike---card-values)) klondike---card-values))
+  (nth (klondike--card-compute-value-as-integer n) klondike---card-values))
 (defun klondike--card-from-nat-num (n)
   "Create the representation of a card as used by `klondike'.
 
@@ -403,7 +403,7 @@ row."
          (3xValuesCount (1- (* valuesCount (1- (length klondike---card-suits)))))
          (num1                                 (klondike--card-to-nat-num card1))
          (num2                                 (klondike--card-to-nat-num card2))
-         (card1valueAsNum                                 (mod num1 valuesCount)))
+         (card1valueAsNum         (klondike--card-compute-value-as-integer num1)))
     (or (and to-foundation-p       (not card2) (= card1valueAsNum 0))
         (and (not to-foundation-p) (not card2) (= card1valueAsNum (1- valuesCount)))
         (and (if to-foundation-p
@@ -412,7 +412,8 @@ row."
                (not (eq (<= valuesCount num1 3xValuesCount)  ; suits list = ♠[♥♦]♣
                         (<= valuesCount num2 3xValuesCount))))  ; 13 [13 13] 13
              (= card1valueAsNum (funcall (if to-foundation-p #'1+ #'1-)
-                                         (mod num2 valuesCount)))))))
+                                         (klondike--card-compute-value-as-integer
+                                           num2)))))))
 (defun klondike--card-to-unicode (card)
   "Convert CARD to a unicode character to represent the current state of the game.
 

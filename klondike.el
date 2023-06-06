@@ -405,9 +405,11 @@ row."
          (card1valueAsNum                                 (mod num1 valuesCount)))
     (or (and to-foundation-p       (not card2) (= card1valueAsNum 0))
         (and (not to-foundation-p) (not card2) (= card1valueAsNum (1- valuesCount)))
-        (and (funcall (if to-foundation-p #'identity #'not)
-                      (eq (<= valuesCount num1 3xValuesCount)  ; suits list = ♠[♥♦]♣
-                          (<= valuesCount num2 3xValuesCount)))  ; 13 [13 13] 13
+        (and (if to-foundation-p
+                 (string= (klondike--card-get-suit card1)
+                          (klondike--card-get-suit card2))
+               (not (eq (<= valuesCount num1 3xValuesCount)  ; suits list = ♠[♥♦]♣
+                        (<= valuesCount num2 3xValuesCount))))  ; 13 [13 13] 13
              (= card1valueAsNum (funcall (if to-foundation-p #'1+ #'1-)
                                          (mod num2 valuesCount)))))))
 (defun klondike--card-to-unicode (card)

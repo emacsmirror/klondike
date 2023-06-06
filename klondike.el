@@ -431,6 +431,23 @@ This is primarily used to generate the `klondike---mode-line-status' string."
                            (funcall (if (>= cardValueAsNum 11) #'1+ #'identity)
                                     cardValueAsNum))))
     "🂠"))
+(defun klondike--compute-modeline ()
+  "Generate a string to use for the modeline for a Klondike game."
+
+  (concat " "
+          (klondike--card-to-unicode (car (klondike--stack-get-cards
+                                            klondike---foundation-0-stack)))
+          " "
+          (klondike--card-to-unicode (car (klondike--stack-get-cards
+                                            klondike---foundation-1-stack)))
+          " "
+          (klondike--card-to-unicode (car (klondike--stack-get-cards
+                                            klondike---foundation-2-stack)))
+          " "
+          (klondike--card-to-unicode (car (klondike--stack-get-cards
+                                            klondike---foundation-3-stack)))
+          "  "))
+
 
 
 

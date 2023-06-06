@@ -392,7 +392,7 @@ This function is, effectively, the opposite of `klondike--card-from-nat-num'."
           (funcall calc #'klondike--card-get-suit klondike---card-suits))
        (funcall calc #'klondike--card-get-value klondike---card-values))))
 (defun klondike--card-next-p (card1 card2 to-foundation-p)
-  "Determin if CARD2 is able to be placed upon CARD1.
+  "Determin if CARD1 is able to be placed upon CARD2.
 
 TO-FOUNDATION-P designates whether CARD1 resides in one of the top-right stacks
 on the first row; if \\='nil\\=', it resides in one of the stacks on the bottom

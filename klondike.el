@@ -344,6 +344,10 @@ action cannot be performed."
   "Determine (and return) which suit belongs to the card represented by number N."
 
   (nth (/   n (length klondike---card-values)) klondike---card-suits))
+(defun klondike--card-compute-value-as-integer (n)
+  "Determine which integer, 0–12, belongs to the card represented by number N."
+
+  (mod n (length klondike---card-values)))
 (defun klondike--card-compute-value (n)
   "Determine (and return) which value belongs to the card represented by number N."
 

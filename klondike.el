@@ -399,11 +399,11 @@ TO-FOUNDATION-P designates whether CARD1 resides in one of the top-right stacks
 on the first row; if \\='nil\\=', it resides in one of the stacks on the bottom
 row."
 
-  (let* ((  valuesCount                          (length klondike---card-values))
-         (3xValuesCount (1- (* valuesCount (1- (length klondike---card-suits)))))
-         (num1                                 (klondike--card-to-nat-num card1))
-         (num2                                 (klondike--card-to-nat-num card2))
-         (card1valueAsNum         (klondike--card-compute-value-as-integer num1)))
+  (let* ((  valuesCount                            (length klondike---card-values))
+         (3xValuesCount   (1- (* valuesCount (1- (length klondike---card-suits)))))
+         (num1                                   (klondike--card-to-nat-num card1))
+         (num2                                   (klondike--card-to-nat-num card2))
+         (card1valueAsNum           (klondike--card-compute-value-as-integer num1)))
     (or (and to-foundation-p       (not card2) (= card1valueAsNum 0))
         (and (not to-foundation-p) (not card2) (= card1valueAsNum (1- valuesCount)))
         (and (if to-foundation-p

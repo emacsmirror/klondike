@@ -1187,6 +1187,13 @@ to the facedown stack and in the facedown position."
   (klondike--history-save)
   (klondike--card-insert-all '(:facedown :waste)))
 
+(defun klondike-quit-game ()
+  "Kill current Klondike buffer, exiting the game."
+  (interactive)
+
+  (when (y-or-n-p "Leavin' so soon?")
+    (kill-buffer)))
+
 (defvar klondike-mode-map (let ((mode-map (make-sparse-keymap)))
                             (define-key mode-map (kbd "SPC") #'klondike-card-deck-next)
 
@@ -1232,6 +1239,7 @@ to the facedown stack and in the facedown position."
                             (define-key mode-map (kbd "C-x u")  #'klondike-history-prev)
 
                             (define-key mode-map (kbd "q")      #'quit-window)
+                            (define-key mode-map (kbd "Q")      #'klondike-quit-game)
 
                             mode-map)
   "Keymap for `klondike-mode'.")

@@ -1417,4 +1417,7 @@ If one is already being played, switch to the active buffer."
 
 (provide 'klondike)
 
+;; Local Variables:
+;; indent-tabs-mode: nil
+;; End:
 ;;; klondike.el ends here

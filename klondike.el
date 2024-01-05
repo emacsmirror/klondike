@@ -947,7 +947,7 @@ STACK-NUM indicates which \\='pile stack to use; it is ignored if STACK-SYMBOL
 is \\='waste."
 
   (let* ((stack (cl-case stack-symbol
-                  ((waste quote) klondike---faceup-stack)
+                  ((waste quote) klondike---waste-stack)
                   ((pile  quote) (cl-case stack-num
                                    (0 klondike---pile-0-stack)
                                    (1 klondike---pile-1-stack)

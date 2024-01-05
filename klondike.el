@@ -1231,6 +1231,8 @@ to the facedown stack and in the facedown position."
                             (define-key mode-map (kbd "<undo>") #'klondike-history-prev)
                             (define-key mode-map (kbd "C-x u")  #'klondike-history-prev)
 
+                            (define-key mode-map (kbd "q")      #'quit-window)
+
                             mode-map)
   "Keymap for `klondike-mode'.")
 (define-derived-mode klondike-mode fundamental-mode "Klondike"

@@ -80,9 +80,9 @@ the top of the buffer uses half of this value."
   :type  'natnum
   :group 'klondike)
 
-(defcustom klondike-card-facedow-graphic (concat " _       \n"
-                                                   "/ `/|// /\n"
-                                                   "_;/ |/_/ ")
+(defcustom klondike-card-facedown-graphic (concat " _       \n"
+                                                  "/ `/|// /\n"
+                                                  "_;/ |/_/ ")
   "What to put on the back of facedown cards.
 
 Use newline characters to designate what should appear on different rows and
@@ -468,7 +468,7 @@ EMPTY-P says whether the stack is empty or not; if empty, the outline of a card
 with a dotted line will be placed.
 
 FACEDOWN-P says whether the stack is facedown or not; if facedown,
-`klondike-card-facedow-graphic' will be used to fill in the inner contents
+`klondike-card-facedown-graphic' will be used to fill in the inner contents
 \(inside of the drawn border) of the shown stack.
 
 TOTAL-NUM says how many total cards are in the stack; this value is irrelevant
@@ -606,10 +606,10 @@ made visible."
 
 
 
-    (let* ((cols                                       (- klondike-card-width 2))
-           (rows                                       (- cardHeightW/oTopBot 2))
-           (orig               (split-string klondike-card-facedow-graphic "\n"))
-           (oLen                                                   (length orig))
+    (let* ((cols                                        (- klondike-card-width 2))
+           (rows                                        (- cardHeightW/oTopBot 2))
+           (orig               (split-string klondike-card-facedown-graphic "\n"))
+           (oLen                                                    (length orig))
            (graphic            (mapcar (lambda (line)
                                          (let* ((len          (length line))
                                                 (remHalf (/ (- len cols) 2)))

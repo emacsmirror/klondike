@@ -512,7 +512,7 @@ made visible."
 
 
 
-    ;; F A C E   U P S
+    ;; W A S T E S
     (let ((wasteRev (reverse (cdr wastes))))
       (dotimes (wasteIndex (length wasteRev))
         (let* ((n       (- (+ numOfFacedownCards (1+ wasteIndex))

@@ -153,3 +153,30 @@ and the function/~lambda~ specified by the tables, below.
 | =6=   | ~(lambda () (interactive) (klondike--stack-select 'pile  5))~ |
 | =7=   | ~(lambda () (interactive) (klondike--stack-select 'pile  6))~ |
 | =C-g= | ~#'klondike-stack-pick-or-select-quit~                        |
+
+**** Simplified Key-bindings
+     :PROPERTIES:
+       :CUSTOM_ID: simplified-key–bindings
+     :END:
+The above key bindings are the default. Some found it cumbersome to
+have to use a different set of keys between selecting a stack and,
+then, picking a card – of the face-up cards in the stack – to move
+from said stack so there are an alternative set of bindings that
+simplifies this.
+
+If you set the variable ~klondike-simplified-card-moving-p~ to ~t~,
+picking a particular tableau (using =1= through =7=) will then, still,
+assume that using =1= through =7=, again, means you want to move all
+of the available cards in the tableau to another tableau but, if the
+tableau specified isn't a valid stack to move the cards, Klondike will
+assume you meant to select one of the available face-up cards to,
+then, move only a portion of the cards to another tableau.
+
+So, if you press =5=, Klondike will check if it can move all of the
+face-up cards of the currently selected tableau to tableau =5=; if it
+cannot, it will select the face-up card labeled with =5= in the
+currently selected tableau so you can move only those cards (an
+operation that, previously, had to be done with =F5= in order for
+Klondike to tell whether you wanted to move everything of the
+currently selected stack or select a subsection of the currently
+selected stack).

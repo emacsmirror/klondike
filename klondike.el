@@ -1109,15 +1109,28 @@ The cards being checked are specified by the card depth of
       (klondike--card-find-available-foundation stack-symbol stack-num)
 
       (klondike-mode))))
-(defun klondike--stack-pick (card-num)
+(defun klondike--stack-pick (card-num &optional return-to-klondike-mode-p)
   "When in `klondike-picker-mode', select the card specified by CARD-NUM.
 
-Finally, switch to `klondike-select-mode'."
+If the number given by CARD-NUM corresponds to a valid card, switch to,
+finally, `klondike-select-mode'.
+
+If RETURN-TO-KLONDIKE-MODE-P is \\='t\\=', assume this function was called from
+`klondike--stack-select-else-pick' and that the number chosen was not an
+available stack to switch the cards of this stack to; if CARD-NUM does not
+correspond to a valid face-up card in this stack (the number is too large for
+the number of face-up cards in this stack), assume that the user intended to
+move the face-up cards of this stack to another stack and provide a message
+which matches that intention; finally, switch to `klondike-mode'."
 
   (let ((stack (klondike--stack-get (car klondike---stack-pick-stack)
                                     (cdr klondike---stack-pick-stack))))
     (if (> card-num (klondike--stack-get-visible stack))
-        (message "Mmmm…that's not an option; move which card in the stack?")
+        (if (not return-to-klondike-mode-p)
+            (message "Mmmm…that's not an option; move which card in the stack?")
+          (run-at-time 0.1 nil (lambda () (message "Can't do that, Jack!")))
+
+          (klondike-mode))
       (setq klondike---stack-pick-num card-num)
 
       (klondike-select-mode))))
@@ -1160,7 +1173,7 @@ If this is not possible, pick the card in the stack by STACK-NUM by calling
                                 stack-num
                                 t))
       (klondike-mode)
-    (klondike--stack-pick (1+ stack-num))))
+    (klondike--stack-pick (1+ stack-num) t)))
 
 (defun klondike-card-deck-next ()
   "Flip a card from the stock stack to being waste.
@@ -1298,7 +1311,7 @@ to the stock stack and in the facedown position."
                                                                    (if (eq sType 'foundation)
                                                                        1
                                                                      (klondike--stack-get-visible
-                                                                      (klondike--stack-get sType sNum)))))
+                                                                       (klondike--stack-get sType sNum)))))
 
                                                            (klondike--stack-select 'tableau
                                                                                    num))))

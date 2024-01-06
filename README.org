@@ -110,6 +110,8 @@ and the function/~lambda~ specified by the tables, below.
 | =C-_=    | ~#'klondike-history-prev~                                              |
 | =<undo>= | ~#'klondike-history-prev~                                              |
 | =C-x u=  | ~#'klondike-history-prev~                                              |
+| =q=      | ~#'quit-window~                                                        |
+| =Q=      | ~#'klondike-quit-game~                                                 |
 
 **** Klondike Picker Mode
      :PROPERTIES:

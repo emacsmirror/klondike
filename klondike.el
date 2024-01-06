@@ -123,31 +123,31 @@ Users should /never/ touch nor modify this.")
 
 Users should /never/ touch nor modify this.")
 
-(defvar klondike---pile-0-stack       `(() . ())
+(defvar klondike---tableau-0-stack    `(() . ())
   "A variable to store the current state of the first of the bottom card stacks.
 
 Users should /never/ touch nor modify this.")
-(defvar klondike---pile-1-stack       `(() . ())
+(defvar klondike---tableau-1-stack    `(() . ())
   "A variable to store the current state of the second of the bottom card stacks.
 
 Users should /never/ touch nor modify this.")
-(defvar klondike---pile-2-stack       `(() . ())
+(defvar klondike---tableau-2-stack    `(() . ())
   "A variable to store the current state of the third of the bottom card stacks.
 
 Users should /never/ touch nor modify this.")
-(defvar klondike---pile-3-stack       `(() . ())
+(defvar klondike---tableau-3-stack    `(() . ())
   "A variable to store the current state of the fourth of the bottom card stacks.
 
 Users should /never/ touch nor modify this.")
-(defvar klondike---pile-4-stack       `(() . ())
+(defvar klondike---tableau-4-stack    `(() . ())
   "A variable to store the current state of the fifth of the bottom card stacks.
 
 Users should /never/ touch nor modify this.")
-(defvar klondike---pile-5-stack       `(() . ())
+(defvar klondike---tableau-5-stack    `(() . ())
   "A variable to store the current state of the sixth of the bottom card stacks.
 
 Users should /never/ touch nor modify this.")
-(defvar klondike---pile-6-stack       `(() . ())
+(defvar klondike---tableau-6-stack    `(() . ())
   "A variable to store the current state of the seventh of the bottom card stacks.
 
 Users should /never/ touch nor modify this.")
@@ -155,9 +155,9 @@ Users should /never/ touch nor modify this.")
 (defun klondike--stack-get (stack-type stack-num)
   "Retrieve a particular stack, in the game, by STACK-TYPE and STACK-NUM.
 
-STACK-TYPE can be one of three types: \\='waste, \\='pile, or \\='foundation.
+STACK-TYPE can be one of three types: \\='waste, \\='tableau, or \\='foundation.
 
-\\='waste is `klondike---waste-stack', \\='pile is any of the 7 stacks at the
+\\='waste is `klondike---waste-stack', \\='tableau is any of the 7 stacks at the
 bottom half of the screen, and \\='foundation is one of the 4 stacks at the
 top-right of the screen.
 
@@ -166,14 +166,14 @@ of \\='waste, STACK-NUM is ignored."
 
   (cl-case stack-type
     ((waste      quote) klondike---waste-stack)
-    ((pile       quote) (cl-case stack-num
-                          (0 klondike---pile-0-stack)
-                          (1 klondike---pile-1-stack)
-                          (2 klondike---pile-2-stack)
-                          (3 klondike---pile-3-stack)
-                          (4 klondike---pile-4-stack)
-                          (5 klondike---pile-5-stack)
-                          (6 klondike---pile-6-stack)))
+    ((tableau    quote) (cl-case stack-num
+                          (0 klondike---tableau-0-stack)
+                          (1 klondike---tableau-1-stack)
+                          (2 klondike---tableau-2-stack)
+                          (3 klondike---tableau-3-stack)
+                          (4 klondike---tableau-4-stack)
+                          (5 klondike---tableau-5-stack)
+                          (6 klondike---tableau-6-stack)))
     ((foundation quote) (cl-case stack-num
                           (0 klondike---foundation-0-stack)
                           (1 klondike---foundation-1-stack)
@@ -249,20 +249,20 @@ incrementing the current history index by 1."
                                               (:foundation1 . ,(copy-tree klondike---foundation-1-stack))
                                               (:foundation2 . ,(copy-tree klondike---foundation-2-stack))
                                               (:foundation3 . ,(copy-tree klondike---foundation-3-stack))
-                                              (:pile0       . ,(copy-tree klondike---pile-0-stack))
-                                              (:pile1       . ,(copy-tree klondike---pile-1-stack))
-                                              (:pile2       . ,(copy-tree klondike---pile-2-stack))
-                                              (:pile3       . ,(copy-tree klondike---pile-3-stack))
-                                              (:pile4       . ,(copy-tree klondike---pile-4-stack))
-                                              (:pile5       . ,(copy-tree klondike---pile-5-stack))
-                                              (:pile6       . ,(copy-tree klondike---pile-6-stack)))))
+                                              (:tableau0    . ,(copy-tree klondike---tableau-0-stack))
+                                              (:tableau1    . ,(copy-tree klondike---tableau-1-stack))
+                                              (:tableau2    . ,(copy-tree klondike---tableau-2-stack))
+                                              (:tableau3    . ,(copy-tree klondike---tableau-3-stack))
+                                              (:tableau4    . ,(copy-tree klondike---tableau-4-stack))
+                                              (:tableau5    . ,(copy-tree klondike---tableau-5-stack))
+                                              (:tableau6    . ,(copy-tree klondike---tableau-6-stack)))))
                                    (1+ index)))))
 (defun klondike--history-alter (index)
   "Change INDEX, which points to the current state of the game in the history list.
 
 Then load the stack states stored in that history point into
 `klondike---stock-stack', `klondike---waste-stack',
-`klondike---foundation-0-stack' (and 1–3), and `klondike---pile-0-stack'
+`klondike---foundation-0-stack' (and 1–3), and `klondike---tableau-0-stack'
 \(and 1–6).
 
 Finally, reprint the game buffer to reflext the current state of the various
@@ -277,13 +277,13 @@ stacks."
     (setq klondike---foundation-1-stack (copy-tree (alist-get :foundation1 current)))
     (setq klondike---foundation-2-stack (copy-tree (alist-get :foundation2 current)))
     (setq klondike---foundation-3-stack (copy-tree (alist-get :foundation3 current)))
-    (setq klondike---pile-0-stack       (copy-tree (alist-get :pile0       current)))
-    (setq klondike---pile-1-stack       (copy-tree (alist-get :pile1       current)))
-    (setq klondike---pile-2-stack       (copy-tree (alist-get :pile2       current)))
-    (setq klondike---pile-3-stack       (copy-tree (alist-get :pile3       current)))
-    (setq klondike---pile-4-stack       (copy-tree (alist-get :pile4       current)))
-    (setq klondike---pile-5-stack       (copy-tree (alist-get :pile5       current)))
-    (setq klondike---pile-6-stack       (copy-tree (alist-get :pile6       current))))
+    (setq klondike---tableau-0-stack    (copy-tree (alist-get :tableau0    current)))
+    (setq klondike---tableau-1-stack    (copy-tree (alist-get :tableau1    current)))
+    (setq klondike---tableau-2-stack    (copy-tree (alist-get :tableau2    current)))
+    (setq klondike---tableau-3-stack    (copy-tree (alist-get :tableau3    current)))
+    (setq klondike---tableau-4-stack    (copy-tree (alist-get :tableau4    current)))
+    (setq klondike---tableau-5-stack    (copy-tree (alist-get :tableau5    current)))
+    (setq klondike---tableau-6-stack    (copy-tree (alist-get :tableau6    current))))
 
   (klondike--card-insert-all))
 (defun klondike-history-prev ()
@@ -767,7 +767,7 @@ to be."
                                                         (- (length (klondike--stack-get-cards stack))
                                                            (klondike--stack-get-visible stack)))
                                                (let ((str (symbol-name toPrintSymbol)))
-                                                 (string= "pile"
+                                                 (string= "tableau"
                                                           (substring str 1 (1- (length str))))))))))
           (if stacks-to-print stacks-to-print (mapcar #'car current)))))
 (defun klondike--stack-number (stack)
@@ -907,20 +907,20 @@ select in the stack is 1."
                 klondike-top-&-bottom-row-spacing))
           (x (lambda (cardIndex)
                (+ klondike-window-padding (* cardIndex 1card+padding)))))
-      (klondike--stack-set klondike---pile-0-stack (funcall fill-stack 1) 1
-                                                   (funcall x 0)          y)
-      (klondike--stack-set klondike---pile-1-stack (funcall fill-stack 2) 1
-                                                   (funcall x 1)          y)
-      (klondike--stack-set klondike---pile-2-stack (funcall fill-stack 3) 1
-                                                   (funcall x 2)          y)
-      (klondike--stack-set klondike---pile-3-stack (funcall fill-stack 4) 1
-                                                   (funcall x 3)          y)
-      (klondike--stack-set klondike---pile-4-stack (funcall fill-stack 5) 1
-                                                   (funcall x 4)          y)
-      (klondike--stack-set klondike---pile-5-stack (funcall fill-stack 6) 1
-                                                   (funcall x 5)          y)
-      (klondike--stack-set klondike---pile-6-stack (funcall fill-stack 7) 1
-                                                   (funcall x 6)          y))
+      (klondike--stack-set klondike---tableau-0-stack (funcall fill-stack 1) 1
+                                                      (funcall x 0)          y)
+      (klondike--stack-set klondike---tableau-1-stack (funcall fill-stack 2) 1
+                                                      (funcall x 1)          y)
+      (klondike--stack-set klondike---tableau-2-stack (funcall fill-stack 3) 1
+                                                      (funcall x 2)          y)
+      (klondike--stack-set klondike---tableau-3-stack (funcall fill-stack 4) 1
+                                                      (funcall x 3)          y)
+      (klondike--stack-set klondike---tableau-4-stack (funcall fill-stack 5) 1
+                                                      (funcall x 4)          y)
+      (klondike--stack-set klondike---tableau-5-stack (funcall fill-stack 6) 1
+                                                      (funcall x 5)          y)
+      (klondike--stack-set klondike---tableau-6-stack (funcall fill-stack 7) 1
+                                                      (funcall x 6)          y))
 
     (klondike--stack-set klondike---stock-stack
                          (funcall fill-stack 24)
@@ -940,22 +940,22 @@ select in the stack is 1."
 (defun klondike--card-find-available-foundation (stack-symbol &optional stack-num)
   "Find if any of the 4 top-right stacks can take the top card of another stack.
 
-STACK-SYMBOL can be \\='waste or \\='pile and indicates the type of stack
+STACK-SYMBOL can be \\='waste or \\='tableau and indicates the type of stack
 where the top card should be taken from.
 
-STACK-NUM indicates which \\='pile stack to use; it is ignored if STACK-SYMBOL
-is \\='waste."
+STACK-NUM indicates which \\='tableau stack to use; it is ignored if
+STACK-SYMBOL is \\='waste."
 
   (let* ((stack (cl-case stack-symbol
-                  ((waste quote) klondike---waste-stack)
-                  ((pile  quote) (cl-case stack-num
-                                   (0 klondike---pile-0-stack)
-                                   (1 klondike---pile-1-stack)
-                                   (2 klondike---pile-2-stack)
-                                   (3 klondike---pile-3-stack)
-                                   (4 klondike---pile-4-stack)
-                                   (5 klondike---pile-5-stack)
-                                   (6 klondike---pile-6-stack)))))
+                  ((waste   quote) klondike---waste-stack)
+                  ((tableau quote) (cl-case stack-num
+                                     (0 klondike---tableau-0-stack)
+                                     (1 klondike---tableau-1-stack)
+                                     (2 klondike---tableau-2-stack)
+                                     (3 klondike---tableau-3-stack)
+                                     (4 klondike---tableau-4-stack)
+                                     (5 klondike---tableau-5-stack)
+                                     (6 klondike---tableau-6-stack)))))
          (card  (car (klondike--stack-get-cards stack)))
          (mNum  (cond
                  ((klondike--card-next-p card (car (klondike--stack-get-cards klondike---foundation-0-stack)) t) 0)
@@ -970,8 +970,8 @@ is \\='waste."
 (defun klondike--card-move (type1 index1 stack-depth type2 index2 &optional no-message-p)
   "Move any number of cards from one stack to another.
 
-The type (TYPE1 and TYPE2) specify the type of the stack: \\='waste, \\='pile,
-or \\='foundation.
+The type (TYPE1 and TYPE2) specify the type of the stack: \\='waste,
+\\='tableau, or \\='foundation.
 
 The index (INDEX1 and INDEX2) specifies which version of a stack type to use; if
 the type is \\='waste, the index is disregarded (within `klondike--stack-get').
@@ -1012,21 +1012,21 @@ cards specified cannot be moved from the first stack to the second stack."
       (klondike--history-save)
       (klondike--card-insert-all `(,(cl-case type1
                                       ((waste      quote) :waste)
-                                      ((pile       quote) (cl-case index1
-                                                            (0 :pile0) (1 :pile1)
-                                                            (2 :pile2) (3 :pile3)
-                                                            (4 :pile4) (5 :pile5)
-                                                            (6 :pile6)))
+                                      ((tableau    quote) (cl-case index1
+                                                            (0 :tableau0) (1 :tableau1)
+                                                            (2 :tableau2) (3 :tableau3)
+                                                            (4 :tableau4) (5 :tableau5)
+                                                            (6 :tableau6)))
                                       ((foundation quote) (cl-case index1
                                                             (0 :foundation0) (1 :foundation1)
                                                             (2 :foundation2) (3 :foundation3))))
                                    ,(cl-case type2
                                       ((waste      quote) :waste)
-                                      ((pile       quote) (cl-case index2
-                                                            (0 :pile0) (1 :pile1)
-                                                            (2 :pile2) (3 :pile3)
-                                                            (4 :pile4) (5 :pile5)
-                                                            (6 :pile6)))
+                                      ((tableau    quote) (cl-case index2
+                                                            (0 :tableau0) (1 :tableau1)
+                                                            (2 :tableau2) (3 :tableau3)
+                                                            (4 :tableau4) (5 :tableau5)
+                                                            (6 :tableau6)))
                                       ((foundation quote) (cl-case index2
                                                             (0 :foundation0) (1 :foundation1)
                                                             (2 :foundation2) (3 :foundation3))))))
@@ -1056,9 +1056,9 @@ Either enter a mode to allow the user to pick a card from a stack
 If the only visible waste cards in a stack is 1, the latter mode is chosen;
 otherwise, the first.
 
-STACK-TYPE can be one of three types: \\='waste, \\='pile, or \\='foundation.
+STACK-TYPE can be one of three types: \\='waste, \\='tableau, or \\='foundation.
 
-\\='waste is `klondike---waste-stack', \\='pile is any of the 7 stacks at the
+\\='waste is `klondike---waste-stack', \\='tableau is any of the 7 stacks at the
 bottom half of the screen, and \\='foundation is one of the 4 stacks at the
 top-right of the screen.
 
@@ -1127,9 +1127,9 @@ Finally, switch to `klondike-select-mode'."
 Move this from the stack specified by `klondike---stack-pick-stack' to the
 stack specified by STACK-TYPE and STACK-NUM.
 
-STACK-TYPE can be one of three types: \\='waste, \\='pile, or \\='foundation.
+STACK-TYPE can be one of three types: \\='waste, \\='tableau, or \\='foundation.
 
-\\='waste is `klondike---waste-stack', \\='pile is any of the 7 stacks at the
+\\='waste is `klondike---waste-stack', \\='tableau is any of the 7 stacks at the
 bottom half of the screen, and \\='foundation is one of the 4 stacks at the
 top-right of the screen.
 
@@ -1229,7 +1229,7 @@ to the stock stack and in the facedown position."
                                                 (lambda ()
                                                   (interactive)
 
-                                                  (klondike--stack-pick-or-select 'pile
+                                                  (klondike--stack-pick-or-select 'tableau
                                                                                   num))))
                                   (number-sequence 0 6))
 
@@ -1249,7 +1249,7 @@ to the stock stack and in the facedown position."
   (when-let ((stack-type (car klondike---stack-pick-stack)))
     (klondike--stack-clear-selects
       (klondike--stack-get stack-type (cdr klondike---stack-pick-stack))
-      (not (eq stack-type 'pile))))
+      (not (eq stack-type 'tableau))))
 
   (setq klondike---stack-pick-stack (cons nil -1))
   (setq klondike---stack-pick-num   -1))
@@ -1272,7 +1272,7 @@ to the stock stack and in the facedown position."
                                                                        (klondike--stack-get-visible
                                                                         (klondike--stack-get sType sNum)))))
 
-                                                             (klondike--stack-select-else-pick 'pile
+                                                             (klondike--stack-select-else-pick 'tableau
                                                                                                num))))
                                              (number-sequence 0 8))
                                      (mapc (lambda (num)
@@ -1300,7 +1300,7 @@ to the stock stack and in the facedown position."
                                                                      (klondike--stack-get-visible
                                                                       (klondike--stack-get sType sNum)))))
 
-                                                           (klondike--stack-select 'pile
+                                                           (klondike--stack-select 'tableau
                                                                                    num))))
                                            (number-sequence 0 6)))
 
@@ -1343,7 +1343,7 @@ to the stock stack and in the facedown position."
                                                        (lambda ()
                                                          (interactive)
 
-                                                         (klondike--stack-select 'pile num))))
+                                                         (klondike--stack-select 'tableau num))))
                                          (number-sequence 0 6))
 
                                    (define-key mode-map (kbd "C-g") #'klondike-stack-pick-or-select-quit)
@@ -1357,7 +1357,7 @@ to the stock stack and in the facedown position."
     (klondike--stack-get (car klondike---stack-pick-stack)
                          (cdr klondike---stack-pick-stack))
     klondike---stack-pick-num
-    (not (eq (car klondike---stack-pick-stack) 'pile)))
+    (not (eq (car klondike---stack-pick-stack) 'tableau)))
 
   (message (concat "Move the cards to which stack "
                    "(use Shift to move to one of "

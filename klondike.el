@@ -80,10 +80,10 @@ the top of the buffer uses half of this value."
   :type  'natnum
   :group 'klondike)
 
-(defcustom klondike-card-facedown-graphic (concat " _       \n"
-                                                  "/ `/|// /\n"
-                                                  "_;/ |/_/ ")
-  "What to put on the back of facedown cards.
+(defcustom klondike-card-stock-graphic (concat " _       \n"
+                                               "/ `/|// /\n"
+                                               "_;/ |/_/ ")
+  "What to put on the back of stock cards.
 
 Use newline characters to designate what should appear on different rows and
 have the number of characters between each newline be the same in every case.
@@ -97,8 +97,8 @@ card; less rows than the height of the cards will mean centering."
   :type  'string
   :group 'klondike)
 
-(defvar klondike---facedown-stack     `(() . ())
-  "A variable to store the current state of the stack of facedown cards.
+(defvar klondike---stock-stack        `(() . ())
+  "A variable to store the current state of the stack of stock cards.
 
 Users should /never/ touch nor modify this.")
 (defvar klondike---waste-stack        `(() . ())
@@ -243,7 +243,7 @@ incrementing the current history index by 1."
   (let ((timeline (klondike--history-get-timeline))
         (index    (klondike--history-get-index)))
     (setq klondike---history (cons (append (butlast timeline (- (1- (length timeline)) index))
-                                           `(((:facedown    . ,(copy-tree klondike---facedown-stack))
+                                           `(((:stock       . ,(copy-tree klondike---stock-stack))
                                               (:waste       . ,(copy-tree klondike---waste-stack))
                                               (:foundation0 . ,(copy-tree klondike---foundation-0-stack))
                                               (:foundation1 . ,(copy-tree klondike---foundation-1-stack))
@@ -261,7 +261,7 @@ incrementing the current history index by 1."
   "Change INDEX, which points to the current state of the game in the history list.
 
 Then load the stack states stored in that history point into
-`klondike---facedown-stack', `klondike---waste-stack',
+`klondike---stock-stack', `klondike---waste-stack',
 `klondike---foundation-0-stack' (and 1–3), and `klondike---pile-0-stack'
 \(and 1–6).
 
@@ -271,7 +271,7 @@ stacks."
   (klondike--history-set-index index)
 
   (let ((current (klondike--history-get-timeline-current)))
-    (setq klondike---facedown-stack     (copy-tree (alist-get :facedown    current)))
+    (setq klondike---stock-stack        (copy-tree (alist-get :stock       current)))
     (setq klondike---waste-stack        (copy-tree (alist-get :waste       current)))
     (setq klondike---foundation-0-stack (copy-tree (alist-get :foundation0 current)))
     (setq klondike---foundation-1-stack (copy-tree (alist-get :foundation1 current)))
@@ -455,11 +455,11 @@ This is primarily used to generate the `klondike---mode-line-status' string."
 
 
 
-(defun klondike--card-insert (x y empty-p &optional facedown-p  total-num
+(defun klondike--card-insert (x y empty-p &optional stock-p     total-num
                                                     waste-cards show-stack-p)
   "Handle inserting a stack into the `klondike-mode' buffer.
 
-This function is designed to put the entire stack – from facedown cards to
+This function is designed to put the entire stack – from stock cards to
 waste cards and the top card – into the buffer.
 
 X and Y tell where the first card of the stack ought to go in the buffer.
@@ -467,16 +467,16 @@ X and Y tell where the first card of the stack ought to go in the buffer.
 EMPTY-P says whether the stack is empty or not; if empty, the outline of a card
 with a dotted line will be placed.
 
-FACEDOWN-P says whether the stack is facedown or not; if facedown,
-`klondike-card-facedown-graphic' will be used to fill in the inner contents
+STOCK-P says whether the stack is stock or not; if the stock stack,
+`klondike-card-stock-graphic' will be used to fill in the inner contents
 \(inside of the drawn border) of the shown stack.
 
 TOTAL-NUM says how many total cards are in the stack; this value is irrelevant
 if the stack is empty (as defined by EMPTY-P).
 
 WASTE-CARDS is a list of which cards are waste, in the stack; details about
-cards which are facedown aren't inserted so info.  about the cards which are
-facedown is unneeded.
+cards which are stock aren't inserted so info.  about the cards which are
+stock is unneeded.
 
 SHOW-STACK-P determines whether any cards outside of the top card is shown or
 made visible."
@@ -499,9 +499,9 @@ made visible."
          (wastes              (if (and (not show-stack-p) (> (length waste-cards) 0))
                                   (list (car waste-cards))
                                 waste-cards))
-         (numOfFacedownCards  (if show-stack-p (- totalN (length wastes)) 0)))
-    ;; F A C E   D O W N S
-    (dotimes (i numOfFacedownCards)
+         (numOfStockCards     (if show-stack-p (- totalN (length wastes)) 0)))
+    ;; S T O C K S
+    (dotimes (i numOfStockCards)
       (funcall move-to x (+ y (1+ i)))
       (let ((str (concat (make-string i ?│)
                          "╭"
@@ -515,7 +515,7 @@ made visible."
     ;; W A S T E S
     (let ((wasteRev (reverse (cdr wastes))))
       (dotimes (wasteIndex (length wasteRev))
-        (let* ((n       (- (+ numOfFacedownCards (1+ wasteIndex))
+        (let* ((n       (- (+ numOfStockCards (1+ wasteIndex))
                            klondike-card-height))
                (indent  (if (> n 0) n 0))
                (suitVal (concat (klondike--card-get-suit  (nth wasteIndex wasteRev))
@@ -524,7 +524,7 @@ made visible."
                                         "─"
                                         (format (concat (if (> n -1) "╰" "")
                                                         (if (> n -1) "┤" "")
-                                                        (make-string (- (+ numOfFacedownCards
+                                                        (make-string (- (+ numOfStockCards
                                                                            wasteIndex)
                                                                         indent
                                                                         (if (> n -1) 2 0))
@@ -537,25 +537,25 @@ made visible."
                                                                              (length suitVal)))
                                                         "s"
                                                         (if (and (zerop wasteIndex)
-                                                                 (zerop numOfFacedownCards))
+                                                                 (zerop numOfStockCards))
                                                             "─"
                                                           "┴")
                                                         "╮")
                                                 suitVal
                                                 ""))))
           (funcall move-to (+ x indent)
-                           (+ y numOfFacedownCards (1+ wasteIndex)))
+                           (+ y numOfStockCards (1+ wasteIndex)))
           (insert str (make-string (- 1card+padding (length str)) ? )))))
 
 
 
     ;; C A R D   T O P
-    (let* ((n      (- (+ numOfFacedownCards (length wastes))
+    (let* ((n      (- (+ numOfStockCards (length wastes))
                       klondike-card-height))
            (indent (if (> n 0) n 0))
            (str    (concat (if (> n -1) "╰" "")
                            (if (> n -1) "┤" "")
-                           (make-string (- (+ numOfFacedownCards
+                           (make-string (- (+ numOfStockCards
                                               (length (cdr wastes)))
                                            indent
                                            (if (> n -1) 2 0))
@@ -566,26 +566,26 @@ made visible."
                                       (number-sequence 1 (- klondike-card-width 3))
 				      "")
                            (cond
-                            (empty-p                      " ")
-                            ((or (> numOfFacedownCards 0)
-                                 (> (length wastes)   1)) "┴")
-                            (t                            "─"))
+                            (empty-p                    " ")
+                            ((or (> numOfStockCards 0)
+                                 (> (length wastes) 1)) "┴")
+                            (t                          "─"))
                            "╮")))
       (funcall move-to (+ x indent)
-                       (+ y numOfFacedownCards (length (cdr wastes)) 1))
+                       (+ y numOfStockCards (length (cdr wastes)) 1))
       (insert str (make-string (- 1card+padding (length str)) ? )))
 
 
 
     ;; F I R S T   V A L U E   L I N E
-    (let* ((n      (- (+ numOfFacedownCards (length wastes) 1)
+    (let* ((n      (- (+ numOfStockCards (length wastes) 1)
                       klondike-card-height))
            (indent (if (> n 0) n 0))
            (str    (format (concat (if (> n -1) "╰" "")
                                    (if (and empty-p (cl-oddp cardHeightW/oTopBot))
                                        " "
                                      (if (> n -1) "┤" "│"))
-                                   (make-string (- (+ numOfFacedownCards
+                                   (make-string (- (+ numOfStockCards
                                                       (length (cdr wastes)))
                                                    indent
                                                    (if (> n -1) 1 0))
@@ -601,15 +601,15 @@ made visible."
                              "")
                            "")))
       (funcall move-to (+ x indent)
-                       (+ y numOfFacedownCards (length (cdr wastes)) 2))
+                       (+ y numOfStockCards (length (cdr wastes)) 2))
       (insert str (make-string (- 1card+padding (length str)) ? )))
 
 
 
-    (let* ((cols                                        (- klondike-card-width 2))
-           (rows                                        (- cardHeightW/oTopBot 2))
-           (orig               (split-string klondike-card-facedown-graphic "\n"))
-           (oLen                                                    (length orig))
+    (let* ((cols                                     (- klondike-card-width 2))
+           (rows                                     (- cardHeightW/oTopBot 2))
+           (orig               (split-string klondike-card-stock-graphic "\n"))
+           (oLen                                                 (length orig))
            (graphic            (mapcar (lambda (line)
                                          (let* ((len          (length line))
                                                 (remHalf (/ (- len cols) 2)))
@@ -627,17 +627,17 @@ made visible."
            ( widthMinusGraphic (- cols     graphicWidth))
            (wMinusGraphicHalf   (/  widthMinusGraphic 2)))
       (dotimes (offset rows)
-        (let* ((n      (- (+ numOfFacedownCards (length wastes) 1 (1+ offset))
+        (let* ((n      (- (+ numOfStockCards (length wastes) 1 (1+ offset))
                           klondike-card-height))
                (indent (if (> n 0) n 0)))
           (funcall move-to (+ x indent)
                            (+ y
-                              numOfFacedownCards
+                              numOfStockCards
                               (length (cdr wastes))
                               2
                               (1+ offset)))
           (if (and (not empty-p)
-                   facedown-p
+                   stock-p
                    (and (>= offset                                 hMinusGraphicHalf)
                         (<  offset (- rows (- heightMinusGraphic hMinusGraphicHalf)))))
               (let ((str (concat "│"
@@ -647,7 +647,7 @@ made visible."
                                  "│")))
                 (insert str (make-string (- 1card+padding (length str)) ? )))
             (let ((str (concat (if (> n -1) "╰┤" "")
-                               (make-string (- (+ numOfFacedownCards (length (cdr wastes)))
+                               (make-string (- (+ numOfStockCards (length (cdr wastes)))
                                                indent
                                                (if (> n -1) 2 0))
                                             ?│)
@@ -667,7 +667,7 @@ made visible."
 
 
       ;; S E C O N D   V A L U E   L I N E
-      (let* ((n      (- (+ numOfFacedownCards (length wastes) 1 (1+ rows))
+      (let* ((n      (- (+ numOfStockCards (length wastes) 1 (1+ rows))
                         klondike-card-height))
              (indent (if (> n 0) n 0))
              (str    (format (concat (if (> n -1) "╰")
@@ -686,7 +686,7 @@ made visible."
                                ""))))
         (funcall move-to (+ x indent)
                          (+ y
-                            numOfFacedownCards
+                            numOfStockCards
                             (length (cdr wastes))
                             2
                             (1+ rows)))
@@ -695,7 +695,7 @@ made visible."
 
 
       ;; C A R D   B O T T O M
-      (let* ((n      (- (+ numOfFacedownCards (length wastes) 1 (1+ rows) 1)
+      (let* ((n      (- (+ numOfStockCards (length wastes) 1 (1+ rows) 1)
                         klondike-card-height))
              (indent (if (> n 0) n 0))
              (str    (concat "╰"
@@ -706,7 +706,7 @@ made visible."
                              "╯")))
         (funcall move-to (+ x indent)
                          (+ y
-                            numOfFacedownCards
+                            numOfStockCards
                             (length (cdr wastes))
                             2
                             (1+ rows)
@@ -718,12 +718,12 @@ made visible."
       ;; B O T T O M   W H I T E S P A C E
       (when show-stack-p
         (dotimes (offset 10)
-          (let* ((n      (- (+ numOfFacedownCards (length wastes) 1 (1+ rows) 1 (1+ offset))
+          (let* ((n      (- (+ numOfStockCards (length wastes) 1 (1+ rows) 1 (1+ offset))
                             klondike-card-height))
                  (indent (if (> n 0) n 0)))
             (funcall move-to (+ x indent)
                              (+ y
-                                numOfFacedownCards
+                                numOfStockCards
                                 (length (cdr wastes))
                                 2
                                 (1+ rows)
@@ -748,27 +748,27 @@ to be."
     (mapc (lambda (toPrintSymbol)
             (let ((stack (alist-get toPrintSymbol current)))
               (cl-case toPrintSymbol
-                (:facedown (klondike--card-insert (klondike--stack-get-x stack)
-                                                  (klondike--stack-get-y stack)
-                                                  (zerop (length (klondike--stack-get-cards stack)))
-                                                  t))
-                (:waste    (klondike--card-insert (klondike--stack-get-x stack)
-                                                  (klondike--stack-get-y stack)
-                                                  (zerop (length (klondike--stack-get-cards stack)))
-                                                  nil
-                                                  (length (klondike--stack-get-cards stack))
-                                                  (klondike--stack-get-cards stack)))
-                (t         (klondike--card-insert (klondike--stack-get-x stack)
-                                                  (klondike--stack-get-y stack)
-                                                  (zerop (length (klondike--stack-get-cards stack)))
-                                                  nil
-                                                  (length (klondike--stack-get-cards stack))
-                                                  (butlast (klondike--stack-get-cards stack)
-                                                           (- (length (klondike--stack-get-cards stack))
-                                                              (klondike--stack-get-visible stack)))
-                                                  (let ((str (symbol-name toPrintSymbol)))
-                                                    (string= "pile"
-                                                             (substring str 1 (1- (length str))))))))))
+                (:stock (klondike--card-insert (klondike--stack-get-x stack)
+                                               (klondike--stack-get-y stack)
+                                               (zerop (length (klondike--stack-get-cards stack)))
+                                               t))
+                (:waste (klondike--card-insert (klondike--stack-get-x stack)
+                                               (klondike--stack-get-y stack)
+                                               (zerop (length (klondike--stack-get-cards stack)))
+                                               nil
+                                               (length (klondike--stack-get-cards stack))
+                                               (klondike--stack-get-cards stack)))
+                (t      (klondike--card-insert (klondike--stack-get-x stack)
+                                               (klondike--stack-get-y stack)
+                                               (zerop (length (klondike--stack-get-cards stack)))
+                                               nil
+                                               (length (klondike--stack-get-cards stack))
+                                               (butlast (klondike--stack-get-cards stack)
+                                                        (- (length (klondike--stack-get-cards stack))
+                                                           (klondike--stack-get-visible stack)))
+                                               (let ((str (symbol-name toPrintSymbol)))
+                                                 (string= "pile"
+                                                          (substring str 1 (1- (length str))))))))))
           (if stacks-to-print stacks-to-print (mapcar #'car current)))))
 (defun klondike--stack-number (stack)
   "Number the visible waste cards of STACK.
@@ -814,7 +814,7 @@ SELECTED-NUM."
         (visibleNum (klondike--stack-get-visible stack)))
     (funcall-interactively #'goto-line (+ (if (= selected-num 1) 1 0)
                                           (klondike--stack-get-y stack)
-                                          (- totalNum        visibleNum)  ; facedowns
+                                          (- totalNum        visibleNum)  ; stocks
                                           (- (1+ visibleNum) selected-num)))
     (move-to-column                    (+ (if (= selected-num 1) 1 0)
                                           (klondike--stack-get-x stack)
@@ -922,7 +922,7 @@ select in the stack is 1."
       (klondike--stack-set klondike---pile-6-stack (funcall fill-stack 7) 1
                                                    (funcall x 6)          y))
 
-    (klondike--stack-set klondike---facedown-stack
+    (klondike--stack-set klondike---stock-stack
                          (funcall fill-stack 24)
                          0
                          klondike-window-padding
@@ -1163,29 +1163,29 @@ If this is not possible, pick the card in the stack by STACK-NUM by calling
     (klondike--stack-pick (1+ stack-num))))
 
 (defun klondike-card-deck-next ()
-  "Flip a card from the facedown stack to being waste.
+  "Flip a card from the stock stack to being waste.
 
-If the facedown stack is empty, move all cards which have been flipped up
-to the facedown stack and in the facedown position."
+If the stock stack is empty, move all cards which have been flipped up
+to the stock stack and in the facedown position."
   (interactive)
 
-  (if (zerop (length (klondike--stack-get-cards klondike---facedown-stack)))
+  (if (zerop (length (klondike--stack-get-cards klondike---stock-stack)))
       (progn
-        (klondike--stack-set-cards klondike---facedown-stack
+        (klondike--stack-set-cards klondike---stock-stack
                                    (reverse (klondike--stack-get-cards klondike---waste-stack)))
         (klondike--stack-set-cards klondike---waste-stack   '())
 
         (klondike--stack-set-visible klondike---waste-stack 0))
     (klondike--stack-set-cards klondike---waste-stack
-                               (cons (car (klondike--stack-get-cards klondike---facedown-stack))
+                               (cons (car (klondike--stack-get-cards klondike---stock-stack))
                                      (klondike--stack-get-cards klondike---waste-stack)))
-    (klondike--stack-set-cards klondike---facedown-stack
-                               (cdr (klondike--stack-get-cards klondike---facedown-stack)))
+    (klondike--stack-set-cards klondike---stock-stack
+                               (cdr (klondike--stack-get-cards klondike---stock-stack)))
 
     (klondike--stack-set-visible klondike---waste-stack 1))
 
   (klondike--history-save)
-  (klondike--card-insert-all '(:facedown :waste)))
+  (klondike--card-insert-all '(:stock :waste)))
 
 (defun klondike-quit-game ()
   "Kill current Klondike buffer, exiting the game."

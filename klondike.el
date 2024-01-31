@@ -1263,7 +1263,7 @@ to the stock stack and in the facedown position."
 
                             mode-map)
   "Keymap for `klondike-mode'.")
-(define-derived-mode klondike-mode fundamental-mode "Klondike"
+(define-derived-mode klondike-mode special-mode "Klondike"
   "Major mode for the Klondike solitaire game for Emacs."
 
   (when-let ((stack-type (car klondike---stack-pick-stack)))

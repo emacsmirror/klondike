@@ -29,8 +29,6 @@
 ;; cl-case
 ;; cl-evenp
 (require 'cl-lib)
-;; pcase
-(require 'pcase)
 ;; if-let*
 (require 'subr-x)
 ;; run-at-time
